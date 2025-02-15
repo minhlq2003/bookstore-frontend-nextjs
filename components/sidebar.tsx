@@ -1,9 +1,11 @@
 import Link from "next/link";
+import { useTranslation } from "react-i18next";
 
 const Sidebar = () => {
+  const { t } = useTranslation("common");
   return (
     <div>
-      <h2>Sidebar</h2>
+      <h2>{t("Side bar")}</h2>
       <nav>
         <ul>
           <li>
