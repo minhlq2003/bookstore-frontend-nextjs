@@ -6,8 +6,8 @@ export const i18nInstance = i18next.createInstance();
 export const initializeI18n = async (locale: string = "vi") => {
   if (!i18nInstance.isInitialized) {
     const [enCommon, viCommon] = await Promise.all([
-      import("../../public/locales/en/common.json").then((m) => m.default),
-      import("../../public/locales/vi/common.json").then((m) => m.default),
+      import("../public/locales/en/common.json").then((m) => m.default),
+      import("../public/locales/vi/common.json").then((m) => m.default),
     ]);
 
     const options: InitOptions = {
