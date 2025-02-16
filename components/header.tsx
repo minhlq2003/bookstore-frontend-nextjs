@@ -71,10 +71,12 @@ const Header = () => {
               />
             </a>
 
-            <button className="bg-[#0B3D91] text-white p-2 rounded-md hover:bg-blue-700 sm:flex hidden items-center">
-              {t("Login")}
-              <FontAwesomeIcon icon={faUser} className="pl-3" />
-            </button>
+            <Link href="/signin" legacyBehavior>
+              <button className="bg-[#0B3D91] text-white p-2 rounded-md hover:bg-blue-700 sm:flex hidden items-center">
+                {t("Login")}
+                <FontAwesomeIcon icon={faUser} className="pl-3" />
+              </button>
+            </Link>
           </div>
         </div>
       </header>
@@ -87,13 +89,13 @@ const Header = () => {
             </Link>
           </li>
           <li>
-            <Link href="/" className="flex flex-col">
+            <Link href="/category" className="flex flex-col">
               <FontAwesomeIcon icon={faTableCellsLarge} />
               Category
             </Link>
           </li>
           <li>
-            <Link href="/" className="flex flex-col">
+            <Link href="/cart" className="flex flex-col">
               <FontAwesomeIcon icon={faBagShopping} />
               Cart
             </Link>
