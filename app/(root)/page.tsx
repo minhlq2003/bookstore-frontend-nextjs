@@ -2,15 +2,18 @@
 "use client";
 
 import { useTranslation } from "next-i18next";
+import { Suspense } from "react";
 
 function Home() {
   const { t } = useTranslation("common");
 
   return (
-    <div>
-      <h1>{t("welcome")}</h1>
-      <p>{t("language")}</p>
-    </div>
+    <Suspense>
+      <div>
+        <h1>{t("welcome")}</h1>
+        <p>{t("language")}</p>
+      </div>
+    </Suspense>
   );
 }
 
