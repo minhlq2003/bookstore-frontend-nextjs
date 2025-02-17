@@ -62,7 +62,7 @@ function Category() {
   ];
 
   return (
-    <div className="w-full font-serif bg-[#ececec] sm:pt-5 pt-0 pb-20">
+    <div className="w-full bg-[#ececec] sm:pt-5 pt-0 pb-20">
       <div className="bg-gray-200 max-w-[1440px] mx-auto">
         <div className="sm:rounded-xl rounded-none overflow-hidden">
           <div className="bg-[#0B3D91] text-white py-4 text-left sm:text-3xl text-xl font-bold sm:pl-10 pl-3">

@@ -1,5 +1,8 @@
 "use client";
+import { Images } from "@/constant/images";
 import { useTranslation } from "next-i18next";
+import Image from "next/image";
+import Link from "next/link";
 import { Suspense, useState } from "react";
 
 function SignUp() {
@@ -10,7 +13,7 @@ function SignUp() {
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <div className="w-full flex items-center justify-center bg-gray-100">
-        <div className="w-full max-w-md bg-white rounded-lg shadow-md p-8">
+        <div className="w-full max-w-md bg-white rounded-lg sm:my-20 my-10 shadow-md p-8">
           <h2 className="text-2xl font-bold text-center text-blue-700 mb-6">
             {t("SIGN UP")}
           </h2>
@@ -20,7 +23,7 @@ function SignUp() {
                 htmlFor="email"
                 className="block text-gray-700 text-sm font-medium mb-2"
               >
-                Email
+                {t("Email")}
               </label>
               <input
                 type="email"
@@ -33,7 +36,7 @@ function SignUp() {
                 htmlFor="username"
                 className="block text-gray-700 text-sm font-medium mb-2"
               >
-                Username
+                {t("Username")}
               </label>
               <input
                 type="text"
@@ -46,7 +49,7 @@ function SignUp() {
                 htmlFor="password"
                 className="block text-gray-700 text-sm font-medium mb-2"
               >
-                Password
+                {t("Password")}
               </label>
               <input
                 type={showPassword ? "text" : "password"}
@@ -83,7 +86,7 @@ function SignUp() {
                 htmlFor="confirmPassword"
                 className="block text-gray-700 text-sm font-medium mb-2"
               >
-                Confirm Password
+                {t("Confirm Password")}
               </label>
               <input
                 type={showConfirmPassword ? "text" : "password"}
@@ -123,30 +126,30 @@ function SignUp() {
               type="submit"
               className="w-full bg-blue-500 text-white font-medium py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
-              SIGN UP
+              {t("SIGN UP")}
             </button>
 
             <div className="mt-4 text-center text-gray-500">
               <p>
-                Already have an account?{" "}
-                <a href="/signin" className="text-blue-500 hover:underline">
-                  Login
-                </a>
+                {t("Already have an account?")}
+                <Link href="/signin" className="text-blue-500 hover:underline">
+                  {t("Log in")}
+                </Link>
               </p>
             </div>
 
             <div className="mt-6 text-center text-gray-500">
-              <p>or continue with</p>
+              <p>{t("or continue with")}</p>
             </div>
             <button className="w-full bg-white border border-gray-300 rounded-md py-2 px-4 flex items-center justify-center mt-2 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 533.5 544.3"
-                className="w-5 h-5 mr-2"
-              >
-                {/* ... Google icon SVG content ... */}
-              </svg>
-              Continue with Google
+              <Image
+                src={Images.googleIcon}
+                alt="Google Icon"
+                width={20}
+                height={20}
+                className="mr-2"
+              />
+              {t("Continue with Google")}
             </button>
           </form>
         </div>
