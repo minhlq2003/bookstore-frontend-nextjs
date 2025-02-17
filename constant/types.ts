@@ -8,3 +8,16 @@ export interface Book {
   imageUrl: string;
   discount?: number;
 }
+
+export interface BookDetails extends Book {
+  genre: string;
+  author: string;
+  publisher: string;
+  publishedDate: string;
+  weight: number;
+  size: string;
+  pages: number;
+  description: string;
+  sold: number;
+  storage: number;
+}
