@@ -109,7 +109,7 @@ const Header = () => {
                 </button>
               </div>
 
-              <a
+              <Link
                 href="/cart"
                 className="mr-4 hover:text-blue-500 sm:block hidden"
               >
@@ -117,7 +117,7 @@ const Header = () => {
                   icon={faBagShopping}
                   className="text-white text-3xl"
                 />
-              </a>
+              </Link>
 
               <Link
                 href="/signin"
