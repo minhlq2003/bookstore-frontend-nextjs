@@ -1,5 +1,5 @@
 "use client";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Merriweather } from "next/font/google";
 import "../../globals.css";
 import { Suspense } from "react";
 import { I18nextProvider } from "react-i18next";
@@ -7,6 +7,7 @@ import Header from "@/components/header";
 import Footer from "@/components/footer";
 import LocaleProvider from "@/components/locale-provider";
 import { i18nInstance } from "../../language/i18n";
+import {HeroUIProvider} from "@heroui/react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,6 +19,12 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const merriweather = Merriweather({
+  subsets: ["latin"],
+  weight: ["300", "400", "700"],
+  variable: "--font-merriweather",
+});
+
 export default function RootLayout({
   children,
 }: {
@@ -26,14 +33,16 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${merriweather.variable} antialiased`}
       >
         <Suspense fallback={<div>Loading...</div>}>
           <LocaleProvider>
             {() => (
               <I18nextProvider i18n={i18nInstance}>
                 <Header />
-                {children}
+                <HeroUIProvider>
+                  {children}
+                </HeroUIProvider>
                 <Footer />
               </I18nextProvider>
             )}
