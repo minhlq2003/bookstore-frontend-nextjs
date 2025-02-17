@@ -5,7 +5,7 @@ import { Suspense, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Images } from "../../../constant/images";
-import { Eye, EyeOff } from "lucide-react"
+import { Eye, EyeOff } from "lucide-react";
 
 function SignIn() {
   const { t } = useTranslation("common");
@@ -48,11 +48,7 @@ function SignIn() {
                 className="absolute inset-y-0 right-0 top-8 flex items-center pr-3 cursor-pointer"
                 onClick={() => setShowPassword(!showPassword)}
               >
-                {showPassword ? (
-                  <EyeOff color="gray" />
-                ) : (
-                  <Eye color="gray" />
-                )}
+                {showPassword ? <EyeOff color="gray" /> : <Eye color="gray" />}
               </span>
             </div>
 

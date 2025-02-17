@@ -9,7 +9,7 @@ export default function LocaleProvider({
   children: (locale: string) => React.ReactNode;
 }) {
   const searchParams = useSearchParams();
-  const locale = searchParams.get("lang") ?? "vi";
+  const locale = searchParams.get("lang") ?? "en";
   const [isI18nReady, setIsI18nReady] = useState(false);
 
   useEffect(() => {
