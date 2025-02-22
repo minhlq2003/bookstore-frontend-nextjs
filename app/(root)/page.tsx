@@ -30,6 +30,49 @@ function Home() {
     image: Images.bookImg,
   };
 
+  const popularCollections: Book[] = [
+    {
+      id: 1,
+      title: "CHASING NEW HORIZONS",
+      subTitle: "Inside the Epic First Mission to Pluto",
+      price: 19.0,
+      imageUrl:
+        "https://s3-alpha-sig.figma.com/img/655f/c8c0/309c950754d34dae6569f2f7cdd56c8e?Expires=1740355200&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=G2bllpJ2iOZpmP1FPY-wVKixum3gNTJ2DxPb6Y-ODtv2EXnLc-eWxJ2bofLr-mi7KSGC3o-QWcVghIqRCd4i71Nwp6Hp~WBt9ummne0N31TB0lf4nLQlZy3p4maLN3dINZtiDcvtcpckoDzIQwfCIIDOwWbA5cCV25EppdpKZcX~1ZjgTQBweRy87psNsxarFFrUIDbi~7Yi24RJ0VRkyhSZmnj48wD~JOdKItCWERacpW3wqJlpk0BrPMPIio1suC459-ZU~mIN7nt91CGXtGk3YG7FNxiwwpSuWvYtc3vNlLnugYFtsS4c~FE9X5dHcMlUpH7CesPQoGHEI5jSJg__",
+      author: "Alan Stern",
+      rating: 4.5,
+    },
+    {
+      id: 2,
+      title: "CHASING NEW HORIZONS",
+      subTitle: "Inside the Epic First Mission to Pluto",
+      price: 19.0,
+      imageUrl:
+        "https://s3-alpha-sig.figma.com/img/655f/c8c0/309c950754d34dae6569f2f7cdd56c8e?Expires=1740355200&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=G2bllpJ2iOZpmP1FPY-wVKixum3gNTJ2DxPb6Y-ODtv2EXnLc-eWxJ2bofLr-mi7KSGC3o-QWcVghIqRCd4i71Nwp6Hp~WBt9ummne0N31TB0lf4nLQlZy3p4maLN3dINZtiDcvtcpckoDzIQwfCIIDOwWbA5cCV25EppdpKZcX~1ZjgTQBweRy87psNsxarFFrUIDbi~7Yi24RJ0VRkyhSZmnj48wD~JOdKItCWERacpW3wqJlpk0BrPMPIio1suC459-ZU~mIN7nt91CGXtGk3YG7FNxiwwpSuWvYtc3vNlLnugYFtsS4c~FE9X5dHcMlUpH7CesPQoGHEI5jSJg__",
+      author: "Alan Stern",
+      rating: 4.5,
+    },
+    {
+      id: 3,
+      title: "CHASING NEW HORIZONS",
+      subTitle: "Inside the Epic First Mission to Pluto",
+      price: 19.0,
+      imageUrl:
+        "https://s3-alpha-sig.figma.com/img/655f/c8c0/309c950754d34dae6569f2f7cdd56c8e?Expires=1740355200&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=G2bllpJ2iOZpmP1FPY-wVKixum3gNTJ2DxPb6Y-ODtv2EXnLc-eWxJ2bofLr-mi7KSGC3o-QWcVghIqRCd4i71Nwp6Hp~WBt9ummne0N31TB0lf4nLQlZy3p4maLN3dINZtiDcvtcpckoDzIQwfCIIDOwWbA5cCV25EppdpKZcX~1ZjgTQBweRy87psNsxarFFrUIDbi~7Yi24RJ0VRkyhSZmnj48wD~JOdKItCWERacpW3wqJlpk0BrPMPIio1suC459-ZU~mIN7nt91CGXtGk3YG7FNxiwwpSuWvYtc3vNlLnugYFtsS4c~FE9X5dHcMlUpH7CesPQoGHEI5jSJg__",
+      author: "Alan Stern",
+      rating: 4.5,
+    },
+    {
+      id: 4,
+      title: "CHASING NEW HORIZONS",
+      subTitle: "Inside the Epic First Mission to Pluto",
+      price: 19.0,
+      imageUrl:
+        "https://s3-alpha-sig.figma.com/img/655f/c8c0/309c950754d34dae6569f2f7cdd56c8e?Expires=1740355200&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=G2bllpJ2iOZpmP1FPY-wVKixum3gNTJ2DxPb6Y-ODtv2EXnLc-eWxJ2bofLr-mi7KSGC3o-QWcVghIqRCd4i71Nwp6Hp~WBt9ummne0N31TB0lf4nLQlZy3p4maLN3dINZtiDcvtcpckoDzIQwfCIIDOwWbA5cCV25EppdpKZcX~1ZjgTQBweRy87psNsxarFFrUIDbi~7Yi24RJ0VRkyhSZmnj48wD~JOdKItCWERacpW3wqJlpk0BrPMPIio1suC459-ZU~mIN7nt91CGXtGk3YG7FNxiwwpSuWvYtc3vNlLnugYFtsS4c~FE9X5dHcMlUpH7CesPQoGHEI5jSJg__",
+      author: "Alan Stern",
+      rating: 4.5,
+    },
+  ];
+
   const books: Book[] = [
     {
       id: 1,
@@ -219,19 +262,33 @@ function Home() {
 
         {/* Big Spring Sales Section -- Chưa làm */}
         <div className="relative bg-white p-10 mb-10">
-          <h2 className="text-4xl font-bold text-center text-blue-700 mb-10">
+          {/* <h2 className="text-4xl font-bold text-center text-blue-700 mb-10 uppercase">
             {t("BIG SPRING SALES")}
-          </h2>
+          </h2> */}
+          {/* <Image
+            src={Images.banner}
+            alt="big-spring-sales"
+            className="rounded-lg"
+          /> */}
           <Image
             src={Images.banner}
             alt="big-spring-sales"
             className="rounded-lg"
+            layout="cover"
           />
         </div>
 
         {/* Popular Collection Section -- giống phần new arrival -- chưa làm */}
+        <div className="max-w-[1440px] mx-auto px-7 py-10">
+          <h2 className="text-2xl font-bold text-[#0b3d91] mb-5">{t("Popular Collections")}</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {popularCollections.map((book) => (
+              <BookItem key={book.id} book={book} />
+            ))}
+          </div>
+        </div>
       </div>
-    </Suspense>
+    </Suspense >
   );
 }
 
