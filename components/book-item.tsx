@@ -7,7 +7,7 @@ import { faStar } from "@fortawesome/free-solid-svg-icons";
 
 const BookItem: React.FC<{ book: Book }> = ({ book }) => {
   return (
-    <div className="border border-gray-300 rounded sm:p-4 p-2 shadow-md bg-white">
+    <div className="border border-gray-300 rounded sm:p-4 p-2 shadow-md bg-white hover:scale-105 transition duration-300 ease-in-out hover:shadow-[0_0_10px_5px_rgba(30,136,229,0.3)]">
       <div className="relative flex justify-center">
         {" "}
         {/* Added relative positioning for rating badge */}
