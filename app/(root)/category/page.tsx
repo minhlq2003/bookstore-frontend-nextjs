@@ -104,27 +104,27 @@ function Category() {
                   <Image
                     src={imgBook}
                     alt={book.title}
-                    className="w-1/2 sm:w-1/3 rounded-lg -rotate-6 sm:left-40 sm:top-0 top-5 left-10 z-10 absolute"
+                    className="w-1/2 sm:w-1/3 rounded-lg sm:left-40 top-10 left-10 z-10 absolute hover:-rotate-6  hover:top-2 transition-all duration-200 hover:scale-110"
                   />
                   <Image
                     src={imgBook}
                     alt={book.title}
-                    className="absolute top-10 left-0 sm:w-1/3 w-1/2 transform  rounded-lg shadow-md"
+                    className="absolute top-10 left-0 sm:w-1/3 w-1/2 transform  rounded-lg shadow-md hover:-rotate-6  hover:top-2 transition-all duration-200 hover:scale-110 "
                   />
                   <Image
                     src={imgBook}
                     alt={book.title}
-                    className="absolute top-10 sm:left-20 left-5 sm:w-1/3 w-1/2 transform  rounded-lg shadow-md"
+                    className="absolute top-10 sm:left-20 left-5 sm:w-1/3 w-1/2 transform  rounded-lg shadow-md hover:-rotate-6  hover:top-2 transition-all duration-200 hover:scale-110"
                   />
                   <Image
                     src={imgBook}
                     alt={book.title}
-                    className="absolute top-10 sm:left-60 left-[60px] sm:w-1/3 w-1/2 transform z-20 rounded-lg shadow-md"
+                    className="absolute top-10 sm:left-60 left-[60px] sm:w-1/3 w-1/2 transform z-20 rounded-lg shadow-md hover:-rotate-6  hover:top-2 transition-all duration-200 hover:scale-110"
                   />
                   <Image
                     src={imgBook}
                     alt={book.title}
-                    className="absolute top-10 sm:left-80 left-20 sm:w-1/3 w-1/2 transform z-20  rounded-lg shadow-md"
+                    className="absolute top-10 sm:left-80 left-20 sm:w-1/3 w-1/2 transform z-20  rounded-lg shadow-md hover:-rotate-6  hover:top-2 transition-all duration-200 hover:scale-110"
                   />
                 </div>
               </div>

@@ -1,9 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  reactStrictMode: true, // If you have this, keep it
+  reactStrictMode: true,
   images: {
-    domains: ["s3-alpha-sig.figma.com"], // Add your domain here
+    domains: ["s3-alpha-sig.figma.com"], 
   },
 };
 
