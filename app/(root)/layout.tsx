@@ -7,7 +7,7 @@ import Header from "@/components/header";
 import Footer from "@/components/footer";
 import LocaleProvider from "@/components/locale-provider";
 import { i18nInstance } from "../../language/i18n";
-import {HeroUIProvider} from "@heroui/react";
+import { HeroUIProvider } from "@heroui/react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,16 +33,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${merriweather.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${merriweather.variable} antialiased font-merriweather`}
       >
         <Suspense fallback={<div>Loading...</div>}>
           <LocaleProvider>
             {() => (
               <I18nextProvider i18n={i18nInstance}>
                 <Header />
-                <HeroUIProvider>
-                  {children}
-                </HeroUIProvider>
+                <HeroUIProvider>{children}</HeroUIProvider>
                 <Footer />
               </I18nextProvider>
             )}
