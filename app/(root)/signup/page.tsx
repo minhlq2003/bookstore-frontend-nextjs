@@ -149,7 +149,7 @@ function SignUp() {
                 height={20}
                 className="mr-2"
               />
-              {t("Continue with Google")}
+              <p className="text-black">{t("Continue with Google")}</p>
             </button>
           </form>
         </div>

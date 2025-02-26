@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Book } from "@/constant/types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
+import Link from "next/link";
 
 const BookItem: React.FC<{ book: Book }> = ({ book }) => {
   return (
@@ -11,13 +12,15 @@ const BookItem: React.FC<{ book: Book }> = ({ book }) => {
       <div className="relative flex justify-center">
         {" "}
         {/* Added relative positioning for rating badge */}
-        <Image
-          src={book.imageUrl}
-          alt={book.title}
-          width={200}
-          height={250}
-          className="rounded sm:w-[200px] w-[100px] sm:h-[250px] h-[125px]"
-        />
+        <Link href={`/book/1`}>
+          <Image
+            src={book.imageUrl}
+            alt={book.title}
+            width={200}
+            height={250}
+            className="rounded sm:w-[200px] w-[100px] sm:h-[250px] h-[125px]"
+          />
+        </Link>
         <div className="absolute sm:top-2 top-1 sm:right-2 right-1">
           {" "}
           {/* Rating badge positioning */}
@@ -43,9 +46,11 @@ const BookItem: React.FC<{ book: Book }> = ({ book }) => {
               </span>
             )}
         </p>
-        <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">
-          Buy
-        </button>
+        <Link href={`/book/1`}>
+          <button className=" text-white px-4 py-2 rounded hover:border hover:border-white">
+            Buy
+          </button>
+        </Link>
       </div>
     </div>
   );
