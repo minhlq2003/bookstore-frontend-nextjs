@@ -148,7 +148,7 @@ const Header = () => {
                   placeholder={t("Search...")}
                   className="px-2 sm:py-2 py-0 w-full rounded-2xl border border-gray-300 placeholder:text-[12px] sm:placeholder:text-[16px] focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
-                <button className="absolute right-2 top-1/2 transform -translate-y-1/2">
+                <button className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-transparent text-black">
                   <FontAwesomeIcon icon={faSearch} />
                 </button>
               </div>

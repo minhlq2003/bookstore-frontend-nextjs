@@ -118,4 +118,8 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  button{
+    @apply bg-[#0B3D91] text-white
+  }
 }

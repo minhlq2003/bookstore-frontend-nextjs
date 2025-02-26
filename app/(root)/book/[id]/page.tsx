@@ -19,7 +19,7 @@ import {
 import BookItem from "@/components/book-item";
 
 const Page = () => {
-    const { t } = useTranslation("common");
+  const { t } = useTranslation("common");
   const [quantity, setQuantity] = useState(1);
 
   const books: BookDetails[] = [
@@ -139,7 +139,7 @@ const Page = () => {
       <div className="hidden md:block text-black px-7 pt-5">
         <Breadcrumbs
           itemClasses={{
-            item: "text-black data-[current=true]:text-blue/60",
+            item: "text-black data-[current=true]:text-customblue/60",
           }}
         >
           <BreadcrumbItem>{firstGenre}</BreadcrumbItem>
@@ -156,7 +156,7 @@ const Page = () => {
         />
         <div className="flex flex-col gap-3 lg:gap-5 text-sm md:text-base lg:text-lg md:w-full text-black lg:px-14">
           <div className="flex flex-col items-center justify-center md:flex-row-reverse md:justify-between gap-2">
-            <div className="bg-blue text-white flex items-center justify-center w-[30%] h-6 rounded-lg mt-3 md:mt-0">
+            <div className="bg-customblue text-white flex items-center justify-center w-[30%] h-6 rounded-lg mt-3 md:mt-0">
               <p>Best seller</p>
             </div>
             <h1 className="text-2xl md:text-3xl">{book?.title}</h1>
@@ -208,7 +208,7 @@ const Page = () => {
       </div>
       <div className="px-7">
         <Table
-          className="text-black"
+          className="text-black bg-white rounded-xl"
           isStriped
           classNames={{
             th: "md:text-base",
@@ -220,7 +220,7 @@ const Page = () => {
             <TableColumn>{t("Info")}</TableColumn>
           </TableHeader>
           <TableBody>
-            <TableRow key={1}>
+            <TableRow key={1} className="bg-gray-200 rounded-xl">
               <TableCell className="text-black/60 md:text-base">
                 {t("Genre")}
               </TableCell>
@@ -232,31 +232,35 @@ const Page = () => {
               </TableCell>
               <TableCell>{book?.author}</TableCell>
             </TableRow>
-            <TableRow key={3}>
+            <TableRow key={3} className="bg-gray-200 rounded-xl">
               <TableCell className="text-black/60 md:text-base">
                 {t("Publisher")}
               </TableCell>
               <TableCell>{book?.publisher}</TableCell>
             </TableRow>
             <TableRow key={4}>
-              <TableCell className="text-black/60 md:text-base">{t("Year")}</TableCell>
+              <TableCell className="text-black/60 md:text-base">
+                {t("Year")}
+              </TableCell>
               <TableCell>
                 {book?.publishedDate
                   ? new Date(book.publishedDate).getFullYear()
                   : "N/A"}
               </TableCell>
             </TableRow>
-            <TableRow key={5}>
+            <TableRow key={5} className="bg-gray-200 rounded-xl">
               <TableCell className="text-black/60 md:text-base">
                 {t("Weight")}(gr)
               </TableCell>
               <TableCell>{book?.weight}</TableCell>
             </TableRow>
             <TableRow key={6}>
-              <TableCell className="text-black/60 md:text-base">{t("Size")}</TableCell>
+              <TableCell className="text-black/60 md:text-base">
+                {t("Size")}
+              </TableCell>
               <TableCell>{book?.size}</TableCell>
             </TableRow>
-            <TableRow key={7}>
+            <TableRow key={7} className="bg-gray-200 rounded-full">
               <TableCell className="text-black/60 md:text-base">
                 {t("Pages")}
               </TableCell>
@@ -266,10 +270,16 @@ const Page = () => {
         </Table>
       </div>
       <div className=" text-black bg-white mx-7 mt-7 p-3 md:p-5 rounded-xl">
-        <p className="font-medium text-lg md:text-xl lg:text-2xl pb-2">{t("Description")}</p>
-        <p className="text-justify text-sm md:text-base text-black/80">{book?.description}</p>
+        <p className="font-medium text-lg md:text-xl lg:text-2xl pb-2">
+          {t("Description")}
+        </p>
+        <p className="text-justify text-sm md:text-base text-black/80">
+          {book?.description}
+        </p>
       </div>
-      <p className="text-lg md:text-xl lg:text-2xl text-blue py-2 md:py-5 px-7 font-bold">{t("Relevant Books")}</p>
+      <p className="text-lg md:text-xl lg:text-2xl text-blue py-2 md:py-5 px-7 font-bold">
+        {t("Relevant Books")}
+      </p>
       <div className="flex overflow-x-auto px-7 gap-5 pb-5">
         {books.map((book) => (
           <div key={book.id}>
