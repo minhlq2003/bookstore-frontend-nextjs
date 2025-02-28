@@ -21,6 +21,7 @@ import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { isLogin, logout } from "@/lib/actions/auth";
 
 const Header = () => {
   const { t, i18n } = useTranslation("common");
@@ -31,6 +32,7 @@ const Header = () => {
     searchParams.get("lang") || localStorage.getItem("lang") || "en";
   const [scrollingUp, setScrollingUp] = useState(true);
   const [prevScrollPos, setPrevScrollPos] = useState(0);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -56,6 +58,14 @@ const Header = () => {
     localStorage.setItem("lang", currentLang);
     i18n.changeLanguage(currentLang);
   }, [currentLang]);
+
+  useEffect(() => {
+    async function checkLoginStatus() {
+      const loggedIn = await isLogin();
+      setIsLoggedIn(loggedIn);
+    }
+    checkLoginStatus();
+  }, []);
 
   return (
     <div>
@@ -163,13 +173,23 @@ const Header = () => {
                 />
               </Link>
 
-              <Link
-                href="/signin"
-                className="bg-[#0B3D91] text-white p-2 rounded-md hover:bg-blue-700 sm:flex hidden items-center"
-              >
-                {t("Login")}
-                <FontAwesomeIcon icon={faUser} className="pl-3" />
-              </Link>
+              {isLoggedIn ? (
+                <button
+                  onClick={() => (setIsLoggedIn(false), logout())}
+                  className="bg-[#0B3D91] text-white p-2 rounded-md hover:bg-blue-700 sm:flex hidden items-center"
+                >
+                  {t("Logout")}
+                  <FontAwesomeIcon icon={faUser} className="pl-3" />
+                </button>
+              ) : (
+                <Link
+                  href="/signin"
+                  className="bg-[#0B3D91] text-white p-2 rounded-md hover:bg-blue-700 sm:flex hidden items-center"
+                >
+                  {t("Login")}
+                  <FontAwesomeIcon icon={faUser} className="pl-3" />
+                </Link>
+              )}
             </div>
           </div>
         </header>
