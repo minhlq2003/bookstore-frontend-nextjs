@@ -1,5 +1,13 @@
 "use client";
 
+import { Images } from "@/constant/images";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   faBagShopping,
   faBars,
@@ -8,6 +16,7 @@ import {
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -34,8 +43,7 @@ const Header = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [prevScrollPos]);
 
-  const changeLanguage = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const newLang = event.target.value;
+  const changeLanguage = (newLang: string) => {
     i18n.changeLanguage(newLang);
     localStorage.setItem("lang", newLang);
 
@@ -89,14 +97,50 @@ const Header = () => {
             </nav>
 
             <div className="flex items-end sm:items-center gap-2 sm:gap-4 flex-col-reverse sm:flex-row ">
-              <select
+              {/* <select
                 value={currentLang}
                 onChange={changeLanguage}
                 className="bg-white text-black px-2 py-1 rounded-md border sm:text-[16px] text-[10px]"
               >
-                <option value="en">English</option>
-                <option value="vi">Tiếng Việt</option>
-              </select>
+                <option value="en">
+                  <Image src={Images.englishFlag} alt="" /> EN
+                </option>
+                <option value="vi">
+                  {" "}
+                  <Image src={Images.vietnamFlag} alt="" /> VI
+                </option>
+              </select> */}
+              <Select
+                onValueChange={changeLanguage}
+                value={currentLang}
+                defaultValue="en"
+              >
+                <SelectTrigger className="">
+                  <SelectValue placeholder="Language" />
+                </SelectTrigger>
+                <SelectContent className="bg-white text-black py-1 rounded-md border sm:text-[16px] text-[10px] w-48">
+                  <SelectItem value="en">
+                    <div className="flex items-center gap-3">
+                      <Image
+                        src={Images.englishFlag}
+                        alt=""
+                        className="w-7 h-5"
+                      />{" "}
+                      <p>EN</p>
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="vi">
+                    <div className="flex items-center gap-3">
+                      <Image
+                        src={Images.vietnamFlag}
+                        alt=""
+                        className="w-7 h-5"
+                      />{" "}
+                      <p>VI</p>
+                    </div>
+                  </SelectItem>
+                </SelectContent>
+              </Select>
 
               <div className="relative sm:mr-4 w-[80%]">
                 <input
@@ -104,7 +148,7 @@ const Header = () => {
                   placeholder={t("Search...")}
                   className="px-2 sm:py-2 py-0 w-full rounded-2xl border border-gray-300 placeholder:text-[12px] sm:placeholder:text-[16px] focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
-                <button className="absolute right-2 top-1/2 transform -translate-y-1/2">
+                <button className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-transparent text-black">
                   <FontAwesomeIcon icon={faSearch} />
                 </button>
               </div>
