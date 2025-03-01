@@ -4,13 +4,13 @@ import { useTranslation } from "next-i18next";
 import { Suspense, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Images } from "../../../constant/images";
+import { Images } from "../../../../constant/images";
 import { Eye, EyeOff } from "lucide-react";
+import { loginWithGoogle } from "@/lib/actions/auth";
 
 function SignIn() {
   const { t } = useTranslation("common");
   const [showPassword, setShowPassword] = useState(false);
-
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <div className="w-full flex items-center justify-center min-h-screen bg-gray-100">
@@ -71,7 +71,12 @@ function SignIn() {
               <p>or continue with</p>
             </div>
 
-            <button className="w-full bg-white border border-gray-300 rounded-md py-2 px-4 flex items-center justify-center mt-2 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300">
+            
+          </form>
+          <button
+              className="w-full bg-white border text-black border-gray-300 rounded-md py-2 px-4 flex items-center justify-center mt-2 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300"
+              onClick={() => loginWithGoogle()}
+            >
               <Image
                 src={Images.googleIcon}
                 alt="Google Icon"
@@ -81,7 +86,6 @@ function SignIn() {
               />
               Continue with Google
             </button>
-          </form>
         </div>
       </div>
     </Suspense>
