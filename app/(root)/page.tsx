@@ -21,7 +21,7 @@ import BookItem from "@/components/book-item";
 function Home() {
   const { t } = useTranslation("common");
 
-  const featuredBook = {
+  const book = {
     title: "CHASING NEW HORIZONS",
     author: "By Alan Stern",
     description:
@@ -124,61 +124,75 @@ function Home() {
       </div> */}
       <div className="w-full bg-[#ececec] sm:pt-5 pt-0 pb-20">
         {/* Hero Section */}
-        <div className="max-w-[1440px] mx-auto bg-gray-200 rounded-xl overflow-hidden my-5">
-          {" "}
-          {/* Bao bọc phần hero trong div với class mx-auto để căn giữa */}
-          <div className="bg-[#0B3D91] text-white py-4 text-left sm:text-3xl text-xl font-bold sm:pl-10 pl-3">
-            {t("FEATURED BOOK")} {/* Thay đổi tiêu đề */}
-          </div>
-          <div className="mx-auto sm:p-6 p-3 bg-[#0B3D9180] text-white">
-            {" "}
-            {/* Điều chỉnh padding */}
-            <div className="flex flex-row items-center justify-between">
-              {" "}
-              {/* Sử dụng items-center */}
-              <div className="w-[40%] sm:pl-10 pl-0">
-                <h2 className="sm:text-2xl text-[16px] font-bold text-left mb-2">
-                  {" "}
-                  {/* Căn chỉnh tiêu đề sang trái */}
-                  {featuredBook.title}
+        <div className="bg-[#0B3D9180] text-white py-10 text-center">
+          <p className="text-3xl sm:text-5xl font-bold text-white leading-tight">
+            Unlock a World of <span className="text-[#0B3D91]">Creativity</span>
+          </p>
+          <p className="text-xl text-white mt-4 max-w-lg mx-auto">
+            Discover a creative world through books! We offer a vast collection to suit every taste, along with special offers just for you.
+          </p>
+        </div>
+
+        <div className="mx-auto sm:p-6 p-3 bg-[#0B3D91] text-white">
+          <div className="flex flex-row items-between justify-between">
+            <div className="w-[40%] sm:pl-10 pl-0">
+              <div className="mx-auto sm:mb-10 mb-0">
+                <h2 className="sm:text-2xl text-[16px] font-bold text-center mb-2 sm:mt-10 mt-0">
+                  {book.title}
                 </h2>
-                <p className="text-left mb-2 sm:text-[16px] text-[10px]">
-                  {" "}
-                  {/* Căn chỉnh tác giả sang trái */}
-                  {featuredBook.author}
+                <p className="text-right mb-2 sm:text-[16px] text-[10px]">
+                  {book.author}
                 </p>
-                <p className="mb-6 sm:block hidden text-justify">
-                  {featuredBook.description}
-                </p>{" "}
-                {/* Cho đoạn text description dễ nhìn hơn */}
-                <div className="flex sm:space-x-4 space-x-2">
-                  <button className="bg-white text-black sm:px-4 px-2 sm:py-2 py-1 rounded-lg hover:bg-gray-400 shadow-lg text-sm">
-                    {t("See more")}
+              </div>
+              <p className="mb-6 sm:block hidden">{book.description}</p>
+              <div className="flex space-x-4 sm:pt-10 pt-2 justify-between">
+                <button className="bg-white text-black px-4 py-2 rounded-lg hover:bg-gray-400 shadow-lg">
+                  {t("See more")}
+                </button>
+                <div className="sm:flex items-center hidden">
+                  <span className=" mr-[-8] bg-white py-2 px-4 text-black rounded-lg shadow-lg">
+                    ${book.price.toFixed(2)}
+                  </span>
+                  <button className="bg-blue-500 text-white px-4 py-[10px] rounded-lg hover:bg-blue-700 shadow-lg">
+                    {t("Buy now")}
                   </button>
-                  <div className="sm:flex flex-row items-center hidden gap-1">
-                    <span className=" mr-[-8] bg-white sm:py-2 py-1 px-4 text-black rounded-lg shadow-lg text-sm">
-                      ${featuredBook.price.toFixed(2)}
-                    </span>
-                    <button className="bg-blue-500 text-white sm:px-4 px-2 rounded-lg hover:bg-blue-700 shadow-lg py-[6px] text-sm">
-                      {t("Buy now")}
-                    </button>
-                  </div>
                 </div>
               </div>
-              <div className=" w-[60%] relative">
-                {" "}
-                {/* Bao phần ảnh trong một div */}
+            </div>
+
+            <div className="w-[60%] my-6 relative sm:h-[400px] h-[160px]">
+              <div className="relative ml-10">
                 <Image
-                  src={featuredBook.image}
-                  alt={featuredBook.title}
-                  className="w-[230px] h-[350px] rounded-lg float-right sm:mt-0 mt-2 mr-2"
+                  src={Images.bookImg}
+                  alt={book.title}
+                  className="w-1/2 sm:w-1/3 rounded-lg sm:left-40 top-10 left-10 z-10 absolute hover:-rotate-6  hover:top-2 transition-all duration-200 hover:scale-110"
+                />
+                <Image
+                  src={Images.bookImg}
+                  alt={book.title}
+                  className="absolute top-10 left-0 sm:w-1/3 w-1/2 transform  rounded-lg shadow-md hover:-rotate-6  hover:top-2 transition-all duration-200 hover:scale-110 "
+                />
+                <Image
+                  src={Images.bookImg}
+                  alt={book.title}
+                  className="absolute top-10 sm:left-20 left-5 sm:w-1/3 w-1/2 transform  rounded-lg shadow-md hover:-rotate-6  hover:top-2 transition-all duration-200 hover:scale-110"
+                />
+                <Image
+                  src={Images.bookImg}
+                  alt={book.title}
+                  className="absolute top-10 sm:left-60 left-[60px] sm:w-1/3 w-1/2 transform z-20 rounded-lg shadow-md hover:-rotate-6  hover:top-2 transition-all duration-200 hover:scale-110"
+                />
+                <Image
+                  src={Images.bookImg}
+                  alt={book.title}
+                  className="absolute top-10 sm:left-80 left-20 sm:w-1/3 w-1/2 transform z-20  rounded-lg shadow-md hover:-rotate-6  hover:top-2 transition-all duration-200 hover:scale-110"
                 />
               </div>
             </div>
           </div>
         </div>
 
-        {/* Popular Categories Section*/}
+        {/* Popular Categories Section */}
         <div className="max-w-[1440px] mx-auto">
           <p className="text-xl font-bold text-[#0b3d91] px-7 pt-10 pb-5">
             Popular Categories
@@ -244,43 +258,48 @@ function Home() {
         </div>
 
         {/* New Arrival Section */}
-        <div className="max-w-[1440px] mx-auto px-7 py-10">
+        {/* <div className="max-w-[1440px] mx-auto px-7 py-10">
           {" "}
-          {/* Điều chỉnh margin và padding */}
           <h2 className="text-2xl font-bold text-[#0b3d91] mb-5">
             {t("New Arrival")}
           </h2>{" "}
-          {/* Thêm tiêu đề */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {" "}
-            {/* Điều chỉnh lưới */}
+            {books.map((book) => (
+              <BookItem key={book.id} book={book} />
+            ))}
+          </div>
+        </div> */}
+
+        {/* New Arrival Section */}
+        <div className="max-w-[1440px] mx-auto px-7 py-10">
+          <h2 className="text-2xl font-bold text-[#0b3d91] mb-5">
+            {t("New Arrival")}
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {books.map((book) => (
               <BookItem key={book.id} book={book} />
             ))}
           </div>
         </div>
 
-        {/* Big Spring Sales Section -- Chưa làm */}
+        {/* Big Spring Sales Section */}
         <div className="relative bg-white p-10 mb-10">
-          {/* <h2 className="text-4xl font-bold text-center text-blue-700 mb-10 uppercase">
-            {t("BIG SPRING SALES")}
-          </h2> */}
-          {/* <Image
-            src={Images.banner}
-            alt="big-spring-sales"
-            className="rounded-lg"
-          /> */}
           <Image
-            src={Images.banner}
+            src={Images.banner} // Sử dụng ảnh banner từ Images constant
             alt="big-spring-sales"
             className="rounded-lg"
-            layout="cover"
+            layout="responsive" // Đảm bảo ảnh responsive
+            width={1440} // Kích thước tham khảo (có thể tùy chỉnh)
+            height={400}
           />
         </div>
 
-        {/* Popular Collection Section -- giống phần new arrival -- chưa làm */}
+        {/* Popular Collection Section */}
         <div className="max-w-[1440px] mx-auto px-7 py-10">
-          <h2 className="text-2xl font-bold text-[#0b3d91] mb-5">{t("Popular Collections")}</h2>
+          <h2 className="text-2xl font-bold text-[#0b3d91] mb-5">
+            {t("Popular Collections")}
+          </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {popularCollections.map((book) => (
               <BookItem key={book.id} book={book} />
@@ -288,7 +307,7 @@ function Home() {
           </div>
         </div>
       </div>
-    </Suspense >
+    </Suspense>
   );
 }
 
