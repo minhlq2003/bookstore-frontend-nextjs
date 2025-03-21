@@ -18,6 +18,7 @@
     "@heroui/system": "^2.4.7",
     "@heroui/table": "^2.2.9",
     "@heroui/theme": "^2.4.6",
+    "@next/swc-win32-x64-msvc": "^15.2.3",
     "@radix-ui/react-select": "^2.1.6",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -28,11 +29,13 @@
     "next-auth": "^5.0.0-beta.25",
     "next-i18next": "^15.4.2",
     "react": "^19.0.0",
+    "react-aria": "^3.38.1",
     "react-dom": "^19.0.0",
     "react-i18next": "^15.4.0",
     "shadcn": "^2.4.0-canary.9",
     "tailwind-merge": "^3.0.1",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "yarn": "^1.22.22"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
