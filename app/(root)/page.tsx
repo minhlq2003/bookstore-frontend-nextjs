@@ -1,4 +1,3 @@
-// app/page.tsx
 "use client";
 
 import { useTranslation } from "next-i18next";
@@ -7,15 +6,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { Images } from "@/constant/images";
 import { Book } from "@/constant/types";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faAtom,
-  faBookmark,
-  faClockRotateLeft,
-  faGraduationCap,
-  faMask,
-  faRocket,
-} from "@fortawesome/free-solid-svg-icons";
 import BookItem from "@/components/book-item";
 
 function Home() {
@@ -120,22 +110,25 @@ function Home() {
     <Suspense fallback={<div>Loading...</div>}>
       <div className="w-full bg-[#ececec] sm:pt-5 pt-0 pb-20">
         {/* Hero Section */}
-        <div className="max-w-[1440px] mx-auto bg-gray-200 rounded-xl overflow-hidden my-5">
-          {" "}
-          <div className="bg-[#0B3D91] text-white py-4 text-left sm:text-3xl text-xl font-bold sm:pl-10 pl-3">
-            {t("FEATURED BOOK")}
+        <div className="max-w-[1440px] mx-auto bg-gray-200 rounded-xl overflow-hidden">
+          <div className="bg-[#0B3D9180] text-white py-20 sm:py-32 px-7">
+            <div className="max-w-[1440px] mx-auto text-center">
+              <h1 className="text-4xl sm:text-5xl font-bold mb-4">
+                Unlock a World of <span className="text-[#0B3D91] px-2">Creativity</span>
+              </h1>
+              <p className="text-lg sm:text-xl mb-8">
+                Discover a creative world through books! We offer a vast collection to suit every taste,
+                along with special offers just for you.
+              </p>
+            </div>
           </div>
-          <div className="mx-auto sm:p-6 p-3 bg-[#0B3D9180] text-white">
-            {" "}
+          <div className="mx-auto sm:p-6 p-3 bg-[#0B3D91] text-white">
             <div className="flex flex-row items-center justify-between">
-              {" "}
               <div className="w-[40%] sm:pl-10 pl-0">
                 <h2 className="sm:text-2xl text-[16px] font-bold text-left mb-2">
-                  {" "}
                   {featuredBook.title}
                 </h2>
                 <p className="text-left mb-2 sm:text-[16px] text-[10px]">
-                  {" "}
                   {featuredBook.author}
                 </p>
                 <p className="mb-6 sm:block hidden text-justify">
@@ -155,80 +148,52 @@ function Home() {
                   </div>
                 </div>
               </div>
-              <div className=" w-[60%] relative">
-                {" "}
-                <Image
-                  src={featuredBook.image}
-                  alt={featuredBook.title}
-                  className="w-[230px] h-[350px] rounded-lg float-right sm:mt-0 mt-2 mr-2"
-                />
+              <div className="w-[60%] my-6 relative sm:h-[400px] h-[160px]">
+                <div className="relative ml-10">
+                  <Image
+                    src={featuredBook.image}
+                    alt={featuredBook.title}
+                    className="w-1/2 sm:w-1/3 rounded-lg sm:left-40 top-10 left-10 z-10 absolute hover:-rotate-6  hover:top-2 transition-all duration-200 hover:scale-110"
+                  />
+                  <Image
+                    src={featuredBook.image}
+                    alt={featuredBook.title}
+                    className="absolute top-10 left-0 sm:w-1/3 w-1/2 transform  rounded-lg shadow-md hover:-rotate-6  hover:top-2 transition-all duration-200 hover:scale-110 "
+                  />
+                  <Image
+                    src={featuredBook.image}
+                    alt={featuredBook.title}
+                    className="absolute top-10 sm:left-20 left-5 sm:w-1/3 w-1/2 transform  rounded-lg shadow-md hover:-rotate-6  hover:top-2 transition-all duration-200 hover:scale-110"
+                  />
+                  <Image
+                    src={featuredBook.image}
+                    alt={featuredBook.title}
+                    className="absolute top-10 sm:left-60 left-[60px] sm:w-1/3 w-1/2 transform z-20 rounded-lg shadow-md hover:-rotate-6  hover:top-2 transition-all duration-200 hover:scale-110"
+                  />
+                  <Image
+                    src={featuredBook.image}
+                    alt={featuredBook.title}
+                    className="absolute top-10 sm:left-80 left-20 sm:w-1/3 w-1/2 transform z-20  rounded-lg shadow-md hover:-rotate-6  hover:top-2 transition-all duration-200 hover:scale-110"
+                  />
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Popular Categories Section*/}
-        <div className="max-w-[1440px] mx-auto">
-          <p className="text-xl font-bold text-[#0b3d91] px-7 pt-10 pb-5">
+        {/* Popular Categories Section */}
+        <div className="max-w-[1440px] mx-auto px-7 py-10">
+          <p className="text-2xl font-bold text-[#0b3d91] mb-5">
             Popular Categories
           </p>
 
-          <div className="flex gap-4 items-center justify-center pb-10">
-            <div className="w-[75px] h-[75px] flex items-center justify-center bg-gray-200 rounded-lg">
-              <FontAwesomeIcon
-                icon={faBookmark}
-                className="text-[#0b3d91]"
-                size="2xl"
-              />
-            </div>
-
-            <div className="w-[75px] h-[75px] flex items-center justify-center bg-gray-200 rounded-lg">
-              <FontAwesomeIcon
-                icon={faRocket}
-                className="text-[#0b3d91]"
-                size="2xl"
-              />
-            </div>
-
-            <div className="w-[75px] h-[75px] flex items-center justify-center bg-gray-200 rounded-lg">
-              <FontAwesomeIcon
-                icon={faClockRotateLeft}
-                className="text-[#0b3d91]"
-                size="2xl"
-              />
-            </div>
-
-            <div className="w-[75px] h-[75px] flex items-center justify-center bg-gray-200 rounded-lg">
-              <FontAwesomeIcon
-                icon={faMask}
-                className="text-[#0b3d91]"
-                size="2xl"
-              />
-            </div>
-
-            <div className="w-[75px] h-[75px] flex items-center justify-center bg-gray-200 rounded-lg">
-              <FontAwesomeIcon
-                icon={faAtom}
-                className="text-[#0b3d91]"
-                size="2xl"
-              />
-            </div>
-            <div className="w-[75px] h-[75px] flex items-center justify-center bg-gray-200 rounded-lg">
-              <FontAwesomeIcon
-                icon={faGraduationCap}
-                className="text-[#0b3d91]"
-                size="2xl"
-              />
-            </div>
-          </div>
-
-          <div className="flex gap-4 items-center justify-center pb-10">
-            <p>Fiction</p>
-            <p>Astronaut</p>
-            <p>History</p>
-            <p>Mystery</p>
-            <p>Science</p>
-            <p>Education</p>
+          <div className="flex justify-center items-center gap-10 md:gap-8 lg:gap-12 overflow-x-auto pb-10">
+            <CategoryItem iconSrc={Images.fictionIcon} label="Fiction" />
+            <CategoryItem iconSrc={Images.astronautIcon} label="Astronaut" />
+            <CategoryItem iconSrc={Images.historyIcon} label="History" />
+            <CategoryItem iconSrc={Images.mysteryIcon} label="Mystery" />
+            <CategoryItem iconSrc={Images.scienceIcon} label="Science" />
+            <CategoryItem iconSrc={Images.educationIcon} label="Education" />
           </div>
         </div>
 
@@ -246,12 +211,12 @@ function Home() {
           </div>
         </div>
 
-        {/* Big Spring Sales Section -- Chưa làm */}
+        {/* Big Spring Sales Section */}
         <div className="relative bg-white p-10 mb-10">
           <Image
             src={Images.banner}
             alt="big-spring-sales"
-            className="rounded-lg"
+            className="rounded-xl shadow-lg"
             layout="responsive"
             width={1440}
             height={400}
@@ -273,5 +238,16 @@ function Home() {
     </Suspense >
   );
 }
+
+const CategoryItem: React.FC<{ iconSrc: any; label: string }> = ({ iconSrc, label }) => {
+  return (
+    <Link href={`/category/${label.toLowerCase()}`}>
+      <div className="flex flex-row items-center justify-center min-w-[150px] max-w-[150px] h-[60px] bg-white rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300 px-3 gap-2">
+        <Image src={iconSrc} alt={`${label} Icon`} width={24} height={24} />
+        <p className="text-sm font-normal text-black">{label}</p>
+      </div>
+    </Link>
+  );
+};
 
 export default Home;
