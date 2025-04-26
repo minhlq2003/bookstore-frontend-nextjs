@@ -50,7 +50,10 @@ function HeaderCMS({ collapsed, setCollapsed, userAvatar }: HeaderCMSProps) {
   useEffect(() => {
     async function checkLoginStatus() {
       const loggedIn = await isLogin();
-      setIsLoggedIn(loggedIn);
+      const isAccountLoggedIn = localStorage.getItem("user");
+      if(loggedIn || isAccountLoggedIn) {
+        setIsLoggedIn(true);
+      }
     }
     checkLoginStatus();
   }, []);
