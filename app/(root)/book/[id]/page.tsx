@@ -74,6 +74,22 @@ const Page = () => {
     }
   };
 
+  const handleAddToCart = () => {
+    if (book) {
+      let cartItems = localStorage.getItem("cart");
+      let cart = cartItems ? JSON.parse(cartItems) : [];
+      const existingItem = cart.find((item: Book) => item.id === book.id);
+      if (existingItem) {
+        existingItem.quantity = (existingItem.quantity || 1) + quantity;
+      } else {
+        cart.push({ ...book, quantity });
+      }
+      localStorage.setItem("cart", JSON.stringify(cart));
+      alert(`Added ${quantity} ${book.title} to cart`);
+    }
+  };
+
+
   if (loading) {
     return <div className="max-w-[1200px] mx-auto bg-[#ECECEC] font-merriweather p-10 text-center">Loading...</div>;
   }
@@ -152,7 +168,10 @@ const Page = () => {
               />
             </div>
           </div>
-          <button className="bg-blue text-white w-full h-7 md:h-9 lg:h-12 rounded-lg">
+          <button
+            className="bg-blue text-white w-full h-7 md:h-9 lg:h-12 rounded-lg"
+            onClick={handleAddToCart}
+          >
             Add To Cart
           </button>
         </div>
