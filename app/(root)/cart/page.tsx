@@ -1,221 +1,407 @@
-import { BookDetails } from "@/constant/types";
-import { faRemove } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+"use client";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+import React, { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
-import React from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faRemove, faSpinner } from "@fortawesome/free-solid-svg-icons";
+import apiClient from "@/lib/apiClient";
+import { notification } from "antd";
+import { useTranslation } from "react-i18next";
+import Link from "next/link";
 
-const page = () => {
-  const books: BookDetails[] = [
-    {
-      id: 1,
-      title: "CHASING NEW HORIZONS",
-      subTitle: "Inside the Epic First Mission to Pluto",
-      price: 25.0,
-      imageUrl:
-        "https://s3-alpha-sig.figma.com/img/655f/c8c0/309c950754d34dae6569f2f7cdd56c8e?Expires=1740355200&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=G2bllpJ2iOZpmP1FPY-wVKixum3gNTJ2DxPb6Y-ODtv2EXnLc-eWxJ2bofLr-mi7KSGC3o-QWcVghIqRCd4i71Nwp6Hp~WBt9ummne0N31TB0lf4nLQlZy3p4maLN3dINZtiDcvtcpckoDzIQwfCIIDOwWbA5cCV25EppdpKZcX~1ZjgTQBweRy87psNsxarFFrUIDbi~7Yi24RJ0VRkyhSZmnj48wD~JOdKItCWERacpW3wqJlpk0BrPMPIio1suC459-ZU~mIN7nt91CGXtGk3YG7FNxiwwpSuWvYtc3vNlLnugYFtsS4c~FE9X5dHcMlUpH7CesPQoGHEI5jSJg__",
-      author: "Alan Stern",
-      rating: 4.5,
-      discount: 20.0,
-      genre: "Science, Astronautv",
-      publisher: "Picador",
-      publishedDate: "May 1, 2018",
-      weight: 1.1,
-      size: "5.5 x 1 x 8.2 inches",
-      pages: 320,
-      description:
-        "Chasing New Horizons tells the captivating story of NASA's New Horizons mission—the first spacecraft to explore Pluto—and the relentless pursuit of discovery that brought it to life. Authored by Alan Stern, the mission's principal investigator, and David Grinspoon, an award-winning astrobiologist, this book takes readers behind the scenes of one of the most daring and groundbreaking space missions in history." +
-        "The narrative unfolds over decades of vision, determination, and ingenuity, as a team of scientists and engineers overcame immense technical, political, and financial hurdles to accomplish what once seemed impossible. From New Horizons' launch in 2006 to its dramatic flyby of Pluto in 2015, the book captures the exhilaration of discovery, the tension of high-stakes science, and the profound impact of viewing a distant world up close for the first time." +
-        "Rich with stunning images of Pluto and its moons, 'Chasing New Horizons' is more than just a chronicle of a mission—it’s an inspiring testament to human curiosity and the drive to explore the unknown.",
-      sold: 100,
-      storage: 50,
-    },
-    {
-      id: 2,
-      title: "CHASING NEW HORIZONS",
-      subTitle: "Inside the Epic First Mission to Pluto",
-      price: 25.0,
-      imageUrl:
-        "https://s3-alpha-sig.figma.com/img/655f/c8c0/309c950754d34dae6569f2f7cdd56c8e?Expires=1740355200&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=G2bllpJ2iOZpmP1FPY-wVKixum3gNTJ2DxPb6Y-ODtv2EXnLc-eWxJ2bofLr-mi7KSGC3o-QWcVghIqRCd4i71Nwp6Hp~WBt9ummne0N31TB0lf4nLQlZy3p4maLN3dINZtiDcvtcpckoDzIQwfCIIDOwWbA5cCV25EppdpKZcX~1ZjgTQBweRy87psNsxarFFrUIDbi~7Yi24RJ0VRkyhSZmnj48wD~JOdKItCWERacpW3wqJlpk0BrPMPIio1suC459-ZU~mIN7nt91CGXtGk3YG7FNxiwwpSuWvYtc3vNlLnugYFtsS4c~FE9X5dHcMlUpH7CesPQoGHEI5jSJg__",
-      author: "Alan Stern",
-      rating: 4.5,
-      discount: 20.0,
-      genre: "Science, Astronautv",
-      publisher: "Picador",
-      publishedDate: "May 1, 2018",
-      weight: 1.1,
-      size: "5.5 x 1 x 8.2 inches",
-      pages: 320,
-      description:
-        "Chasing New Horizons tells the captivating story of NASA's New Horizons mission—the first spacecraft to explore Pluto—and the relentless pursuit of discovery that brought it to life. Authored by Alan Stern, the mission's principal investigator, and David Grinspoon, an award-winning astrobiologist, this book takes readers behind the scenes of one of the most daring and groundbreaking space missions in history." +
-        "The narrative unfolds over decades of vision, determination, and ingenuity, as a team of scientists and engineers overcame immense technical, political, and financial hurdles to accomplish what once seemed impossible. From New Horizons' launch in 2006 to its dramatic flyby of Pluto in 2015, the book captures the exhilaration of discovery, the tension of high-stakes science, and the profound impact of viewing a distant world up close for the first time." +
-        "Rich with stunning images of Pluto and its moons, 'Chasing New Horizons' is more than just a chronicle of a mission—it’s an inspiring testament to human curiosity and the drive to explore the unknown.",
-      sold: 100,
-      storage: 50,
-    },
-    {
-      id: 3,
-      title: "CHASING NEW HORIZONS",
-      subTitle: "Inside the Epic First Mission to Pluto",
-      price: 25.0,
-      imageUrl:
-        "https://s3-alpha-sig.figma.com/img/655f/c8c0/309c950754d34dae6569f2f7cdd56c8e?Expires=1740355200&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=G2bllpJ2iOZpmP1FPY-wVKixum3gNTJ2DxPb6Y-ODtv2EXnLc-eWxJ2bofLr-mi7KSGC3o-QWcVghIqRCd4i71Nwp6Hp~WBt9ummne0N31TB0lf4nLQlZy3p4maLN3dINZtiDcvtcpckoDzIQwfCIIDOwWbA5cCV25EppdpKZcX~1ZjgTQBweRy87psNsxarFFrUIDbi~7Yi24RJ0VRkyhSZmnj48wD~JOdKItCWERacpW3wqJlpk0BrPMPIio1suC459-ZU~mIN7nt91CGXtGk3YG7FNxiwwpSuWvYtc3vNlLnugYFtsS4c~FE9X5dHcMlUpH7CesPQoGHEI5jSJg__",
-      author: "Alan Stern",
-      rating: 4.5,
-      discount: 20.0,
-      genre: "Science, Astronautv",
-      publisher: "Picador",
-      publishedDate: "May 1, 2018",
-      weight: 1.1,
-      size: "5.5 x 1 x 8.2 inches",
-      pages: 320,
-      description:
-        "Chasing New Horizons tells the captivating story of NASA's New Horizons mission—the first spacecraft to explore Pluto—and the relentless pursuit of discovery that brought it to life. Authored by Alan Stern, the mission's principal investigator, and David Grinspoon, an award-winning astrobiologist, this book takes readers behind the scenes of one of the most daring and groundbreaking space missions in history." +
-        "The narrative unfolds over decades of vision, determination, and ingenuity, as a team of scientists and engineers overcame immense technical, political, and financial hurdles to accomplish what once seemed impossible. From New Horizons' launch in 2006 to its dramatic flyby of Pluto in 2015, the book captures the exhilaration of discovery, the tension of high-stakes science, and the profound impact of viewing a distant world up close for the first time." +
-        "Rich with stunning images of Pluto and its moons, 'Chasing New Horizons' is more than just a chronicle of a mission—it’s an inspiring testament to human curiosity and the drive to explore the unknown.",
-      sold: 100,
-      storage: 50,
-    },
-    {
-      id: 4,
-      title: "CHASING NEW HORIZONS",
-      subTitle: "Inside the Epic First Mission to Pluto",
-      price: 25.0,
-      imageUrl:
-        "https://s3-alpha-sig.figma.com/img/655f/c8c0/309c950754d34dae6569f2f7cdd56c8e?Expires=1740355200&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=G2bllpJ2iOZpmP1FPY-wVKixum3gNTJ2DxPb6Y-ODtv2EXnLc-eWxJ2bofLr-mi7KSGC3o-QWcVghIqRCd4i71Nwp6Hp~WBt9ummne0N31TB0lf4nLQlZy3p4maLN3dINZtiDcvtcpckoDzIQwfCIIDOwWbA5cCV25EppdpKZcX~1ZjgTQBweRy87psNsxarFFrUIDbi~7Yi24RJ0VRkyhSZmnj48wD~JOdKItCWERacpW3wqJlpk0BrPMPIio1suC459-ZU~mIN7nt91CGXtGk3YG7FNxiwwpSuWvYtc3vNlLnugYFtsS4c~FE9X5dHcMlUpH7CesPQoGHEI5jSJg__",
-      author: "Alan Stern",
-      rating: 4.5,
-      discount: 20.0,
-      genre: "Science, Astronautv",
-      publisher: "Picador",
-      publishedDate: "May 1, 2018",
-      weight: 1.1,
-      size: "5.5 x 1 x 8.2 inches",
-      pages: 320,
-      description:
-        "Chasing New Horizons tells the captivating story of NASA's New Horizons mission—the first spacecraft to explore Pluto—and the relentless pursuit of discovery that brought it to life. Authored by Alan Stern, the mission's principal investigator, and David Grinspoon, an award-winning astrobiologist, this book takes readers behind the scenes of one of the most daring and groundbreaking space missions in history." +
-        "The narrative unfolds over decades of vision, determination, and ingenuity, as a team of scientists and engineers overcame immense technical, political, and financial hurdles to accomplish what once seemed impossible. From New Horizons' launch in 2006 to its dramatic flyby of Pluto in 2015, the book captures the exhilaration of discovery, the tension of high-stakes science, and the profound impact of viewing a distant world up close for the first time." +
-        "Rich with stunning images of Pluto and its moons, 'Chasing New Horizons' is more than just a chronicle of a mission—it’s an inspiring testament to human curiosity and the drive to explore the unknown.",
-      sold: 100,
-      storage: 50,
-    },
-    {
-      id: 5,
-      title: "CHASING NEW HORIZONS",
-      subTitle: "Inside the Epic First Mission to Pluto",
-      price: 25.0,
-      imageUrl:
-        "https://s3-alpha-sig.figma.com/img/655f/c8c0/309c950754d34dae6569f2f7cdd56c8e?Expires=1740355200&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=G2bllpJ2iOZpmP1FPY-wVKixum3gNTJ2DxPb6Y-ODtv2EXnLc-eWxJ2bofLr-mi7KSGC3o-QWcVghIqRCd4i71Nwp6Hp~WBt9ummne0N31TB0lf4nLQlZy3p4maLN3dINZtiDcvtcpckoDzIQwfCIIDOwWbA5cCV25EppdpKZcX~1ZjgTQBweRy87psNsxarFFrUIDbi~7Yi24RJ0VRkyhSZmnj48wD~JOdKItCWERacpW3wqJlpk0BrPMPIio1suC459-ZU~mIN7nt91CGXtGk3YG7FNxiwwpSuWvYtc3vNlLnugYFtsS4c~FE9X5dHcMlUpH7CesPQoGHEI5jSJg__",
-      author: "Alan Stern",
-      rating: 4.5,
-      discount: 20.0,
-      genre: "Science, Astronautv",
-      publisher: "Picador",
-      publishedDate: "May 1, 2018",
-      weight: 1.1,
-      size: "5.5 x 1 x 8.2 inches",
-      pages: 320,
-      description:
-        "Chasing New Horizons tells the captivating story of NASA's New Horizons mission—the first spacecraft to explore Pluto—and the relentless pursuit of discovery that brought it to life. Authored by Alan Stern, the mission's principal investigator, and David Grinspoon, an award-winning astrobiologist, this book takes readers behind the scenes of one of the most daring and groundbreaking space missions in history." +
-        "The narrative unfolds over decades of vision, determination, and ingenuity, as a team of scientists and engineers overcame immense technical, political, and financial hurdles to accomplish what once seemed impossible. From New Horizons' launch in 2006 to its dramatic flyby of Pluto in 2015, the book captures the exhilaration of discovery, the tension of high-stakes science, and the profound impact of viewing a distant world up close for the first time." +
-        "Rich with stunning images of Pluto and its moons, 'Chasing New Horizons' is more than just a chronicle of a mission—it’s an inspiring testament to human curiosity and the drive to explore the unknown.",
-      sold: 100,
-      storage: 50,
-    },
-    {
-      id: 6,
-      title: "CHASING NEW HORIZONS",
-      subTitle: "Inside the Epic First Mission to Pluto",
-      price: 25.0,
-      imageUrl:
-        "https://s3-alpha-sig.figma.com/img/655f/c8c0/309c950754d34dae6569f2f7cdd56c8e?Expires=1740355200&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=G2bllpJ2iOZpmP1FPY-wVKixum3gNTJ2DxPb6Y-ODtv2EXnLc-eWxJ2bofLr-mi7KSGC3o-QWcVghIqRCd4i71Nwp6Hp~WBt9ummne0N31TB0lf4nLQlZy3p4maLN3dINZtiDcvtcpckoDzIQwfCIIDOwWbA5cCV25EppdpKZcX~1ZjgTQBweRy87psNsxarFFrUIDbi~7Yi24RJ0VRkyhSZmnj48wD~JOdKItCWERacpW3wqJlpk0BrPMPIio1suC459-ZU~mIN7nt91CGXtGk3YG7FNxiwwpSuWvYtc3vNlLnugYFtsS4c~FE9X5dHcMlUpH7CesPQoGHEI5jSJg__",
-      author: "Alan Stern",
-      rating: 4.5,
-      discount: 20.0,
-      genre: "Science, Astronautv",
-      publisher: "Picador",
-      publishedDate: "May 1, 2018",
-      weight: 1.1,
-      size: "5.5 x 1 x 8.2 inches",
-      pages: 320,
-      description:
-        "Chasing New Horizons tells the captivating story of NASA's New Horizons mission—the first spacecraft to explore Pluto—and the relentless pursuit of discovery that brought it to life. Authored by Alan Stern, the mission's principal investigator, and David Grinspoon, an award-winning astrobiologist, this book takes readers behind the scenes of one of the most daring and groundbreaking space missions in history." +
-        "The narrative unfolds over decades of vision, determination, and ingenuity, as a team of scientists and engineers overcame immense technical, political, and financial hurdles to accomplish what once seemed impossible. From New Horizons' launch in 2006 to its dramatic flyby of Pluto in 2015, the book captures the exhilaration of discovery, the tension of high-stakes science, and the profound impact of viewing a distant world up close for the first time." +
-        "Rich with stunning images of Pluto and its moons, 'Chasing New Horizons' is more than just a chronicle of a mission—it’s an inspiring testament to human curiosity and the drive to explore the unknown.",
-      sold: 100,
-      storage: 50,
-    },
-  ];
-  return (
-    <div className="max-w-[1200px] mx-auto h-screen py-10 md:py-20 lg:py-24 bg-white">
-      <h1 className=" text-center text-base md:text-xl lg:text-3xl py-3 text-darkblue font-bold uppercase">
-        Cart
-      </h1>
-      <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-5">
-        <div className="border rounded-lg p-4 shadow-md w-full bg-white max-h-[300px] lg:max-h-[550px] overflow-y-auto">
-          <div className="flex items-center justify-between border-b pb-2 font-semibold text-xs lg:text-base">
-            <div className="flex items-center gap-2">
-              <input type="radio" name="select-all" />
-              <span>All</span>
-            </div>
-            <span>Title</span>
-            <span>Quantity</span>
-            <span>Total</span>
-            <span>{""}</span>
-          </div>
-          {books.map((item: BookDetails) => (
-            <div key={item.id} className="flex flex-col gap-2">
-              <div className="flex items-center justify-between py-4">
-                <div className="flex items-center gap-4 text-xs lg:text-base">
-                  <input type="radio" />
-                  <Image
-                    src={item.imageUrl}
-                    alt="Book"
-                    width={100}
-                    height={100}
-                    className="w-12 h-16 object-cover"
-                  />
-                  <div className="w-[40px] lg:w-[140px]">
-                    <p className="font-medium">{item.title}</p>
-                    <p className="text-customblue">${item.price}</p>
-                  </div>
-                </div>
+interface BookInfoForCart {
+  title: string;
+  price: string;
+  image?: string;
+  slug?: string;
+}
 
-                <div className="flex items-center gap-2">
-                  <button className="px-1 md:px-2 md:py-1 border rounded">−</button>
-                  <span>1</span>
-                  <button className="px-1 md:px-2 md:py-1 border rounded">+</button>
-                </div>
+interface CartItemType {
+  id: number;
+  user_id: number;
+  book_id: number;
+  quantity: number;
+  created_at: string;
+  updated_at: string;
 
-                <p className="text-blue-600">${item.price}</p>
-                <FontAwesomeIcon icon={faRemove} className="size-5" />
-                
-              </div>
-              <hr className="my-3 border border-black w-full" />
-            </div>
-          ))}
-        </div>
-        <div className="py-3 mt-10 md:mt-0 md:mx-3 md:mr-3 px-5 text-black rounded md:w-[40%] bg-white border shadow-md">
-          <div className="mt-3 flex flex-col gap-1">
-            <div className="flex justify-between text-xs lg:text-base">
-              <span>Subtotal:</span>
-              <span>$0.00</span>
-            </div>
-            <div className="flex justify-between text-xs lg:text-base">
-              <span>Transfer Fee:</span>
-              <span>$0.00</span>
-            </div>
-            <div className="flex justify-between font-bold text-lg lg:text-xl my-2">
-              <span>Total:</span>
-              <span className="text-darkblue">$0.00</span>
-            </div>
-          </div>
-          <button className="bg-blue text-white w-full h-7 md:h-9 lg:h-12 rounded-lg">
-            Add To Cart
-          </button>
-        </div>
+  book?: BookInfoForCart;
+}
+
+interface ApiResponse<T> {
+  success: boolean;
+  data?: T;
+  message?: string;
+  total?: number;
+  orderId?: number;
+}
+
+const CartPage = () => {
+  const { t } = useTranslation("common");
+  const [cartItems, setCartItems] = useState<CartItemType[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [updatingItemId, setUpdatingItemId] = useState<number | null>(null);
+  const [isCheckingOut, setIsCheckingOut] = useState(false);
+
+  const userId = 1;
+
+  useEffect(() => {
+    const fetchCart = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const response = await apiClient.get<ApiResponse<CartItemType[]>>(
+          `/cart/items?userId=${userId}`
+        );
+        if (response.data.success && response.data.data) {
+          setCartItems(response.data.data);
+        } else {
+          setError(response.data.message || t("error.fetchCartFailed"));
+        }
+
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        setCartItems([
+          {
+            id: 101,
+            user_id: userId,
+            book_id: 1,
+            quantity: 2,
+            created_at: "",
+            updated_at: "",
+            book: {
+              title: "The Great Gatsby",
+              price: "10.99",
+              image: "https://picsum.photos/100/150?1",
+              slug: "the-great-gatsby",
+            },
+          },
+          {
+            id: 102,
+            user_id: userId,
+            book_id: 2,
+            quantity: 1,
+            created_at: "",
+            updated_at: "",
+            book: {
+              title: "CHASING NEW HORIZONS",
+              price: "25.00",
+              image: "https://picsum.photos/100/150?2",
+              slug: "chasing-new-horizons",
+            },
+          },
+        ]);
+      } catch (err) {
+        console.error("Failed to fetch cart items:", err);
+        setError(t("error.fetchCartFailed"));
+        setCartItems([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (userId) {
+      fetchCart();
+    } else {
+      setLoading(false);
+      setCartItems([]);
+    }
+  }, [userId, t]);
+
+  const handleUpdateQuantity = async (
+    itemId: number,
+    currentQuantity: number,
+    change: number
+  ) => {
+    const newQuantity = currentQuantity + change;
+    if (newQuantity <= 0) {
+      handleRemoveItem(itemId);
+      return;
+    }
+
+    setUpdatingItemId(itemId);
+    try {
+      const response = await apiClient.post<ApiResponse<CartItemType>>(
+        `/cart/updatequantity/${itemId}`,
+        {
+          finalQuantity: newQuantity,
+        }
+      );
+
+      if (response.data.success && response.data.data) {
+        setCartItems((prevItems) =>
+          prevItems.map((item) =>
+            item.id === itemId
+              ? {
+                ...item,
+                quantity: response.data?.data?.quantity ?? newQuantity,
+              }
+              : item
+          )
+        );
+        notification.success({ message: t("success.quantityUpdated") });
+      } else {
+        notification.error({
+          message: t("error.updateQuantityFailed"),
+          description: response.data.message,
+        });
+      }
+    } catch (err) {
+      console.error("Failed to update quantity:", err);
+      notification.error({ message: t("error.updateQuantityFailed") });
+    } finally {
+      setUpdatingItemId(null);
+    }
+  };
+
+  const handleRemoveItem = async (itemId: number) => {
+    setUpdatingItemId(itemId);
+    try {
+      const response = await apiClient.post<ApiResponse<null>>(
+        `/cart/removecartitem/${itemId}`
+      );
+
+      if (response.data.success) {
+        setCartItems((prevItems) =>
+          prevItems.filter((item) => item.id !== itemId)
+        );
+        notification.success({ message: t("success.itemRemoved") });
+      } else {
+        notification.error({
+          message: t("error.removeItemFailed"),
+          description: response.data.message,
+        });
+      }
+    } catch (err) {
+      console.error("Failed to remove item:", err);
+      notification.error({ message: t("error.removeItemFailed") });
+    } finally {
+      setUpdatingItemId(null);
+    }
+  };
+
+  const { subtotal, total } = useMemo(() => {
+    const calculatedSubtotal = cartItems.reduce((sum, item) => {
+      const price = parseFloat(item.book?.price || "0");
+      return sum + price * item.quantity;
+    }, 0);
+
+    const shippingFee = 0;
+    const calculatedTotal = calculatedSubtotal + shippingFee;
+
+    return {
+      subtotal: calculatedSubtotal,
+      total: calculatedTotal,
+    };
+  }, [cartItems]);
+
+  const handleCheckout = async () => {
+    setIsCheckingOut(true);
+    try {
+      const response = await apiClient.post<ApiResponse<any>>(
+        "/cart/checkout",
+        { userId }
+      );
+      if (response.data.success) {
+        notification.success({
+          message: t("success.checkoutComplete"),
+          description: t("success.orderPlaced", {
+            orderId: response.data.data?.orderId,
+          }),
+        });
+
+        setCartItems([]);
+      } else {
+        notification.error({
+          message: t("error.checkoutFailed"),
+          description: response.data.message,
+        });
+      }
+    } catch (err) {
+      console.error("Checkout failed:", err);
+      notification.error({ message: t("error.checkoutFailed") });
+    } finally {
+      setIsCheckingOut(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        {t("loadingCart")}...
       </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col justify-center items-center min-h-screen text-red-500">
+        {error}{" "}
+        <button
+          onClick={() => window.location.reload()}
+          className="mt-2 text-blue-500 underline"
+        >
+          {t("retry")}
+        </button>{" "}
+      </div>
+    );
+  }
+
+  return (
+    <div className="max-w-[1200px] mx-auto min-h-screen py-10 md:py-20 lg:py-24 px-4 md:px-0 bg-[#F8F8F8]">
+      {" "}
+      { }
+      <h1 className=" text-center text-xl md:text-2xl lg:text-3xl py-3 text-gray-800 font-bold uppercase mb-6 md:mb-10">
+        {t("shoppingCart")}
+      </h1>
+      {cartItems.length === 0 ? (
+        <div className="text-center text-gray-500">
+          <p>{t("cartEmpty")}</p>
+          <Link
+            href="/"
+            className="text-blue-600 hover:underline mt-2 inline-block"
+          >
+            {t("continueShopping")}
+          </Link>
+        </div>
+      ) : (
+        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6 lg:gap-10">
+          { }
+          <div className="border rounded-lg p-3 md:p-4 shadow-md w-full bg-white flex-grow">
+            {" "}
+            { }
+            { }
+            { }
+            { }
+            <div className="divide-y divide-gray-200">
+              {" "}
+              { }
+              {cartItems.map((item) => (
+                <div
+                  key={item.id}
+                  className="flex flex-col sm:flex-row items-center justify-between py-4 gap-3"
+                >
+                  <div className="flex items-center gap-3 text-xs lg:text-base w-full sm:w-auto">
+                    { }
+                    <Image
+                      src={item.book?.image || "/images/book-placeholder.png"}
+                      alt={item.book?.title || "Book"}
+                      width={64}
+                      height={96}
+                      className="w-16 h-24 object-cover rounded"
+                    />
+                    <div className="flex-grow w-[100px] sm:w-[140px] lg:w-[200px] overflow-hidden">
+                      {" "}
+                      { }
+                      <Link
+                        href={`/book/${item.book_id}`}
+                        className="font-medium hover:text-blue-600 line-clamp-2"
+                      >
+                        {" "}
+                        { }
+                        {item.book?.title || t("bookTitleUnavailable")}
+                      </Link>
+                      <p className="text-gray-600 mt-1">
+                        ${parseFloat(item.book?.price || "0").toFixed(2)}
+                      </p>
+                    </div>
+                  </div>
+
+                  { }
+                  <div className="flex items-center gap-2 my-2 sm:my-0">
+                    <button
+                      onClick={() =>
+                        handleUpdateQuantity(item.id, item.quantity, -1)
+                      }
+                      disabled={updatingItemId === item.id}
+                      aria-label="Decrease quantity"
+                      className="px-2 py-1 border rounded bg-gray-100 hover:bg-gray-200 transition-colors disabled:opacity-50"
+                    >
+                      −
+                    </button>
+                    <span className="font-medium w-8 text-center">
+                      {item.quantity}
+                    </span>
+                    <button
+                      onClick={() =>
+                        handleUpdateQuantity(item.id, item.quantity, 1)
+                      }
+                      disabled={updatingItemId === item.id}
+                      aria-label="Increase quantity"
+                      className="px-2 py-1 border rounded bg-gray-100 hover:bg-gray-200 transition-colors disabled:opacity-50"
+                    >
+                      +
+                    </button>
+                  </div>
+
+                  { }
+                  <p className="text-blue-600 font-semibold w-20 text-right">
+                    $
+                    {(
+                      parseFloat(item.book?.price || "0") * item.quantity
+                    ).toFixed(2)}
+                  </p>
+
+                  { }
+                  <button
+                    onClick={() => handleRemoveItem(item.id)}
+                    disabled={updatingItemId === item.id}
+                    aria-label={t("removeItem")}
+                    className="text-red-500 hover:text-red-700 transition-colors disabled:opacity-50 w-8 h-8 flex items-center justify-center"
+                  >
+                    {updatingItemId === item.id ? (
+                      <FontAwesomeIcon
+                        icon={faSpinner}
+                        spin
+                        className="size-5"
+                      />
+                    ) : (
+                      <FontAwesomeIcon icon={faRemove} className="size-5" />
+                    )}
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          { }
+          <div className="py-4 px-5 text-black rounded-lg md:w-[300px] lg:w-[350px] bg-white border shadow-md flex-shrink-0">
+            {" "}
+            { }
+            <h2 className="text-lg font-semibold border-b pb-3 mb-4">
+              {t("orderSummary")}
+            </h2>
+            <div className="mt-3 flex flex-col gap-2 text-sm lg:text-base">
+              <div className="flex justify-between">
+                <span className="text-gray-600">{t("subtotal")}:</span>
+                <span>${subtotal.toFixed(2)}</span>
+              </div>
+              { }
+              <div className="flex justify-between text-gray-600">
+                <span>{t("shipping")}:</span>
+                <span>{t("free")}</span> { }
+              </div>
+              <hr className="my-3" />
+              <div className="flex justify-between font-bold text-lg lg:text-xl my-2">
+                <span>{t("total")}:</span>
+                <span className="text-darkblue">${total.toFixed(2)}</span>
+              </div>
+            </div>
+            <button
+              onClick={handleCheckout}
+              disabled={isCheckingOut || cartItems.length === 0}
+              className="bg-blue-600 hover:bg-blue-700 text-white w-full h-10 md:h-11 lg:h-12 rounded-lg mt-5 transition-colors duration-200 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isCheckingOut ? (
+                <FontAwesomeIcon icon={faSpinner} spin className="mr-2" />
+              ) : null}
+              {t("proceedToCheckout")}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
-export default page;
+export default CartPage;
