@@ -19,7 +19,6 @@ function Category() {
   //use Effects
   useEffect(() => {
     const fetchNewArrivals = async () => {
-
       try {
         const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
         const response = await fetch(`${apiBaseUrl}/book/new-arrivals/fiction`);
@@ -40,8 +39,10 @@ function Category() {
             author: book.author,
             rating: book.rating || 4.0,
             book_images: book.book_images?.length
-              ? book.book_images.map((img: { url: string }) => ({ url: img.url }))
-              : [{ url: "/default-image.jpg" }]
+              ? book.book_images.map((img: { url: string }) => ({
+                  url: img.url,
+                }))
+              : [{ url: "/default-image.jpg" }],
           }));
 
           setNewArrivals(transformedBooks);
@@ -61,9 +62,13 @@ function Category() {
     const fetchRecommendations = async () => {
       try {
         const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-        const response = await fetch(`${apiBaseUrl}/book/recommendations/fiction`);
+        const response = await fetch(
+          `${apiBaseUrl}/book/recommendations/fiction`
+        );
         if (!response.ok) {
-          throw new Error(`Failed to fetch recommendations: ${response.status}`);
+          throw new Error(
+            `Failed to fetch recommendations: ${response.status}`
+          );
         }
         const data = await response.json();
         if (data.success && Array.isArray(data.data)) {
@@ -75,8 +80,10 @@ function Category() {
             author: book.author,
             rating: book.rating || 4.0,
             book_images: book.book_images?.length
-              ? book.book_images.map((img: { url: string }) => ({ url: img.url }))
-              : [{ url: "/default-image.jpg" }]
+              ? book.book_images.map((img: { url: string }) => ({
+                  url: img.url,
+                }))
+              : [{ url: "/default-image.jpg" }],
           }));
           setRecommendedBooks(transformedBooks);
         } else {
@@ -98,7 +105,10 @@ function Category() {
     image: "/path/to/your/book-image.jpg",
   };
 
-  const CategoryItem: React.FC<{ iconSrc: string | StaticImageData | StaticImport; label: string }> = ({ iconSrc, label }) => {
+  const CategoryItem: React.FC<{
+    iconSrc: string | StaticImageData | StaticImport;
+    label: string;
+  }> = ({ iconSrc, label }) => {
     return (
       <Link href={`/category/${label.toLowerCase()}`}>
         <div className="flex flex-row items-center justify-center min-w-[150px] max-w-[150px] h-[60px] bg-white rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300 px-3 gap-2">

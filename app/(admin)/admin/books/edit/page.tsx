@@ -31,7 +31,7 @@ const EditBook = () => {
   );
 
   const onFinish = async (values: Book) => {
-    const slug = values.title.trim().replace(/\s+/g, "-").toLowerCase();
+    //const slug = values.title.trim().replace(/\s+/g, "-").toLowerCase();
     const dataPayload = {
       title: values.title,
       author: values.author,
@@ -45,7 +45,7 @@ const EditBook = () => {
       description: values.description,
       size: values.size,
       weight: Number(values.weight),
-      slug: slug,
+      //slug: slug,
     };
 
     try {

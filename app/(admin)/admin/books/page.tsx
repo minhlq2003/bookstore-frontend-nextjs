@@ -7,7 +7,7 @@ import { Search } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
-export default function ProductPage() {
+export default function BookPage() {
   const [searchTerm, setSearchTerm] = useState("");
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {

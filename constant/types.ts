@@ -180,10 +180,8 @@ export type OrderResponse = {
 export type ListOrdersResponse = {
   code: number;
   message?: string;
-  data: {
-    pageNo: number;
-    pageSize: number;
-    totalPages: number;
-    items: Order[];
-  };
+  data: Order[];
+  page: number;
+  total: number;
+  totalPages: number;
 };

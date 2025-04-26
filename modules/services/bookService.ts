@@ -16,6 +16,17 @@ export const getBooks = async (params?: { page?: number; limit?: number }) => {
   return response;
 };
 
+export const getBooksByCategory = async (
+  categorySlug?: string,
+  params?: { page?: number; limit?: number }
+) => {
+  const response = await http.get<BookListResponse>(
+    `${API_PREFIX_BOOK_PATH}/category/${categorySlug}`,
+    { params }
+  );
+  return response;
+};
+
 export const getBookById = (id: string) =>
   http.get<BookResponse>(`${API_PREFIX_BOOK_PATH}/details/${id}`);
 

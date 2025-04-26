@@ -13,7 +13,7 @@ export default function AddBook() {
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
 
   const onFinish = async (values: Book) => {
-    const slug = values.title.trim().replace(/\s+/g, "-").toLowerCase();
+    //const slug = values.title.trim().replace(/\s+/g, "-").toLowerCase();
 
     const dataPayload = {
       title: values.title,
@@ -23,7 +23,7 @@ export default function AddBook() {
       publisher: values.publisher,
       publishedDate: values.publishedDate,
       discount: values.discount,
-      slug: slug,
+      //slug: slug,
       bookImages: uploadedImages.map((url) => ({ url })),
     };
 
