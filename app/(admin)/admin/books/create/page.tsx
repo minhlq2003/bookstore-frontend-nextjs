@@ -3,10 +3,10 @@
 import { Button, Form, message } from 'antd'
 import Title from 'antd/es/typography/Title'
 import BookForm from '../BookForm'
-import axiosClient from '@/lib/axiosClient'
 import { PlusCircleIcon } from 'lucide-react'
 import { useState } from 'react'
 import { Book } from '@/constant/types'
+import { createBook } from '@/modules/services/bookService'
 
 export default function AddBook() {
   const [form] = Form.useForm()
@@ -28,7 +28,7 @@ export default function AddBook() {
     }
 
     try {
-      axiosClient.post('/books/add', dataPayload)
+      createBook(dataPayload)
       message.success('Book added successfully!')
       form.resetFields()
     } catch {

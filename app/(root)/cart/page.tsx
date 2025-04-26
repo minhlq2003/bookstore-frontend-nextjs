@@ -48,56 +48,56 @@ const CartPage = () => {
 
   useEffect(() => {
     const fetchCart = async () => {
-      setLoading(true);
+      //setLoading(true);
       setError(null);
-      try {
-        const response = await apiClient.get<ApiResponse<CartItemType[]>>(
-          `/cart/items?userId=${userId}`
-        );
-        if (response.data.success && response.data.data) {
-          setCartItems(response.data.data);
-        } else {
-          setError(response.data.message || t("error.fetchCartFailed"));
-        }
+      // try {
+      //   const response = await apiClient.get<ApiResponse<CartItemType[]>>(
+      //     `/cart/items?userId=${userId}`
+      //   );
+      //   if (response.data.success && response.data.data) {
+      //     setCartItems(response.data.data);
+      //   } else {
+      //     setError(response.data.message || t("error.fetchCartFailed"));
+      //   }
 
-        await new Promise((resolve) => setTimeout(resolve, 500));
-        setCartItems([
-          {
-            id: 101,
-            user_id: userId,
-            book_id: 1,
-            quantity: 2,
-            created_at: "",
-            updated_at: "",
-            book: {
-              title: "The Great Gatsby",
-              price: "10.99",
-              image: "https://picsum.photos/100/150?1",
-              slug: "the-great-gatsby",
-            },
-          },
-          {
-            id: 102,
-            user_id: userId,
-            book_id: 2,
-            quantity: 1,
-            created_at: "",
-            updated_at: "",
-            book: {
-              title: "CHASING NEW HORIZONS",
-              price: "25.00",
-              image: "https://picsum.photos/100/150?2",
-              slug: "chasing-new-horizons",
-            },
-          },
-        ]);
-      } catch (err) {
-        console.error("Failed to fetch cart items:", err);
-        setError(t("error.fetchCartFailed"));
-        setCartItems([]);
-      } finally {
-        setLoading(false);
-      }
+      //   await new Promise((resolve) => setTimeout(resolve, 500));
+      //   setCartItems([
+      //     {
+      //       id: 101,
+      //       user_id: userId,
+      //       book_id: 1,
+      //       quantity: 2,
+      //       created_at: "",
+      //       updated_at: "",
+      //       book: {
+      //         title: "The Great Gatsby",
+      //         price: "10.99",
+      //         image: "https://picsum.photos/100/150?1",
+      //         slug: "the-great-gatsby",
+      //       },
+      //     },
+      //     {
+      //       id: 102,
+      //       user_id: userId,
+      //       book_id: 2,
+      //       quantity: 1,
+      //       created_at: "",
+      //       updated_at: "",
+      //       book: {
+      //         title: "CHASING NEW HORIZONS",
+      //         price: "25.00",
+      //         image: "https://picsum.photos/100/150?2",
+      //         slug: "chasing-new-horizons",
+      //       },
+      //     },
+      //   ]);
+      // } catch (err) {
+      //   console.error("Failed to fetch cart items:", err);
+      //   setError(t("error.fetchCartFailed"));
+      //   setCartItems([]);
+      // } finally {
+      //   setLoading(false);
+      // }
     };
 
     if (userId) {

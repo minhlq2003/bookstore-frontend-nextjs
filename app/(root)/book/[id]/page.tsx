@@ -33,22 +33,22 @@ const Page = () => {
     const fetchBookDetails = async () => {
       setLoading(true);
       setError(null);
-      
+
       try {
         const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
         const response = await fetch(`${apiBaseUrl}/book/details/${id}`);
-        
+
         if (!response.ok) {
           throw new Error(`Failed to fetch book details: ${response.status}`);
         }
-        
+
         const data = await response.json();
         setBook(data.data);
-        
+
         // Fetch related books (this could be a separate API call or part of the same response)
         // For now, we'll just use the same book as a placeholder for related books
         setRelatedBooks(Array(4).fill(data.data));
-        
+
       } catch (err) {
         console.error("Error fetching book details:", err);
         setError("Failed to load book details. Please try again later.");
@@ -56,7 +56,7 @@ const Page = () => {
         setLoading(false);
       }
     };
-    
+
     if (id) {
       fetchBookDetails();
     }
@@ -133,7 +133,7 @@ const Page = () => {
                 ${Number(book?.price).toFixed(2)}
               </p>
               <p className="-translate-y-0.5 text-gray-500 line-through">
-                ${(Number(book?.price)+Number(book?.import_price)).toFixed(2)}
+                ${(Number(book?.price) + Number(book?.import_price)).toFixed(2)}
               </p>
             </div>
             <div className="flex items-center gap-3">
@@ -233,7 +233,7 @@ const Page = () => {
       </p>
       <div className="flex overflow-x-auto px-7 gap-5 pb-5">
         {relatedBooks.map((book, index) => (
-          <div key={`related_`+index}>
+          <div key={`related_` + index}>
             <BookItem book={book} />
           </div>
         ))}
