@@ -11,10 +11,9 @@ const BookItem: React.FC<{ book: Book }> = ({ book }) => {
     <div className="border border-gray-300 rounded sm:p-4 p-2 shadow-md bg-white hover:scale-105 transition duration-300 ease-in-out hover:shadow-[0_0_10px_5px_rgba(30,136,229,0.3)]">
       <div className="relative flex justify-center">
         {" "}
-        {/* Added relative positioning for rating badge */}
-        <Link href={`/book/1`}>
+        <Link href={`/book/${book.id}`}>
           <Image
-            src={book.imageUrl}
+            src={book?.book_images?.[0]?.url ?? "/default-image.jpg"}
             alt={book.title}
             width={200}
             height={250}
@@ -38,7 +37,7 @@ const BookItem: React.FC<{ book: Book }> = ({ book }) => {
       <p className="text-sm text-gray-600">By {book.author}</p>
       <div className="flex items-center justify-between mt-2">
         <p className="text-lg font-semibold">
-          ${book.price.toFixed(2)}{" "}
+          ${Number(book.price).toFixed(2)}{" "}
           {book.discount &&
             book.discount > 0 && ( // Conditionally render discount price
               <span className="text-gray-500 line-through">
@@ -46,7 +45,7 @@ const BookItem: React.FC<{ book: Book }> = ({ book }) => {
               </span>
             )}
         </p>
-        <Link href={`/book/1`}>
+        <Link href={`/book/${book.id}`}>
           <button className=" text-white px-4 py-2 rounded hover:border hover:border-white">
             Buy
           </button>

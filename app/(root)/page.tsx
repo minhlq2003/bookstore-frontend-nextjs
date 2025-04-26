@@ -1,110 +1,112 @@
 "use client";
 
 import { useTranslation } from "next-i18next";
-import { Suspense } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 import { Images } from "@/constant/images";
-import { Book } from "@/constant/types";
+import {ApiBook, Book} from "@/constant/types";
 import BookItem from "@/components/book-item";
 
 function Home() {
   const { t } = useTranslation("common");
+  const [newArrivals, setNewArrivals] = useState<Book[]>([]);
+  const [recommendedBooks, setRecommendedBooks] = useState<Book[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchNewArrivals = async () => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+        const response = await fetch(`${apiBaseUrl}/book/new-arrivals/fiction`);
+
+        if (!response.ok) {
+          throw new Error(`Failed to fetch new arrivals: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (data.success && Array.isArray(data.data)) {
+          // Transform the API response to match the Book type
+          const transformedBooks = data.data.map((book: ApiBook) => ({
+            id: book.id,
+            title: book.title,
+            subTitle: book.description || "",
+            price: book.price,
+            author: book.author,
+            rating: book.rating || 4.0,
+            book_images: [
+              {
+                url: book.book_images?.[0]?.url || "/default-image.jpg",
+              }
+              ]
+          }));
+
+          setNewArrivals(transformedBooks);
+        } else {
+          throw new Error("Invalid data format received from API");
+        }
+      } catch (err) {
+        console.error("Error fetching new arrivals:", err);
+        setError("Failed to load new arrivals. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchNewArrivals();
+  }, []);
+
+  useEffect(() => {
+    const fetchRecommendedBooks = async () => {
+      try {
+        const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+        const response = await fetch(`${apiBaseUrl}/book/recommendations/fiction`);
+
+        if (!response.ok) {
+          throw new Error(`Failed to fetch recommendations: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (data.success && Array.isArray(data.data)) {
+          const transformedBooks = data.data.map((book: ApiBook) => ({
+            id: book.id,
+            title: book.title,
+            subTitle: book.description || "",
+            price: Number(book.price),
+            author: book.author,
+            rating: book.rating || 4.0,
+            import_price: Number(book.import_price) || 0,
+            book_images: book.book_images?.length
+              ? book.book_images.map((img: { url: string }) => ({ url: img.url }))
+              : [{ url: "/default-image.jpg" }]
+          }));
+
+          setRecommendedBooks(transformedBooks);
+        } else {
+          throw new Error("Invalid data format received from API");
+        }
+      } catch (err) {
+        console.error("Error fetching recommendations:", err);
+      }
+    };
+
+    fetchRecommendedBooks();
+  }, []);
 
   const featuredBook = {
-    title: "CHASING NEW HORIZONS",
+      title: "CHASING NEW HORIZONS",
     author: "By Alan Stern",
     description:
       "The book tells a story of a space probe to Pluto, that was proposed by the author, Alan Stern, in the early 1990s.",
-    price: 19.0,
+      price: 19.0,
     image: Images.bookImg,
-  };
-
-  const popularCollections: Book[] = [
-    {
-      id: 1,
-      title: "CHASING NEW HORIZONS",
-      subTitle: "Inside the Epic First Mission to Pluto",
-      price: 19.0,
-      imageUrl:
-        "https://s3-alpha-sig.figma.com/img/655f/c8c0/309c950754d34dae6569f2f7cdd56c8e?Expires=1740355200&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=G2bllpJ2iOZpmP1FPY-wVKixum3gNTJ2DxPb6Y-ODtv2EXnLc-eWxJ2bofLr-mi7KSGC3o-QWcVghIqRCd4i71Nwp6Hp~WBt9ummne0N31TB0lf4nLQlZy3p4maLN3dINZtiDcvtcpckoDzIQwfCIIDOwWbA5cCV25EppdpKZcX~1ZjgTQBweRy87psNsxarFFrUIDbi~7Yi24RJ0VRkyhSZmnj48wD~JOdKItCWERacpW3wqJlpk0BrPMPIio1suC459-ZU~mIN7nt91CGXtGk3YG7FNxiwwpSuWvYtc3vNlLnugYFtsS4c~FE9X5dHcMlUpH7CesPQoGHEI5jSJg__",
-      author: "Alan Stern",
-      rating: 4.5,
-    },
-    {
-      id: 2,
-      title: "CHASING NEW HORIZONS",
-      subTitle: "Inside the Epic First Mission to Pluto",
-      price: 19.0,
-      imageUrl:
-        "https://s3-alpha-sig.figma.com/img/655f/c8c0/309c950754d34dae6569f2f7cdd56c8e?Expires=1740355200&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=G2bllpJ2iOZpmP1FPY-wVKixum3gNTJ2DxPb6Y-ODtv2EXnLc-eWxJ2bofLr-mi7KSGC3o-QWcVghIqRCd4i71Nwp6Hp~WBt9ummne0N31TB0lf4nLQlZy3p4maLN3dINZtiDcvtcpckoDzIQwfCIIDOwWbA5cCV25EppdpKZcX~1ZjgTQBweRy87psNsxarFFrUIDbi~7Yi24RJ0VRkyhSZmnj48wD~JOdKItCWERacpW3wqJlpk0BrPMPIio1suC459-ZU~mIN7nt91CGXtGk3YG7FNxiwwpSuWvYtc3vNlLnugYFtsS4c~FE9X5dHcMlUpH7CesPQoGHEI5jSJg__",
-      author: "Alan Stern",
-      rating: 4.5,
-    },
-    {
-      id: 3,
-      title: "CHASING NEW HORIZONS",
-      subTitle: "Inside the Epic First Mission to Pluto",
-      price: 19.0,
-      imageUrl:
-        "https://s3-alpha-sig.figma.com/img/655f/c8c0/309c950754d34dae6569f2f7cdd56c8e?Expires=1740355200&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=G2bllpJ2iOZpmP1FPY-wVKixum3gNTJ2DxPb6Y-ODtv2EXnLc-eWxJ2bofLr-mi7KSGC3o-QWcVghIqRCd4i71Nwp6Hp~WBt9ummne0N31TB0lf4nLQlZy3p4maLN3dINZtiDcvtcpckoDzIQwfCIIDOwWbA5cCV25EppdpKZcX~1ZjgTQBweRy87psNsxarFFrUIDbi~7Yi24RJ0VRkyhSZmnj48wD~JOdKItCWERacpW3wqJlpk0BrPMPIio1suC459-ZU~mIN7nt91CGXtGk3YG7FNxiwwpSuWvYtc3vNlLnugYFtsS4c~FE9X5dHcMlUpH7CesPQoGHEI5jSJg__",
-      author: "Alan Stern",
-      rating: 4.5,
-    },
-    {
-      id: 4,
-      title: "CHASING NEW HORIZONS",
-      subTitle: "Inside the Epic First Mission to Pluto",
-      price: 19.0,
-      imageUrl:
-        "https://s3-alpha-sig.figma.com/img/655f/c8c0/309c950754d34dae6569f2f7cdd56c8e?Expires=1740355200&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=G2bllpJ2iOZpmP1FPY-wVKixum3gNTJ2DxPb6Y-ODtv2EXnLc-eWxJ2bofLr-mi7KSGC3o-QWcVghIqRCd4i71Nwp6Hp~WBt9ummne0N31TB0lf4nLQlZy3p4maLN3dINZtiDcvtcpckoDzIQwfCIIDOwWbA5cCV25EppdpKZcX~1ZjgTQBweRy87psNsxarFFrUIDbi~7Yi24RJ0VRkyhSZmnj48wD~JOdKItCWERacpW3wqJlpk0BrPMPIio1suC459-ZU~mIN7nt91CGXtGk3YG7FNxiwwpSuWvYtc3vNlLnugYFtsS4c~FE9X5dHcMlUpH7CesPQoGHEI5jSJg__",
-      author: "Alan Stern",
-      rating: 4.5,
-    },
-  ];
-
-  const books: Book[] = [
-    {
-      id: 1,
-      title: "CHASING NEW HORIZONS",
-      subTitle: "Inside the Epic First Mission to Pluto",
-      price: 19.0,
-      imageUrl:
-        "https://s3-alpha-sig.figma.com/img/655f/c8c0/309c950754d34dae6569f2f7cdd56c8e?Expires=1740355200&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=G2bllpJ2iOZpmP1FPY-wVKixum3gNTJ2DxPb6Y-ODtv2EXnLc-eWxJ2bofLr-mi7KSGC3o-QWcVghIqRCd4i71Nwp6Hp~WBt9ummne0N31TB0lf4nLQlZy3p4maLN3dINZtiDcvtcpckoDzIQwfCIIDOwWbA5cCV25EppdpKZcX~1ZjgTQBweRy87psNsxarFFrUIDbi~7Yi24RJ0VRkyhSZmnj48wD~JOdKItCWERacpW3wqJlpk0BrPMPIio1suC459-ZU~mIN7nt91CGXtGk3YG7FNxiwwpSuWvYtc3vNlLnugYFtsS4c~FE9X5dHcMlUpH7CesPQoGHEI5jSJg__",
-      author: "Alan Stern",
-      rating: 4.5,
-    },
-    {
-      id: 2,
-      title: "CHASING NEW HORIZONS",
-      subTitle: "Inside the Epic First Mission to Pluto",
-      price: 19.0,
-      imageUrl:
-        "https://s3-alpha-sig.figma.com/img/655f/c8c0/309c950754d34dae6569f2f7cdd56c8e?Expires=1740355200&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=G2bllpJ2iOZpmP1FPY-wVKixum3gNTJ2DxPb6Y-ODtv2EXnLc-eWxJ2bofLr-mi7KSGC3o-QWcVghIqRCd4i71Nwp6Hp~WBt9ummne0N31TB0lf4nLQlZy3p4maLN3dINZtiDcvtcpckoDzIQwfCIIDOwWbA5cCV25EppdpKZcX~1ZjgTQBweRy87psNsxarFFrUIDbi~7Yi24RJ0VRkyhSZmnj48wD~JOdKItCWERacpW3wqJlpk0BrPMPIio1suC459-ZU~mIN7nt91CGXtGk3YG7FNxiwwpSuWvYtc3vNlLnugYFtsS4c~FE9X5dHcMlUpH7CesPQoGHEI5jSJg__",
-      author: "Alan Stern",
-      rating: 4.5,
-    },
-    {
-      id: 3,
-      title: "CHASING NEW HORIZONS",
-      subTitle: "Inside the Epic First Mission to Pluto",
-      price: 19.0,
-      imageUrl:
-        "https://s3-alpha-sig.figma.com/img/655f/c8c0/309c950754d34dae6569f2f7cdd56c8e?Expires=1740355200&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=G2bllpJ2iOZpmP1FPY-wVKixum3gNTJ2DxPb6Y-ODtv2EXnLc-eWxJ2bofLr-mi7KSGC3o-QWcVghIqRCd4i71Nwp6Hp~WBt9ummne0N31TB0lf4nLQlZy3p4maLN3dINZtiDcvtcpckoDzIQwfCIIDOwWbA5cCV25EppdpKZcX~1ZjgTQBweRy87psNsxarFFrUIDbi~7Yi24RJ0VRkyhSZmnj48wD~JOdKItCWERacpW3wqJlpk0BrPMPIio1suC459-ZU~mIN7nt91CGXtGk3YG7FNxiwwpSuWvYtc3vNlLnugYFtsS4c~FE9X5dHcMlUpH7CesPQoGHEI5jSJg__",
-      author: "Alan Stern",
-      rating: 4.5,
-    },
-    {
-      id: 4,
-      title: "CHASING NEW HORIZONS",
-      subTitle: "Inside the Epic First Mission to Pluto",
-      price: 19.0,
-      imageUrl:
-        "https://s3-alpha-sig.figma.com/img/655f/c8c0/309c950754d34dae6569f2f7cdd56c8e?Expires=1740355200&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=G2bllpJ2iOZpmP1FPY-wVKixum3gNTJ2DxPb6Y-ODtv2EXnLc-eWxJ2bofLr-mi7KSGC3o-QWcVghIqRCd4i71Nwp6Hp~WBt9ummne0N31TB0lf4nLQlZy3p4maLN3dINZtiDcvtcpckoDzIQwfCIIDOwWbA5cCV25EppdpKZcX~1ZjgTQBweRy87psNsxarFFrUIDbi~7Yi24RJ0VRkyhSZmnj48wD~JOdKItCWERacpW3wqJlpk0BrPMPIio1suC459-ZU~mIN7nt91CGXtGk3YG7FNxiwwpSuWvYtc3vNlLnugYFtsS4c~FE9X5dHcMlUpH7CesPQoGHEI5jSJg__",
-      author: "Alan Stern",
-      rating: 4.5,
-    },
-  ];
+};
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
@@ -140,7 +142,7 @@ function Home() {
                   </button>
                   <div className="sm:flex flex-row items-center hidden gap-1">
                     <span className=" mr-[-8] bg-white sm:py-2 sm:px-4 py-1 px-4 text-black rounded-lg shadow-lg text-sm">
-                      ${featuredBook.price.toFixed(2)}
+                      ${parseFloat(String(featuredBook.price)).toFixed(2)}
                     </span>
                     <button className="bg-blue-500 text-white sm:px-4 sm:py-2 hover:bg-blue-700 shadow-lg py-2 px-4 rounded-lg text-sm">
                       {t("Buy now")}
@@ -199,16 +201,20 @@ function Home() {
 
         {/* New Arrival Section */}
         <div className="max-w-[1440px] mx-auto px-7 py-10">
-          {" "}
           <h2 className="text-2xl font-bold text-[#0b3d91] mb-5">
             {t("New Arrival")}
-          </h2>{" "}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {" "}
-            {books.map((book) => (
-              <BookItem key={book.id} book={book} />
-            ))}
-          </div>
+          </h2>
+          {loading ? (
+            <div className="text-center py-10">Loading new arrivals...</div>
+          ) : error ? (
+            <div className="text-center py-10 text-red-500">{error}</div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {newArrivals.map((book) => (
+                <BookItem key={book.id} book={book} />
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Big Spring Sales Section */}
@@ -229,17 +235,17 @@ function Home() {
             {t("Popular Collections")}
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {popularCollections.map((book) => (
+            {recommendedBooks.map((book) => (
               <BookItem key={book.id} book={book} />
             ))}
           </div>
         </div>
       </div>
-    </Suspense >
+    </Suspense>
   );
 }
 
-const CategoryItem: React.FC<{ iconSrc: any; label: string }> = ({ iconSrc, label }) => {
+const CategoryItem: React.FC<{ iconSrc: string | StaticImageData; label: string }> = ({ iconSrc, label }) => {
   return (
     <Link href={`/category/${label.toLowerCase()}`}>
       <div className="flex flex-row items-center justify-center min-w-[150px] max-w-[150px] h-[60px] bg-white rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300 px-3 gap-2">

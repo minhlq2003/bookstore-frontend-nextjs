@@ -1,93 +1,82 @@
 "use client";
 import { useTranslation } from "next-i18next";
-import Image, { StaticImageData } from "next/image";
+import Image from "next/image";
 import imgBook from "@/public/images/book-img.png";
 import BookItem from "@/components/book-item";
-
-import { Book, ApiBook } from "@/constant/types";
-import { Images } from "@/constant/images";
-import Link from "next/link";
-import React, { useEffect, useState } from "react";
-import { StaticImport } from "next/dist/shared/lib/get-img-props";
+import { useParams } from "next/navigation";
+import {ApiBook, Book} from "@/constant/types";
+import { useEffect, useState, useCallback } from "react";
 
 function Category() {
-  //usestates
-  const [newArrivals, setNewArrivals] = useState<Book[]>([]);
-  const [recommendedBooks, setRecommendedBooks] = useState<Book[]>([]);
-
   const { t } = useTranslation("common");
-  //use Effects
-  useEffect(() => {
-    const fetchNewArrivals = async () => {
+  const { id } = useParams();
 
-      try {
-        const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-        const response = await fetch(`${apiBaseUrl}/book/new-arrivals/fiction`);
+  const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000";
 
-        if (!response.ok) {
-          throw new Error(`Failed to fetch new arrivals: ${response.status}`);
-        }
+  const [newArrivals, setNewArrivals] = useState<Book[]>([]);
+  const [recommendations, setRecommendations] = useState<Book[]>([]);
+  const [loadingArrivals, setLoadingArrivals] = useState(true);
+  const [loadingRecommendations, setLoadingRecommendations] = useState(true);
 
-        const data = await response.json();
+  // Helper to map API data to Book type
+  const mapApiBookToBook = (apiBook: ApiBook): {
+    id: number;
+    title: string;
+    subTitle: string;
+    price: number;
+    imageUrl: string;
+    author: string;
+    rating: number;
+    book_images: { url: string }[]
+  } => ({
+    id: apiBook.id,
+    title: apiBook.title,
+    subTitle: apiBook.description || "",
+    price: Number(apiBook.price),
+    imageUrl: apiBook.book_images?.[0]?.url || "",
+    author: apiBook.author,
+    rating: 0, // API does not provide rating
+    book_images: apiBook.book_images || [],
+  });
 
-        if (data.success && Array.isArray(data.data)) {
-          // Transform the API response to match the Book type
-          const transformedBooks = data.data.map((book: ApiBook) => ({
-            id: book.id,
-            title: book.title,
-            subTitle: book.description || "",
-            price: Number(book.price),
-            author: book.author,
-            rating: book.rating || 4.0,
-            book_images: book.book_images?.length
-              ? book.book_images.map((img: { url: string }) => ({ url: img.url }))
-              : [{ url: "/default-image.jpg" }]
-          }));
-
-          setNewArrivals(transformedBooks);
-        } else {
-          throw new Error("Invalid data format received from API");
-        }
-      } catch (err) {
-        console.error("Error fetching new arrivals:", err);
-      } finally {
+  const fetchNewArrivals = useCallback(async () => {
+    setLoadingArrivals(true);
+    try {
+      const res = await fetch(`${apiBaseUrl}/book/new-arrivals/${id}`);
+      const json = await res.json();
+      if (json.success && Array.isArray(json.data)) {
+        setNewArrivals(json.data.map(mapApiBookToBook));
+      } else {
+        setNewArrivals([]);
       }
-    };
+    } catch {
+      setNewArrivals([]);
+    }
+    setLoadingArrivals(false);
+  }, [apiBaseUrl, id]);
 
-    fetchNewArrivals();
-  }, []);
+  const fetchRecommendations = useCallback(async () => {
+    setLoadingRecommendations(true);
+    try {
+      const res = await fetch(`${apiBaseUrl}/book/recommendations/${id}`);
+      const json = await res.json();
+      if (json.success && Array.isArray(json.data)) {
+        setRecommendations(json.data.map(mapApiBookToBook));
+      } else {
+        setRecommendations([]);
+      }
+    } catch {
+      setRecommendations([]);
+    }
+    setLoadingRecommendations(false);
+  }, [apiBaseUrl, id]);
 
   useEffect(() => {
-    const fetchRecommendations = async () => {
-      try {
-        const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-        const response = await fetch(`${apiBaseUrl}/book/recommendations/fiction`);
-        if (!response.ok) {
-          throw new Error(`Failed to fetch recommendations: ${response.status}`);
-        }
-        const data = await response.json();
-        if (data.success && Array.isArray(data.data)) {
-          const transformedBooks = data.data.map((book: ApiBook) => ({
-            id: book.id,
-            title: book.title,
-            subTitle: book.description || "",
-            price: Number(book.price),
-            author: book.author,
-            rating: book.rating || 4.0,
-            book_images: book.book_images?.length
-              ? book.book_images.map((img: { url: string }) => ({ url: img.url }))
-              : [{ url: "/default-image.jpg" }]
-          }));
-          setRecommendedBooks(transformedBooks);
-        } else {
-          throw new Error("Invalid data format received from API");
-        }
-      } catch (err) {
-        console.error("Error fetching recommendations:", err);
-      }
-    };
-    fetchRecommendations();
-  }, []);
+    if (id) {
+      fetchNewArrivals();
+      fetchRecommendations();
+    }
+  }, [id, fetchNewArrivals, fetchRecommendations]);
 
   const book = {
     title: "CHASING NEW HORIZONS",
@@ -98,23 +87,12 @@ function Category() {
     image: "/path/to/your/book-image.jpg",
   };
 
-  const CategoryItem: React.FC<{ iconSrc: string | StaticImageData | StaticImport; label: string }> = ({ iconSrc, label }) => {
-    return (
-      <Link href={`/category/${label.toLowerCase()}`}>
-        <div className="flex flex-row items-center justify-center min-w-[150px] max-w-[150px] h-[60px] bg-white rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300 px-3 gap-2">
-          <Image src={iconSrc} alt={`${label} Icon`} width={24} height={24} />
-          <p className="text-sm font-normal text-black">{label}</p>
-        </div>
-      </Link>
-    );
-  };
-
   return (
     <div className="w-full bg-[#ececec] sm:pt-5 pt-0 pb-20">
       <div className="bg-gray-200 max-w-[1440px] mx-auto">
         <div className="sm:rounded-xl rounded-none overflow-hidden">
           <div className="bg-[#0B3D91] text-white py-4 text-left sm:text-3xl text-xl font-bold sm:pl-10 pl-3">
-            {t("FICTION BOOKS")}
+            {t(`${id?.toUpperCase()} BOOKS`)}
           </div>
 
           <div className="mx-auto sm:p-6 p-3 bg-[#0B3D9180] text-white">
@@ -180,23 +158,6 @@ function Category() {
           </div>
         </div>
       </div>
-
-      {/* Popular Categories Section */}
-      <div className="max-w-[1440px] mx-auto px-7 py-10">
-        <p className="text-2xl font-bold text-[#0b3d91] mb-5">
-          Popular Categories
-        </p>
-
-        <div className="flex justify-center items-center gap-10 md:gap-8 lg:gap-12 overflow-x-auto pb-10">
-          <CategoryItem iconSrc={Images.fictionIcon} label="Fiction" />
-          <CategoryItem iconSrc={Images.astronautIcon} label="Astronaut" />
-          <CategoryItem iconSrc={Images.historyIcon} label="History" />
-          <CategoryItem iconSrc={Images.mysteryIcon} label="Mystery" />
-          <CategoryItem iconSrc={Images.scienceIcon} label="Science" />
-          <CategoryItem iconSrc={Images.educationIcon} label="Education" />
-        </div>
-      </div>
-
       <div className="max-w-[1440px] mx-auto bg-[#êccec]">
         <div className="sm:px-10 px-3">
           <p className="text-[#0b3d91] font-bold text-[24px] py-5">
@@ -204,9 +165,15 @@ function Category() {
           </p>
           <div>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {newArrivals.map((book) => (
-                <BookItem key={book.id} book={book} />
-              ))}
+              {loadingArrivals ? (
+                <span>Loading...</span>
+              ) : newArrivals.length === 0 ? (
+                <span>No books found.</span>
+              ) : (
+                newArrivals.map((book) => (
+                  <BookItem key={book.id} book={book} />
+                ))
+              )}
             </div>
           </div>
         </div>
@@ -218,9 +185,15 @@ function Category() {
           </p>
           <div>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {recommendedBooks.map((book) => (
-                <BookItem key={book.id} book={book} />
-              ))}
+              {loadingRecommendations ? (
+                <span>Loading...</span>
+              ) : recommendations.length === 0 ? (
+                <span>No books found.</span>
+              ) : (
+                recommendations.map((book) => (
+                  <BookItem key={book.id} book={book} />
+                ))
+              )}
             </div>
           </div>
         </div>

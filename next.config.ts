@@ -3,10 +3,15 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   images: {
-    domains: [
-      "s3-alpha-sig.figma.com",
-      "avatar.iran.liara.run",
-      "demos.creative-tim.com",
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "*", // Allow images from all domains
+      },
+      {
+        protocol: "http",
+        hostname: "**",
+      },
     ],
   },
 };
