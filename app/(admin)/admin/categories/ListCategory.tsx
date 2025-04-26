@@ -1,16 +1,28 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { Category } from "@/constant/types";
 import { mockCategories } from "@/data/categoryData";
 import { Button, Modal } from "antd";
 import Table, { ColumnsType } from "antd/es/table";
 import dayjs from "dayjs";
-import { useState } from "react";
+import { getCategories, getCategoryById } from '@/modules/services/categoryService'
 
 export default function ListCategory() {
   const [categories, setCategories] = useState<Category[]>(mockCategories);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [bookToDelete, setBookToDelete] = useState<Category | null>(null);
+  const [categoryToDelete, setBookToDelete] = useState<Category | null>(null);
+
+  const fetchCategories = async (pageNo: number, pageSize: number) => {
+    const response = await getCategories({ page: pageNo, limit: pageSize });
+    console.log("response", response);
+
+    setCategories(response?.data ?? []);
+  };
+
+  useEffect(() => {
+    fetchCategories(1, 10);
+  }, []);
 
   const showDeleteModal = (record: Category) => {
     setBookToDelete(record);
@@ -19,7 +31,7 @@ export default function ListCategory() {
 
   const handleDelete = () => {
     setCategories((prev) =>
-      prev.filter((book) => book.id !== bookToDelete?.id)
+      prev.filter((category) => category.id !== categoryToDelete?.id)
     );
     setIsModalVisible(false);
     setBookToDelete(null);
