@@ -1,5 +1,5 @@
 "use client";
-import { BookDetails } from "@/constant/types";
+import { Book } from "@/constant/types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar, faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
 import { BreadcrumbItem, Breadcrumbs } from "@heroui/breadcrumbs";
@@ -7,7 +7,7 @@ import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useTranslation } from "next-i18next";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Table,
   TableBody,
@@ -21,106 +21,46 @@ import BookItem from "@/components/book-item";
 const Page = () => {
   const { t } = useTranslation("common");
   const [quantity, setQuantity] = useState(1);
-
-  const books: BookDetails[] = [
-    {
-      id: 1,
-      title: "CHASING NEW HORIZONS",
-      subTitle: "Inside the Epic First Mission to Pluto",
-      price: 25.0,
-      imageUrl:
-        "https://s3-alpha-sig.figma.com/img/655f/c8c0/309c950754d34dae6569f2f7cdd56c8e?Expires=1740355200&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=G2bllpJ2iOZpmP1FPY-wVKixum3gNTJ2DxPb6Y-ODtv2EXnLc-eWxJ2bofLr-mi7KSGC3o-QWcVghIqRCd4i71Nwp6Hp~WBt9ummne0N31TB0lf4nLQlZy3p4maLN3dINZtiDcvtcpckoDzIQwfCIIDOwWbA5cCV25EppdpKZcX~1ZjgTQBweRy87psNsxarFFrUIDbi~7Yi24RJ0VRkyhSZmnj48wD~JOdKItCWERacpW3wqJlpk0BrPMPIio1suC459-ZU~mIN7nt91CGXtGk3YG7FNxiwwpSuWvYtc3vNlLnugYFtsS4c~FE9X5dHcMlUpH7CesPQoGHEI5jSJg__",
-      author: "Alan Stern",
-      rating: 4.5,
-      discount: 20.0,
-      genre: "Science, Astronautv",
-      publisher: "Picador",
-      publishedDate: "May 1, 2018",
-      weight: 1.1,
-      size: "5.5 x 1 x 8.2 inches",
-      pages: 320,
-      description:
-        "Chasing New Horizons tells the captivating story of NASA's New Horizons mission—the first spacecraft to explore Pluto—and the relentless pursuit of discovery that brought it to life. Authored by Alan Stern, the mission's principal investigator, and David Grinspoon, an award-winning astrobiologist, this book takes readers behind the scenes of one of the most daring and groundbreaking space missions in history." +
-        "The narrative unfolds over decades of vision, determination, and ingenuity, as a team of scientists and engineers overcame immense technical, political, and financial hurdles to accomplish what once seemed impossible. From New Horizons' launch in 2006 to its dramatic flyby of Pluto in 2015, the book captures the exhilaration of discovery, the tension of high-stakes science, and the profound impact of viewing a distant world up close for the first time." +
-        "Rich with stunning images of Pluto and its moons, 'Chasing New Horizons' is more than just a chronicle of a mission—it’s an inspiring testament to human curiosity and the drive to explore the unknown.",
-      sold: 100,
-      storage: 50,
-    },
-    {
-      id: 2,
-      title: "CHASING NEW HORIZONS",
-      subTitle: "Inside the Epic First Mission to Pluto",
-      price: 25.0,
-      imageUrl:
-        "https://s3-alpha-sig.figma.com/img/655f/c8c0/309c950754d34dae6569f2f7cdd56c8e?Expires=1740355200&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=G2bllpJ2iOZpmP1FPY-wVKixum3gNTJ2DxPb6Y-ODtv2EXnLc-eWxJ2bofLr-mi7KSGC3o-QWcVghIqRCd4i71Nwp6Hp~WBt9ummne0N31TB0lf4nLQlZy3p4maLN3dINZtiDcvtcpckoDzIQwfCIIDOwWbA5cCV25EppdpKZcX~1ZjgTQBweRy87psNsxarFFrUIDbi~7Yi24RJ0VRkyhSZmnj48wD~JOdKItCWERacpW3wqJlpk0BrPMPIio1suC459-ZU~mIN7nt91CGXtGk3YG7FNxiwwpSuWvYtc3vNlLnugYFtsS4c~FE9X5dHcMlUpH7CesPQoGHEI5jSJg__",
-      author: "Alan Stern",
-      rating: 4.5,
-      discount: 20.0,
-      genre: "Science, Astronautv",
-      publisher: "Picador",
-      publishedDate: "May 1, 2018",
-      weight: 1.1,
-      size: "5.5 x 1 x 8.2 inches",
-      pages: 320,
-      description:
-        "Chasing New Horizons tells the captivating story of NASA's New Horizons mission—the first spacecraft to explore Pluto—and the relentless pursuit of discovery that brought it to life. Authored by Alan Stern, the mission's principal investigator, and David Grinspoon, an award-winning astrobiologist, this book takes readers behind the scenes of one of the most daring and groundbreaking space missions in history." +
-        "The narrative unfolds over decades of vision, determination, and ingenuity, as a team of scientists and engineers overcame immense technical, political, and financial hurdles to accomplish what once seemed impossible. From New Horizons' launch in 2006 to its dramatic flyby of Pluto in 2015, the book captures the exhilaration of discovery, the tension of high-stakes science, and the profound impact of viewing a distant world up close for the first time." +
-        "Rich with stunning images of Pluto and its moons, 'Chasing New Horizons' is more than just a chronicle of a mission—it’s an inspiring testament to human curiosity and the drive to explore the unknown.",
-      sold: 100,
-      storage: 50,
-    },
-    {
-      id: 3,
-      title: "CHASING NEW HORIZONS",
-      subTitle: "Inside the Epic First Mission to Pluto",
-      price: 25.0,
-      imageUrl:
-        "https://s3-alpha-sig.figma.com/img/655f/c8c0/309c950754d34dae6569f2f7cdd56c8e?Expires=1740355200&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=G2bllpJ2iOZpmP1FPY-wVKixum3gNTJ2DxPb6Y-ODtv2EXnLc-eWxJ2bofLr-mi7KSGC3o-QWcVghIqRCd4i71Nwp6Hp~WBt9ummne0N31TB0lf4nLQlZy3p4maLN3dINZtiDcvtcpckoDzIQwfCIIDOwWbA5cCV25EppdpKZcX~1ZjgTQBweRy87psNsxarFFrUIDbi~7Yi24RJ0VRkyhSZmnj48wD~JOdKItCWERacpW3wqJlpk0BrPMPIio1suC459-ZU~mIN7nt91CGXtGk3YG7FNxiwwpSuWvYtc3vNlLnugYFtsS4c~FE9X5dHcMlUpH7CesPQoGHEI5jSJg__",
-      author: "Alan Stern",
-      rating: 4.5,
-      discount: 20.0,
-      genre: "Science, Astronautv",
-      publisher: "Picador",
-      publishedDate: "May 1, 2018",
-      weight: 1.1,
-      size: "5.5 x 1 x 8.2 inches",
-      pages: 320,
-      description:
-        "Chasing New Horizons tells the captivating story of NASA's New Horizons mission—the first spacecraft to explore Pluto—and the relentless pursuit of discovery that brought it to life. Authored by Alan Stern, the mission's principal investigator, and David Grinspoon, an award-winning astrobiologist, this book takes readers behind the scenes of one of the most daring and groundbreaking space missions in history." +
-        "The narrative unfolds over decades of vision, determination, and ingenuity, as a team of scientists and engineers overcame immense technical, political, and financial hurdles to accomplish what once seemed impossible. From New Horizons' launch in 2006 to its dramatic flyby of Pluto in 2015, the book captures the exhilaration of discovery, the tension of high-stakes science, and the profound impact of viewing a distant world up close for the first time." +
-        "Rich with stunning images of Pluto and its moons, 'Chasing New Horizons' is more than just a chronicle of a mission—it’s an inspiring testament to human curiosity and the drive to explore the unknown.",
-      sold: 100,
-      storage: 50,
-    },
-    {
-      id: 4,
-      title: "CHASING NEW HORIZONS",
-      subTitle: "Inside the Epic First Mission to Pluto",
-      price: 25.0,
-      imageUrl:
-        "https://s3-alpha-sig.figma.com/img/655f/c8c0/309c950754d34dae6569f2f7cdd56c8e?Expires=1740355200&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=G2bllpJ2iOZpmP1FPY-wVKixum3gNTJ2DxPb6Y-ODtv2EXnLc-eWxJ2bofLr-mi7KSGC3o-QWcVghIqRCd4i71Nwp6Hp~WBt9ummne0N31TB0lf4nLQlZy3p4maLN3dINZtiDcvtcpckoDzIQwfCIIDOwWbA5cCV25EppdpKZcX~1ZjgTQBweRy87psNsxarFFrUIDbi~7Yi24RJ0VRkyhSZmnj48wD~JOdKItCWERacpW3wqJlpk0BrPMPIio1suC459-ZU~mIN7nt91CGXtGk3YG7FNxiwwpSuWvYtc3vNlLnugYFtsS4c~FE9X5dHcMlUpH7CesPQoGHEI5jSJg__",
-      author: "Alan Stern",
-      rating: 4.5,
-      discount: 20.0,
-      genre: "Science, Astronautv",
-      publisher: "Picador",
-      publishedDate: "May 1, 2018",
-      weight: 1.1,
-      size: "5.5 x 1 x 8.2 inches",
-      pages: 320,
-      description:
-        "Chasing New Horizons tells the captivating story of NASA's New Horizons mission—the first spacecraft to explore Pluto—and the relentless pursuit of discovery that brought it to life. Authored by Alan Stern, the mission's principal investigator, and David Grinspoon, an award-winning astrobiologist, this book takes readers behind the scenes of one of the most daring and groundbreaking space missions in history." +
-        "The narrative unfolds over decades of vision, determination, and ingenuity, as a team of scientists and engineers overcame immense technical, political, and financial hurdles to accomplish what once seemed impossible. From New Horizons' launch in 2006 to its dramatic flyby of Pluto in 2015, the book captures the exhilaration of discovery, the tension of high-stakes science, and the profound impact of viewing a distant world up close for the first time." +
-        "Rich with stunning images of Pluto and its moons, 'Chasing New Horizons' is more than just a chronicle of a mission—it’s an inspiring testament to human curiosity and the drive to explore the unknown.",
-      sold: 100,
-      storage: 50,
-    },
-  ];
+  const [book, setBook] = useState<Book | null>(null);
+  const [relatedBooks, setRelatedBooks] = useState<Book[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const { id } = useParams();
+  const firstGenre = book?.genre?.split(",")[0];
 
-  const book = books.find((book) => book.id === Number(id));
-  const firstGenre = book?.genre.split(",")[0];
+  useEffect(() => {
+    const fetchBookDetails = async () => {
+      setLoading(true);
+      setError(null);
+      
+      try {
+        const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+        const response = await fetch(`${apiBaseUrl}/book/details/${id}`);
+        
+        if (!response.ok) {
+          throw new Error(`Failed to fetch book details: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        setBook(data.data);
+        
+        // Fetch related books (this could be a separate API call or part of the same response)
+        // For now, we'll just use the same book as a placeholder for related books
+        setRelatedBooks(Array(4).fill(data.data));
+        
+      } catch (err) {
+        console.error("Error fetching book details:", err);
+        setError("Failed to load book details. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    if (id) {
+      fetchBookDetails();
+    }
+  }, [id]);
 
   const increaseQuantity = () => {
     setQuantity((prev) => prev + 1);
@@ -134,6 +74,17 @@ const Page = () => {
     }
   };
 
+  if (loading) {
+    return <div className="max-w-[1200px] mx-auto bg-[#ECECEC] font-merriweather p-10 text-center">Loading...</div>;
+  }
+
+  if (error) {
+    return <div className="max-w-[1200px] mx-auto bg-[#ECECEC] font-merriweather p-10 text-center text-red-500">{error}</div>;
+  }
+
+  if (!book) {
+    return <div className="max-w-[1200px] mx-auto bg-[#ECECEC] font-merriweather p-10 text-center">Book not found</div>;
+  }
   return (
     <div className="max-w-[1200px] mx-auto bg-[#ECECEC] font-merriweather">
       <div className="hidden md:block text-black px-7 pt-5">
@@ -148,7 +99,7 @@ const Page = () => {
       </div>
       <div className="flex flex-col md:flex-row items-center justify-center md:justify-start md:gap-10 lg:gap-20 md:px-7 py-5">
         <Image
-          src={book?.imageUrl || "/default-image.jpg"}
+          src={book?.book_images[0]["url"] || "/default-image.jpg"}
           alt={book?.title || "Book Image"}
           width={100}
           height={100}
@@ -179,10 +130,10 @@ const Page = () => {
           <div className="flex items-center justify-between">
             <div className="flex gap-3">
               <p className="text-blue text-base md:text-lg">
-                ${book?.price.toFixed(2)}
+                ${Number(book?.price).toFixed(2)}
               </p>
               <p className="-translate-y-0.5 text-gray-500 line-through">
-                ${book?.discount?.toFixed(2)}
+                ${(Number(book?.price)+Number(book?.import_price)).toFixed(2)}
               </p>
             </div>
             <div className="flex items-center gap-3">
@@ -220,7 +171,7 @@ const Page = () => {
             <TableColumn>{t("Info")}</TableColumn>
           </TableHeader>
           <TableBody>
-            <TableRow key={1} className="bg-gray-200 rounded-xl">
+            <TableRow key={book.id} className="bg-gray-200 rounded-xl">
               <TableCell className="text-black/60 md:text-base">
                 {t("Genre")}
               </TableCell>
@@ -281,8 +232,8 @@ const Page = () => {
         {t("Relevant Books")}
       </p>
       <div className="flex overflow-x-auto px-7 gap-5 pb-5">
-        {books.map((book) => (
-          <div key={book.id}>
+        {relatedBooks.map((book, index) => (
+          <div key={`related_`+index}>
             <BookItem book={book} />
           </div>
         ))}

@@ -62,11 +62,19 @@ const Header = () => {
   useEffect(() => {
     async function checkLoginStatus() {
       const loggedIn = await isLogin();
-      setIsLoggedIn(loggedIn);
+      const isAccountLoggedIn = localStorage.getItem("user");
+      if(loggedIn || isAccountLoggedIn) {
+        setIsLoggedIn(true);
+      }
     }
     checkLoginStatus();
   }, []);
+function handleLogOut() {
+  localStorage.removeItem("user");
+  localStorage.removeItem("accessToken");
+  logout()
 
+}
   return (
     <div>
       <div className="h-[75px] bg-[#ececec]">
@@ -175,7 +183,7 @@ const Header = () => {
 
               {isLoggedIn ? (
                 <button
-                  onClick={() => (setIsLoggedIn(false), logout())}
+                  onClick={() => (setIsLoggedIn(false), handleLogOut())}
                   className="bg-[#0B3D91] text-white p-2 rounded-md hover:bg-blue-700 sm:flex hidden items-center"
                 >
                   {t("Logout")}
