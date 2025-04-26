@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
       "s3-alpha-sig.figma.com",
       "avatar.iran.liara.run",
       "demos.creative-tim.com",
+      "picsum.photos",
     ],
   },
 };
