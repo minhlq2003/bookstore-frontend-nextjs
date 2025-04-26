@@ -6,12 +6,19 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "*", // Allow images from all domains
+        hostname: "*",
       },
       {
         protocol: "http",
         hostname: "**",
       },
+    ],
+    domains: [
+      "s3-alpha-sig.figma.com",
+      "avatar.iran.liara.run",
+      "demos.creative-tim.com",
+      "example.com",
+      "cnm-chatapp-bucket.s3.ap-southeast-1.amazonaws.com",
     ],
   },
 };

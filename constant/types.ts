@@ -70,6 +70,9 @@ export interface BookListResponse {
   code: number;
   message?: string;
   data: Book[];
+  page: number;
+  total: number;
+  totalPages: number;
 }
 
 export interface Discount {
