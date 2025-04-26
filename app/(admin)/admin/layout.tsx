@@ -29,7 +29,7 @@ export default function RootLayout({
     if (typeof window !== "undefined") {
       const user = JSON.parse(localStorage.getItem("user") || "{}");
       if (!user || !user.id) {
-        router.push("/login");
+        router.push("/signin");
       } else {
         fetchUser(user.id);
       }
