@@ -38,7 +38,7 @@ const EditOrder = () => {
       receiverName: values.receiverName,
       receiverPhone: values.receiverPhone,
       address: values.address,
-      paymentMethod: values.paymentMethod,
+      paymentMethod: values.payment_method,
       orderStatus: values.orderStatus,
       total: Number(values.total),
     };

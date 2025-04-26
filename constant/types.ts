@@ -18,6 +18,8 @@ export interface Book {
   description?: string;
   sold?: number;
   storage?: number;
+  category?: string;
+  quantity?: number;
   categories?: string;
 }
 export type ApiBook = {
@@ -185,3 +187,22 @@ export type ListOrdersResponse = {
   total: number;
   totalPages: number;
 };
+
+export interface Address {
+  id: number;
+  user_id: number;
+  address: string;
+  receiver_name: string;
+  receiver_phone: string;
+}
+
+export interface User {
+  id: number;
+  username: string;
+  name: string;
+  email: string;
+  avatar: string;
+  status: number;
+  role: string;
+  addresses: Address[];
+}

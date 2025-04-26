@@ -6,6 +6,7 @@ import Modal from "antd/es/modal/Modal";
 import Table, { ColumnsType, TablePaginationConfig } from "antd/es/table";
 import { getOrders } from "@/modules/services/orderService";
 import { Order } from "@/constant/types";
+import { getUserById } from "@/modules/services/userServices";
 
 export default function ListOrder() {
   const [data, setData] = useState<Order[]>([]);
@@ -22,10 +23,18 @@ export default function ListOrder() {
 
   const fetchOrders = async (pageNo: number, pageSize: number) => {
     const response = await getOrders({ page: pageNo, limit: pageSize });
-    console.log("Orders response", response);
+    if (response?.data) {
+      const ordersWithUsers = await Promise.all(
+        response.data.map(async (order) => {
+          const user = await getUserById(order.user_id || "");
+          return { ...order, user }; // Gắn thông tin người dùng vào đơn hàng
+        })
+      );
+      setData(ordersWithUsers);
+      console.log("ordersWithUsers", ordersWithUsers);
 
-    setData(response?.data ?? []);
-    setTotalOrders(response?.total ?? 0);
+      setTotalOrders(response?.total ?? 0);
+    }
   };
 
   useEffect(() => {
@@ -49,13 +58,16 @@ export default function ListOrder() {
   const columns: ColumnsType<Order> = [
     {
       title: "Tên người nhận",
-      dataIndex: "receiverName",
+      dataIndex: ["user", "user", "name"],
       key: "receiverName",
+      //render: (user) => (user ? `${user.user.username}` : "Unknown User"),
     },
     {
       title: "Số điện thoại",
-      dataIndex: "receiverPhone",
+      dataIndex: "user",
       key: "receiverPhone",
+      render: (user) =>
+        user ? `${user.user.addresses[0].receiver_phone}` : "Unknown User",
     },
     {
       title: "Địa chỉ",
@@ -64,13 +76,13 @@ export default function ListOrder() {
     },
     {
       title: "Phương thức thanh toán",
-      dataIndex: "paymentMethod",
+      dataIndex: "payment_method",
       key: "paymentMethod",
       render: (method) => {
         switch (method) {
           case "CASH":
             return "Tiền mặt";
-          case "BANK_TRANSFER":
+          case "CARD":
             return "Chuyển khoản";
           default:
             return method;
@@ -79,18 +91,20 @@ export default function ListOrder() {
     },
     {
       title: "Trạng thái đơn hàng",
-      dataIndex: "orderStatus",
+      dataIndex: "status",
       key: "orderStatus",
       render: (status) => {
         switch (status) {
-          case "PENDING":
-            return "Chờ xác nhận";
-          case "SHIPPING":
+          case "delivered":
+            return "Đã giao hàng";
+          case "shipped":
             return "Đang giao";
-          case "COMPLETED":
-            return "Hoàn thành";
-          case "CANCELLED":
+          case "processing":
+            return "Đang xử lý";
+          case "cancelled":
             return "Đã hủy";
+          case "pending":
+            return "Chờ xác nhận";
           default:
             return status;
         }
@@ -100,11 +114,11 @@ export default function ListOrder() {
       title: "Tổng tiền",
       dataIndex: "total",
       key: "total",
-      render: (total: number) => `${total.toLocaleString()} VND`,
+      render: (total: number) => `${total.toLocaleString()} USD`,
     },
     {
       title: "Ngày tạo",
-      dataIndex: "createdAt",
+      dataIndex: "created_at",
       key: "createdAt",
       render: (date: string) => new Date(date).toLocaleString(),
     },
