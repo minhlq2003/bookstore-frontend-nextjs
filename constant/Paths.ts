@@ -5,7 +5,7 @@ export const DASHBOARD: PathItem = {
 };
 
 export const PUBLIC: PathItem = {
-  LOGIN: { PATH: "/login", LABEL: "Đăng nhập", BREADCRUMB: ["Đăng nhập"] },
+  LOGIN: { PATH: "/signin", LABEL: "Đăng nhập", BREADCRUMB: ["Đăng nhập"] },
   FORGOT_PASSWORD: { PATH: "/forgot-password", LABEL: "", BREADCRUMB: [] },
   RESET_PASSWORD: { PATH: "/reset-password", LABEL: "", BREADCRUMB: [] },
 };
