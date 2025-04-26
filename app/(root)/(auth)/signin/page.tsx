@@ -40,7 +40,11 @@ function SignIn() {
       // Handle successful login, e.g., redirect or store token
       localStorage.setItem("user", JSON.stringify(data.user));
       localStorage.setItem("accessToken", data.token);
-      router.push("/");
+      if(data.user.role === "admin") {
+        router.push("/admin");
+      } else {
+        router.push("/");
+      }
     } catch (err: any) {
       setError(err.message || 'An error occurred');
     } finally {
