@@ -6,7 +6,7 @@ import { HttpClient } from "@/lib/HttpClient";
 const API_PREFIX_BOOK_PATH = "/book";
 
 const BASE_URL =
-  process.env.NEXT_PUBLIC_API_BOOKSERVICE_URL ?? "https://localhost:5001";
+  process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:5001";
 
 const http = new HttpClient(BASE_URL);
 
