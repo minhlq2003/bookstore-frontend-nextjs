@@ -196,7 +196,7 @@ export const menuItems: Array<CustomMenuItem> = [
 
   {
     label: "Media",
-    key: "upload",
+    key: "media",
     icon: <FileImageOutlined />,
     children: mediaItems,
   },

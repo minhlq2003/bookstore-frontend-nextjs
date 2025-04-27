@@ -7,52 +7,81 @@ import Table, { ColumnsType, TablePaginationConfig } from "antd/es/table";
 import { getOrders } from "@/modules/services/orderService";
 import { Order } from "@/constant/types";
 import { getUserById } from "@/modules/services/userServices";
+import { SorterResult } from "antd/es/table/interface";
 
-export default function ListOrder() {
+interface ListOrderProps {
+  searchTerm: string;
+}
+export default function ListOrder({ searchTerm }: ListOrderProps) {
   const [data, setData] = useState<Order[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [orderToDelete, setOrderToDelete] = useState<Order | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
   const [totalOrders, setTotalOrders] = useState(0);
+  const [sortBy, setSortBy] = useState<string | undefined>();
+  const [sortOrder, setSortOrder] = useState<string | undefined>();
 
   const showDeleteModal = (record: Order) => {
     setOrderToDelete(record);
     setIsModalVisible(true);
   };
 
-  const fetchOrders = async (pageNo: number, pageSize: number) => {
-    const response = await getOrders({ page: pageNo, limit: pageSize });
+  const fetchOrders = async (
+    pageNo: number,
+    pageSize: number,
+    sortBy?: string,
+    sortOrder?: string
+  ) => {
+    const response = await getOrders({
+      page: pageNo,
+      limit: pageSize,
+      sortBy,
+      sortOrder,
+    });
     if (response?.data) {
       const ordersWithUsers = await Promise.all(
         response.data.map(async (order) => {
           const user = await getUserById(order.user_id || "");
-          return { ...order, user }; // Gắn thông tin người dùng vào đơn hàng
+          return { ...order, user };
         })
       );
       setData(ordersWithUsers);
-      console.log("ordersWithUsers", ordersWithUsers);
-
       setTotalOrders(response?.total ?? 0);
     }
   };
 
   useEffect(() => {
-    fetchOrders(currentPage, pageSize);
-  }, [currentPage, pageSize]);
+    fetchOrders(currentPage, pageSize, sortBy, sortOrder);
+  }, [currentPage, pageSize, sortBy, sortOrder, searchTerm]);
 
   const handleDelete = async () => {
     if (orderToDelete) {
-      //await deleteOrder(orderToDelete.id);
+      // await deleteOrder(orderToDelete.id);
       setIsModalVisible(false);
       setOrderToDelete(null);
-      fetchOrders(currentPage, pageSize);
+      fetchOrders(currentPage, pageSize, sortBy, sortOrder);
     }
   };
 
-  const handleTableChange = (pagination: TablePaginationConfig) => {
+  const handleTableChange = (
+    pagination: TablePaginationConfig,
+    _: Record<string, unknown>,
+    sorter: SorterResult<Order> | SorterResult<Order>[]
+  ) => {
     setCurrentPage(pagination.current ?? 1);
     setPageSize(pagination.pageSize ?? 5);
+
+    if (!Array.isArray(sorter)) {
+      setSortBy((sorter.field as string) || undefined);
+      if (sorter.order === "ascend") {
+        setSortOrder("asc");
+      } else if (sorter.order === "descend") {
+        setSortOrder("desc");
+      } else {
+        setSortOrder(undefined);
+      }
+    }
   };
 
   const columns: ColumnsType<Order> = [
@@ -60,7 +89,6 @@ export default function ListOrder() {
       title: "Tên người nhận",
       dataIndex: ["user", "user", "name"],
       key: "receiverName",
-      //render: (user) => (user ? `${user.user.username}` : "Unknown User"),
     },
     {
       title: "Số điện thoại",
@@ -114,12 +142,14 @@ export default function ListOrder() {
       title: "Tổng tiền",
       dataIndex: "total",
       key: "total",
+      sorter: true,
       render: (total: number) => `${total.toLocaleString()} USD`,
     },
     {
       title: "Ngày tạo",
       dataIndex: "created_at",
       key: "createdAt",
+      sorter: true,
       render: (date: string) => new Date(date).toLocaleString(),
     },
     {

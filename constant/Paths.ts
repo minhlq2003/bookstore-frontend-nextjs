@@ -57,13 +57,13 @@ export const SEOSETTING: PathItem = {
 };
 
 export const MEDIA: PathItem = {
-  LIST: { PATH: "/upload", LABEL: "Library", BREADCRUMB: ["Library"] },
+  LIST: { PATH: "/media", LABEL: "Library", BREADCRUMB: ["Library"] },
   CREATE: {
-    PATH: "/upload/create",
+    PATH: "/media/create",
     LABEL: "Add New Media File",
     BREADCRUMB: ["Add New Media File"],
   },
-  EDIT: { PATH: "/upload", LABEL: "", BREADCRUMB: [] },
+  EDIT: { PATH: "/media", LABEL: "", BREADCRUMB: [] },
 };
 export const CONTACTFORM: PathItem = {
   LIST: {

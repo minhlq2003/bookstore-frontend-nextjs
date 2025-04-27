@@ -57,7 +57,13 @@ export default function RootLayout({
                         className="site-layout-background rounded-[8px]"
                         style={styles.layout}
                       >
-                        <Content style={{ padding: "0 12px" }}>
+                        <Content
+                          style={{
+                            padding: "0 12px",
+                            overflowY: "scroll",
+                            height: "calc(100vh - 210px)",
+                          }}
+                        >
                           {children}
                         </Content>
                       </Layout>

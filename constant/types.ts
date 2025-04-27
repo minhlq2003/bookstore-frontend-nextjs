@@ -1,3 +1,5 @@
+import { ChangeEvent } from "react";
+
 export interface Book {
   import_price: string;
   book_images: string[];
@@ -208,4 +210,55 @@ export interface User {
   status: number;
   role: string;
   addresses: Address[];
+}
+
+export interface MediaData {
+  id: number;
+  name: string;
+  alternativeText: string;
+  caption: string;
+  width: number;
+  height: number;
+  hash: string;
+  ext: string;
+  mime: string;
+  size: number;
+  url: string;
+  previewUrl: string;
+  provider: string;
+  provider_metadata: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface FileUpdate {
+  fileInfo?: {
+    name: string;
+    alternativeText: string;
+    caption: string;
+    width?: number;
+    height?: number;
+  };
+  file?: File;
+}
+
+export interface FormValuesMedia {
+  pagination: Pagination;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+  dataItem: MediaData[];
+  loading: boolean;
+  error: string | null;
+}
+
+export interface Pagination {
+  page?: number;
+  pageSize: number | undefined;
+  current: number | undefined;
+  total: number | undefined;
+}
+
+export interface InputSearchProps {
+  handleSearchChange: (event: ChangeEvent<HTMLInputElement>) => void;
 }
