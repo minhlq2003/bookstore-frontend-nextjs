@@ -18,7 +18,12 @@ export interface Book {
   description?: string;
   sold?: number;
   storage?: number;
+
   categories?: string;
+
+  category?: string;
+  quantity?: number;
+p
 }
 export type ApiBook = {
   id: number;
@@ -162,13 +167,13 @@ export type Order = {
   receiverName: string;
   receiverPhone: string;
   address: string;
-  paymentMethod: PaymentMethod;
+  payment_method: PaymentMethod;
   orderStatus: OrderStatus;
   total: number;
-  userId?: string;
-  orderDetails: OrderDetail[];
-  createdAt: string;
-  updatedAt: string;
+  user_id?: string;
+  order_details: OrderDetail[];
+  created_at: string;
+  updated_at: string;
 };
 
 export type OrderResponse = {
@@ -185,3 +190,22 @@ export type ListOrdersResponse = {
   total: number;
   totalPages: number;
 };
+
+export interface Address {
+  id: number;
+  user_id: number;
+  address: string;
+  receiver_name: string;
+  receiver_phone: string;
+}
+
+export interface User {
+  id: number;
+  username: string;
+  name: string;
+  email: string;
+  avatar: string;
+  status: number;
+  role: string;
+  addresses: Address[];
+}

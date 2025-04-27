@@ -9,7 +9,6 @@ import { LayoutSider } from "@/components/Sider";
 import { I18nextProvider, useTranslation } from "react-i18next";
 import LocaleProvider from "@/components/locale-provider";
 import { i18nInstance } from "@/language/i18n";
-import UserService from "@/modules/services/userServices";
 import HeaderCMS from "@/components/header-cms";
 import "../../../globals.css";
 
@@ -23,7 +22,6 @@ export default function RootLayout({
 
   const [userAvatar, setUserAvatar] = useState<string>("");
   const router = useRouter();
-  const userServices = UserService();
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -31,18 +29,9 @@ export default function RootLayout({
       if (!user || !user.id) {
         router.push("/signin");
       } else {
-        fetchUser(user.id);
       }
     }
   }, [router]);
-
-  const fetchUser = async (id: number) => {
-    try {
-      const response = await userServices.getUserById(id);
-    } catch (error) {
-      message.error("Failed to fetch user data. Please try again.");
-    }
-  };
 
   return (
     <html lang={"en"}>
