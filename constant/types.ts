@@ -20,13 +20,11 @@ export interface Book {
   description?: string;
   sold?: number;
   storage?: number;
-
   categories?: string;
-
   category?: string;
   quantity?: number;
-p
 }
+
 export type ApiBook = {
   id: number;
   title: string;
@@ -35,7 +33,8 @@ export type ApiBook = {
   author: string;
   rating?: number;
   book_images?: { url: string }[];
-};
+}
+
 export interface PathItem {
   [k: string]: {
     PATH: string;
