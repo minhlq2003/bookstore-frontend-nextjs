@@ -27,7 +27,6 @@ const Page = () => {
   const [error, setError] = useState<string | null>(null);
 
   const { id } = useParams();
-  const firstGenre = book?.genre?.split(",")[0];
 
   useEffect(() => {
     const fetchBookDetails = async () => {
@@ -109,7 +108,7 @@ const Page = () => {
             item: "text-black data-[current=true]:text-customblue/60",
           }}
         >
-          <BreadcrumbItem>{firstGenre}</BreadcrumbItem>
+          <BreadcrumbItem>{book?.categories?.name}</BreadcrumbItem>
           <BreadcrumbItem>{book?.title}</BreadcrumbItem>
         </Breadcrumbs>
       </div>
@@ -129,19 +128,19 @@ const Page = () => {
             <h1 className="text-2xl md:text-3xl">{book?.title}</h1>
           </div>
           <div className="flex gap-5 md:gap-7 lg:gap-12">
-            <p>{book?.author} (Author)</p>
-            <p>Publisher: {book?.publisher}</p>
+            <p>Author: {book?.author}</p>
+            <p>Publisher: {book?.publishers?.name}</p>
           </div>
           <div className="flex">
-            <FontAwesomeIcon icon={faStar} className="text-blue size-5" />
             <p className="text-blue">
-              {book?.rating} <span>(100 reivews)</span>
+              <span>Reviews: 100</span> {book?.rating}
             </p>
+            <FontAwesomeIcon icon={ faStar } className="text-blue size-5" />
           </div>
-          <p>Genre: {book?.genre}</p>
+          <p>Genre: {book?.categories?.name}</p>
           <div className="flex gap-5 md:gap-7 lg:gap-12">
             <p>Sold: {book?.sold}</p>
-            <p>Storage: {book?.storage}</p>
+            <p>Storage: {book?.stock}</p>
           </div>
           <div className="flex items-center justify-between">
             <div className="flex gap-3">
@@ -194,7 +193,7 @@ const Page = () => {
               <TableCell className="text-black/60 md:text-base">
                 {t("Genre")}
               </TableCell>
-              <TableCell>{book?.genre}</TableCell>
+              <TableCell>{book?.categories?.name}</TableCell>
             </TableRow>
             <TableRow key={2}>
               <TableCell className="text-black/60 md:text-base">
@@ -206,15 +205,15 @@ const Page = () => {
               <TableCell className="text-black/60 md:text-base">
                 {t("Publisher")}
               </TableCell>
-              <TableCell>{book?.publisher}</TableCell>
+              <TableCell>{book?.publishers?.name}</TableCell>
             </TableRow>
             <TableRow key={4}>
               <TableCell className="text-black/60 md:text-base">
                 {t("Year")}
               </TableCell>
               <TableCell>
-                {book?.publishedDate
-                  ? new Date(book.publishedDate).getFullYear()
+                {book?.publish_year
+                  ? book?.publish_year
                   : "N/A"}
               </TableCell>
             </TableRow>

@@ -1,7 +1,6 @@
 "use client";
 
 import { Book } from "@/constant/types";
-import { mockBooks } from "@/data/bookData";
 import { deleteBook, getBooks } from "@/modules/services/bookService";
 import { Button } from "antd";
 import Modal from "antd/es/modal/Modal";
@@ -11,7 +10,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 
 export default function ListBook() {
-  const [data, setData] = useState<Book[]>(mockBooks);
+  const [data, setData] = useState<Book[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [bookToDelete, setBookToDelete] = useState<Book | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -36,10 +35,13 @@ export default function ListBook() {
   }, [currentPage, pageSize]);
 
   const handleDelete = () => {
-    deleteBook(String(bookToDelete?.id ?? ""));
-    setIsModalVisible(false);
-    setBookToDelete(null);
-    fetchBooks(currentPage, pageSize);
+    deleteBook(String(bookToDelete?.id ?? "")).then((result) => {
+      console.log(result)
+      setIsModalVisible(false);
+      setBookToDelete(null);
+      fetchBooks(currentPage, pageSize);
+    });
+
   };
 
   const handleTableChange = (pagination: TablePaginationConfig) => {
@@ -62,19 +64,25 @@ export default function ListBook() {
       title: "Giá",
       dataIndex: "price",
       key: "price",
-      render: (price: number) => `${price.toLocaleString()} VND`,
+      render: (price: number) => `${price.toLocaleString()} USD`,
     },
     { title: "Số trang", dataIndex: "pages", key: "pages" },
-    { title: "Danh mục", dataIndex: "category", key: "category" },
-    { title: "NXB", dataIndex: "publisher", key: "publisher" },
+    { title: "Danh mục", dataIndex: "categories", key: "category", render: (categories: object) => categories.name},
+    { title: "NXB", dataIndex: "publishers", key: "publishers", render: (publishers: object) => publishers.name},
     {
       title: "Giảm giá",
-      dataIndex: "discount",
       key: "discount",
-      render: (d) => `${d}%`,
+      render: (_, record) => {
+        // Calculate discount percentage based on price and import_price
+        if (record.price && record.import_price && Number(record.import_price) > 0) {
+          const discountPercent = 100 - (Math.round((parseFloat(String(record.import_price)) / parseFloat(String(record.price))) * 100));
+          return `${discountPercent}%`;
+        }
+        return "0%";
+      },
     },
     { title: "Đã bán", dataIndex: "sold", key: "sold" },
-    { title: "Năm xuất bản", dataIndex: "publishYear", key: "publishYear" },
+    { title: "Năm xuất bản", dataIndex: "publish_year", key: "publish_year" },
     {
       title: "Hành động",
       key: "action",

@@ -18,8 +18,12 @@ export interface Book {
   description?: string;
   sold?: number;
   storage?: number;
+
+  categories?: string;
+
   category?: string;
   quantity?: number;
+p
 }
 export type ApiBook = {
   id: number;
