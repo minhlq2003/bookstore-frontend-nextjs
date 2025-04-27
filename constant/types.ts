@@ -33,6 +33,7 @@ export type ApiBook = {
   author: string;
   rating?: number;
   book_images?: { url: string }[];
+  import_price?: number;
 }
 
 export interface PathItem {
