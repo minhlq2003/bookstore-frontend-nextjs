@@ -25,19 +25,21 @@ export default function BookPage() {
             placeholder="Tìm kiếm sách..."
             value={searchTerm}
             onChange={handleSearchChange}
-            className="p-2 rounded-md border border-gray-300 dark:border-gray-600"
+            className="px-2 rounded-md border border-gray-300 dark:border-gray-600 w-[300px"
           />
-          <Button variant="outlined">
+          <Button variant="outlined" className="h-[36px]">
             <Search className="text-gray-600" />
           </Button>
 
           <Link href="/admin/books/add">
-            <Button variant="filled">Thêm sách mới</Button>
+            <Button variant="filled" className="h-[36px]">
+              Thêm sách mới
+            </Button>
           </Link>
         </div>
       </div>
 
-      <ListBook />
+      <ListBook searchTerm={searchTerm} />
     </div>
   );
 }
