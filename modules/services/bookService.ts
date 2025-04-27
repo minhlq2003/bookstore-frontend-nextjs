@@ -1,6 +1,4 @@
-/* -------- bookService.ts -------- */
-
-import { Book, BookListResponse } from "@/constant/types";
+import { Book, BookListResponse, BookResponse } from "@/constant/types";
 import { HttpClient } from "@/lib/HttpClient";
 
 const API_PREFIX_BOOK_PATH = "/book";
@@ -18,14 +16,25 @@ export const getBooks = async (params?: { page?: number; limit?: number }) => {
   return response;
 };
 
+export const getBooksByCategory = async (
+  categorySlug?: string,
+  params?: { page?: number; limit?: number }
+) => {
+  const response = await http.get<BookListResponse>(
+    `${API_PREFIX_BOOK_PATH}/category/${categorySlug}`,
+    { params }
+  );
+  return response;
+};
+
 export const getBookById = (id: string) =>
-  http.get<Book>(`${API_PREFIX_BOOK_PATH}/${id}`);
+  http.get<BookResponse>(`${API_PREFIX_BOOK_PATH}/details/${id}`);
 
 export const createBook = (data: Partial<Book>) =>
-  http.post<Book>(`${API_PREFIX_BOOK_PATH}`, data);
+  http.post<BookResponse>(`${API_PREFIX_BOOK_PATH}/createbook`, data);
 
 export const updateBook = (id: string, data: Partial<Book>) =>
-  http.put<Book>(`${API_PREFIX_BOOK_PATH}/${id}`, data);
+  http.post<BookResponse>(`${API_PREFIX_BOOK_PATH}/updatebook/${id}`, data);
 
 export const deleteBook = (id: string) =>
-  http.delete<void>(`${API_PREFIX_BOOK_PATH}/${id}`);
+  http.post<BookResponse>(`${API_PREFIX_BOOK_PATH}/deletebook/${id}`);

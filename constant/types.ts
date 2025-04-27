@@ -71,6 +71,9 @@ export interface BookListResponse {
   code: number;
   message?: string;
   data: Book[];
+  page: number;
+  total: number;
+  totalPages: number;
 }
 
 export interface Discount {
@@ -160,13 +163,13 @@ export type Order = {
   receiverName: string;
   receiverPhone: string;
   address: string;
-  paymentMethod: PaymentMethod;
+  payment_method: PaymentMethod;
   orderStatus: OrderStatus;
   total: number;
-  userId?: string;
-  orderDetails: OrderDetail[];
-  createdAt: string;
-  updatedAt: string;
+  user_id?: string;
+  order_details: OrderDetail[];
+  created_at: string;
+  updated_at: string;
 };
 
 export type OrderResponse = {
@@ -178,10 +181,27 @@ export type OrderResponse = {
 export type ListOrdersResponse = {
   code: number;
   message?: string;
-  data: {
-    pageNo: number;
-    pageSize: number;
-    totalPages: number;
-    items: Order[];
-  };
+  data: Order[];
+  page: number;
+  total: number;
+  totalPages: number;
 };
+
+export interface Address {
+  id: number;
+  user_id: number;
+  address: string;
+  receiver_name: string;
+  receiver_phone: string;
+}
+
+export interface User {
+  id: number;
+  username: string;
+  name: string;
+  email: string;
+  avatar: string;
+  status: number;
+  role: string;
+  addresses: Address[];
+}

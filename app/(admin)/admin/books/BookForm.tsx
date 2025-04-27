@@ -1,4 +1,4 @@
-import { Form, Input, InputNumber, Select, Button, FormInstance } from "antd";
+import { Form, Input, InputNumber, Select, FormInstance } from "antd";
 import React, { useEffect, useState } from "react";
 
 import { TrashIcon } from "lucide-react";
@@ -114,7 +114,7 @@ const BookForm: React.FC<{
         <Form.Item
           name="category"
           label="Danh mục"
-          rules={[{ required: true, message: "Vui lòng chọn danh mục!" }]}
+          // rules={[{ required: true, message: "Vui lòng chọn danh mục!" }]}
           style={{ width: "30%" }}
         >
           <Select placeholder="Chọn danh mục">
@@ -129,7 +129,7 @@ const BookForm: React.FC<{
         <Form.Item
           name="publisher"
           label="Nhà xuất bản"
-          rules={[{ required: true, message: "Vui lòng chọn nhà xuất bản!" }]}
+          // rules={[{ required: true, message: "Vui lòng chọn nhà xuất bản!" }]}
           style={{ width: "30%" }}
         >
           <Select placeholder="Chọn nhà xuất bản">

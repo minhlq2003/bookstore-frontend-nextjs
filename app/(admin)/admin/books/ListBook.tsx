@@ -2,10 +2,10 @@
 
 import { Book } from "@/constant/types";
 import { mockBooks } from "@/data/bookData";
-import { getBooks } from "@/modules/services/bookService";
+import { deleteBook, getBooks } from "@/modules/services/bookService";
 import { Button } from "antd";
 import Modal from "antd/es/modal/Modal";
-import Table, { ColumnsType } from "antd/es/table";
+import Table, { ColumnsType, TablePaginationConfig } from "antd/es/table";
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -14,6 +14,9 @@ export default function ListBook() {
   const [data, setData] = useState<Book[]>(mockBooks);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [bookToDelete, setBookToDelete] = useState<Book | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(5);
+  const [totalBooks, setTotalBooks] = useState(0);
 
   const showDeleteModal = (record: Book) => {
     setBookToDelete(record);
@@ -25,24 +28,33 @@ export default function ListBook() {
     console.log("response", response);
 
     setData(response?.data ?? []);
+    setTotalBooks(response?.total ?? 0);
   };
 
   useEffect(() => {
-    fetchBooks(1, 10);
-  }, []);
+    fetchBooks(currentPage, pageSize);
+  }, [currentPage, pageSize]);
 
   const handleDelete = () => {
-    setData((prev) => prev.filter((book) => book.id !== bookToDelete?.id));
+    deleteBook(String(bookToDelete?.id ?? ""));
     setIsModalVisible(false);
     setBookToDelete(null);
+    fetchBooks(currentPage, pageSize);
+  };
+
+  const handleTableChange = (pagination: TablePaginationConfig) => {
+    setCurrentPage(pagination.current ?? 1);
+    setPageSize(pagination.pageSize ?? 5);
   };
 
   const columns: ColumnsType<Book> = [
     {
       title: "Ảnh bìa",
-      dataIndex: "image",
+      dataIndex: ["book_images", 0, "url"],
       key: "image",
-      render: (url: string) => <Image src={url} alt="Book cover" width={50} />,
+      render: (url: string) => (
+        <Image src={url ?? ""} alt="Book cover" width={100} height={100} />
+      ),
     },
     { title: "Tên sách", dataIndex: "title", key: "title" },
     { title: "Tác giả", dataIndex: "author", key: "author" },
@@ -89,7 +101,12 @@ export default function ListBook() {
         columns={columns}
         dataSource={data}
         rowKey="id"
-        pagination={{ pageSize: 5 }}
+        pagination={{
+          current: currentPage,
+          pageSize: pageSize,
+          total: totalBooks,
+        }}
+        onChange={handleTableChange}
       />
 
       <Modal
