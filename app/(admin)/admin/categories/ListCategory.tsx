@@ -1,17 +1,15 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Category } from "@/constant/types";
-import { mockCategories } from "@/data/categoryData";
+import { Category } from "@/constant/types";;
 import { Button, Modal } from "antd";
 import Table, { ColumnsType } from "antd/es/table";
-import dayjs from "dayjs";
-import { getCategories, getCategoryById } from '@/modules/services/categoryService'
+import { getCategories } from '@/modules/services/categoryService'
 
 export default function ListCategory() {
-  const [categories, setCategories] = useState<Category[]>(mockCategories);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [categoryToDelete, setBookToDelete] = useState<Category | null>(null);
+  const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(null);
 
   const fetchCategories = async (pageNo: number, pageSize: number) => {
     const response = await getCategories({ page: pageNo, limit: pageSize });
@@ -25,16 +23,17 @@ export default function ListCategory() {
   }, []);
 
   const showDeleteModal = (record: Category) => {
-    setBookToDelete(record);
+    setCategoryToDelete(record);
     setIsModalVisible(true);
   };
 
   const handleDelete = () => {
+    // Need call API delete
     setCategories((prev) =>
       prev.filter((category) => category.id !== categoryToDelete?.id)
     );
     setIsModalVisible(false);
-    setBookToDelete(null);
+    setCategoryToDelete(null);
   };
 
   const columns: ColumnsType<Category> = [
@@ -46,18 +45,6 @@ export default function ListCategory() {
       dataIndex: "description",
       key: "description",
       ellipsis: true,
-    },
-    {
-      title: "Tạo lúc",
-      dataIndex: "createdAt",
-      key: "createdAt",
-      render: (date: string) => dayjs(date).format("DD/MM/YYYY HH:mm"),
-    },
-    {
-      title: "Cập nhật",
-      dataIndex: "updatedAt",
-      key: "updatedAt",
-      render: (date: string) => dayjs(date).format("DD/MM/YYYY HH:mm"),
     },
     {
       title: "Hành động",
