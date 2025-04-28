@@ -60,7 +60,7 @@ export default function ListCategory() {
             Xóa
           </Button>
           <Button type="primary">
-            <a href={`/admin/category/edit?id=${record.id}`}>Sửa</a>
+            <a href={`/admin/categories/edit?id=${record.id}`}>Sửa</a>
           </Button>
         </>
       ),

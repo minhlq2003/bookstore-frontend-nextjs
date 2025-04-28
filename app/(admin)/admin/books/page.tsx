@@ -31,7 +31,7 @@ export default function BookPage() {
             <Search className="text-gray-600" />
           </Button>
 
-          <Link href="/admin/books/add">
+          <Link href="/admin/books/create">
             <Button variant="filled" className="h-[36px]">
               Thêm sách mới
             </Button>

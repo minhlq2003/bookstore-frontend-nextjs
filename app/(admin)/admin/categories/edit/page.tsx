@@ -34,8 +34,6 @@ export default function EditCategory() {
       name: values.name,
       slug: values.slug,
       description: values.description,
-      createdAt: values.createdAt,
-      updatedAt: values.updatedAt,
     };
 
     try {
