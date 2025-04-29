@@ -157,18 +157,21 @@ const ProfilePage = () => {
                 justifyContent: "flex-end",
               }}
             >
-              <Radio.Group defaultValue="a">
+              {/* <Radio.Group defaultValue="a">
                 <Radio.Button value="a">TỔNG QUAN</Radio.Button>
                 <Radio.Button value="b">NHÓM</Radio.Button>
                 <Radio.Button value="c">DỰ ÁN</Radio.Button>
-              </Radio.Group>
+              </Radio.Group> */}
             </Col>
           </Row>
         }
       ></Card>
 
-      <Row gutter={[24, 24]} className="pt-6">
-        <Col span={24} md={8} className="mb-6">
+      <Row
+        gutter={[24, 24]}
+        className="pt-6"
+      >
+        {/* <Col span={24} md={8} className="mb-6">
           <Card
             bordered={false}
             className="header-solid h-full"
@@ -194,9 +197,9 @@ const ProfilePage = () => {
               )}
             />
           </Card>
-        </Col>
+        </Col> */}
 
-        <Col span={24} md={8} className="mb-6">
+        <Col span={72} md={24} className="mb-6">
           <Card
             bordered={false}
             title={<h6 className="font-semibold m-0">Thông tin Hồ sơ</h6>}
@@ -251,7 +254,7 @@ const ProfilePage = () => {
           </Card>
         </Col>
 
-        <Col span={24} md={8} className="mb-6">
+        {/* <Col span={24} md={8} className="mb-6">
           <Card
             bordered={false}
             title={<h6 className="font-semibold m-0">Cuộc hội thoại</h6>}
@@ -298,7 +301,7 @@ const ProfilePage = () => {
               )}
             />
           </Card>
-        </Col>
+        </Col> */}
       </Row>
 
       <Card
