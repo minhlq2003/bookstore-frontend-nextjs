@@ -26,12 +26,12 @@ export default function ProductPage() {
         <div className="flex gap-2">
           <Input
             type="text"
-            placeholder="Tìm kiếm sách..."
+            placeholder="Tìm kiếm danh mục..."
             value={searchTerm}
             onChange={handleSearchChange}
             className="p-2 rounded-md border border-gray-300 dark:border-gray-600"
           />
-          <Button>
+          <Button className="px-4 py-5 items-center justify-center">
             <Search className="text-gray-600" />
           </Button>
         </div>

@@ -1,33 +1,52 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button, Form, message } from "antd";
 import Title from "antd/es/typography/Title";
-import CategoryForm, { CategoryFormValues } from "../CategoryForm";
+import CategoryForm from "../CategoryForm";
 import { CheckCircleIcon } from "lucide-react";
+import { Category } from "@/constant/types";
+import { getCategoryById, updateCategory } from "@/modules/services/categoryService";
 
 export default function EditCategory() {
   const [form] = Form.useForm();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const categoryId = searchParams.get("id");
+  const id = searchParams.get("id");
 
-  const [loading, setLoading] = useState(false);
   const [category, setCategory] = useState<Category | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (categoryId) {
-      //   setLoading(true);
-    }
-  }, [categoryId]);
+  const handleFetchCategory = useCallback(
+    async (id: string) => {
+      setLoading(true);
+      const res = await getCategoryById(id);
+      setCategory(res?.data || null);
+      setLoading(false);
+    },
+    [form]
+  );
 
-  const onFinish = async (values: CategoryFormValues) => {
+  const onFinish = async (values: Category) => {
+    const dataPayload = {
+      id: values.id,
+      name: values.name,
+      slug: values.slug,
+      description: values.description,
+    };
+
     try {
-      message.success("Danh mục đã được cập nhật thành công!");
+      if (id) {
+        await updateCategory(id, dataPayload);
+      } else {
+        message.error("Invalid category id. Please try again.");
+      }
+      message.success("Category updated successfully!");
+      form.resetFields();
       router.push("/admin/categories");
     } catch {
-      message.error("Cập nhật danh mục thất bại. Vui lòng thử lại.");
+      message.error("Failed to update category. Please try again.");
     }
   };
 
@@ -35,13 +54,16 @@ export default function EditCategory() {
     message.error("Vui lòng kiểm tra lại thông tin.");
   };
 
-  if (!categoryId) {
-    return (
-      <div className=" flex items-center justify-center">
-        <p>Không tìm thấy danh mục để chỉnh sửa.</p>
-      </div>
-    );
-  }
+  useEffect(() => {
+    if (id) {
+      handleFetchCategory(id);
+    }
+  }, [id, handleFetchCategory]);
+
+  useEffect(() => {
+    form.setFieldsValue(category);
+    console.log("category", category);
+  }, [category, form]);
 
   return (
     <div className="min-h-full w-full bg-white dark:bg-gray-900 flex flex-col items-start justify-start rounded-lg shadow-sm gap-4 px-4 pt-10">

@@ -51,7 +51,7 @@ function HeaderCMS({ collapsed, setCollapsed, userAvatar }: HeaderCMSProps) {
     async function checkLoginStatus() {
       const loggedIn = await isLogin();
       const isAccountLoggedIn = localStorage.getItem("user");
-      if(loggedIn || isAccountLoggedIn) {
+      if (loggedIn || isAccountLoggedIn) {
         setIsLoggedIn(true);
       }
     }
@@ -63,7 +63,7 @@ function HeaderCMS({ collapsed, setCollapsed, userAvatar }: HeaderCMSProps) {
   };
 
   const handleProfileClick = () => {
-    router.push("/users/profile");
+    router.push("/admin/profile");
   };
 
   const handleClickOutside = (event: MouseEvent) => {

@@ -35,12 +35,14 @@ export default function CategoryForm({
         name='name'
         rules={[{ required: true, message: 'Vui lòng nhập tên danh mục!' }]}
       >
-        <Input onBlur={() => {
-          const slug = form.getFieldValue("name").trim().replace(/\s+/g, '-').toLowerCase()
-          console.log("slug=", slug);
+        <Input
+          onBlur={() => {
+            const slug = form.getFieldValue("name").trim().replace(/\s+/g, '-').toLowerCase()
+            console.log("slug=", slug);
 
-          form.setFieldValue("slug", slug)
-        }} placeholder='Nhập tên danh mục' />
+            form.setFieldValue("slug", slug)
+          }}
+          placeholder='Nhập tên danh mục' />
       </Form.Item>
 
       <Form.Item
