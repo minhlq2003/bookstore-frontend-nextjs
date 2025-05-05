@@ -8,12 +8,11 @@ import { useRouter } from "next/navigation";
 import React, { useCallback, useState } from "react";
 import MediaList from "./MediaList";
 import SearchInput from "./SearchInput";
-import { MediaData } from "@/constant/types";
 import { useTranslation } from "react-i18next";
 
 interface MediaProp {
   isOpenModal?: boolean;
-  onSelectMedia?: (media: MediaData) => void;
+  onSelectMedia?: (media: string) => void;
 }
 
 const Media = ({ isOpenModal, onSelectMedia }: MediaProp) => {
@@ -35,12 +34,10 @@ const Media = ({ isOpenModal, onSelectMedia }: MediaProp) => {
   );
 
   return (
-    <div className="p-4 pt-0">
+    <div className="p-2 pt-6 bg-white">
       {!isOpenModal && (
         <div className="flex justify-between space-x-4 items-center mt-4">
-          <Title level={2} className="!m-0">
-            {t("Media Library")}
-          </Title>
+          <h1 className="text-3xl font-bold">Thư viện</h1>
           <Button
             color="primary"
             variant="outlined"
@@ -51,7 +48,7 @@ const Media = ({ isOpenModal, onSelectMedia }: MediaProp) => {
           </Button>
         </div>
       )}
-      <div className="lg:flex lg:space-x-0 justify-between align-middle mt-5 py-3 px-4 border-[0.5px] border-[#a5a1a18e] rounded-lg">
+      <div className="flex justify-between align-middle mt-5 py-3 border-[0.5px] border-[#a5a1a18e] rounded-lg">
         <Space>
           {!isOpenModal && (
             <Space className="view">
