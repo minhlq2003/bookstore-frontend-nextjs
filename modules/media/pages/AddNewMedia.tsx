@@ -4,10 +4,10 @@ import { UploadOutlined } from "@ant-design/icons";
 import { Button, Image, List, message, Spin, Upload, UploadFile } from "antd";
 import Title from "antd/es/typography/Title";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
-import { addMedia } from "../services/apiServices";
+import React, { useEffect, useRef, useState } from "react";
 import { MediaData } from "@/constant/types";
 import { useTranslation } from "react-i18next";
+import { uploadMedia } from "@/modules/services/mediaService";
 
 interface MediaUploadProps {
   isOpenModal?: boolean;
@@ -25,6 +25,54 @@ const MediaUpload: React.FC<MediaUploadProps> = ({
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const [userId, setUserId] = useState<number>(3333);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const user = JSON.parse(localStorage.getItem("user") || "{}");
+      if (!user || !user.id) {
+        router.push("/signin");
+      } else {
+        setUserId(user.id);
+      }
+    }
+  }, [router]);
+
+  const handleImageClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      try {
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const response = await uploadMedia(formData, userId);
+        if (response) {
+          if (setChooseMedia) {
+            setChooseMedia(true);
+          }
+          setUploadedFiles((prev) => [
+            ...prev,
+            ...(Array.isArray(response) ? response : [response]),
+          ]);
+          setFileList([]);
+          message.success(t("Media uploaded successfully!"));
+        } else {
+          message.error(t("Failed to upload media."));
+        }
+
+        message.success(t("Media uploaded successfully!"));
+      } catch {
+        message.error(t("Failed to upload media."));
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
 
   const handleUploadChange = async (info: { fileList: UploadFile[] }) => {
     setLoading(true);
@@ -32,17 +80,23 @@ const MediaUpload: React.FC<MediaUploadProps> = ({
 
     const formData = new FormData();
 
-    info.fileList.forEach((file) => {
-      formData.append("files", file.originFileObj as Blob);
-    });
+    formData.append("file", info.fileList[0].originFileObj as Blob);
 
     try {
-      const response: MediaData[] = await addMedia(formData);
-      if (setChooseMedia) {
-        setChooseMedia(true);
+      const response = await uploadMedia(formData, userId);
+      if (response) {
+        if (setChooseMedia) {
+          setChooseMedia(true);
+        }
+        setUploadedFiles((prev) => [
+          ...prev,
+          ...(Array.isArray(response) ? response : [response]),
+        ]);
+        setFileList([]);
+        message.success(t("Media uploaded successfully!"));
+      } else {
+        message.error(t("Failed to upload media."));
       }
-      setUploadedFiles((prev) => [...prev, ...response]);
-      setFileList([]);
 
       message.success(t("Media uploaded successfully!"));
     } catch {
@@ -86,23 +140,47 @@ const MediaUpload: React.FC<MediaUploadProps> = ({
             <Spin tip={t("Uploading...")} />
           </div>
         ) : (
-          <Dragger
-            multiple
-            fileList={fileList}
-            onChange={handleUploadChange}
-            beforeUpload={() => false}
-            className="border-dashed border- border-gray-300 rounded-lg "
-          >
-            <p className="ant-upload-drag-icon">
-              <UploadOutlined />
-            </p>
-            <p className="ant-upload-text">
-              {t("Click or drag file to this area to upload")}
-            </p>
-            <p className="ant-upload-hint">
-              {t("Support for a single or bulk upload.")}
-            </p>
-          </Dragger>
+          // <Dragger
+          //   multiple
+          //   fileList={fileList}
+          //   onChange={handleUploadChange}
+          //   beforeUpload={() => false}
+          //   className="border-dashed border- border-gray-300 rounded-lg "
+          // >
+          //   <p className="ant-upload-drag-icon">
+          //     <UploadOutlined />
+          //   </p>
+          //   <p className="ant-upload-text">
+          //     {t("Click or drag file to this area to upload")}
+          //   </p>
+          //   <p className="ant-upload-hint">
+          //     {t("Support for a single or bulk upload.")}
+          //   </p>
+          // </Dragger>
+          <div>
+            {" "}
+            <div
+              className=" left-20 right-0 top-5 bottom-0 w-full flex-col gap-5 h-full rounded-lg border border-[#1677ff] bg-white flex items-center justify-center cursor-pointer"
+              onClick={handleImageClick}
+            >
+              <p className="ant-upload-drag-icon">
+                <UploadOutlined />
+              </p>
+              <p className="ant-upload-text">
+                {t("Click or drag file to this area to upload")}
+              </p>
+              <p className="ant-upload-hint">
+                {t("Support for a single or bulk upload.")}
+              </p>
+            </div>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleImageChange}
+            />
+          </div>
         )}
       </div>
 
@@ -125,7 +203,11 @@ const MediaUpload: React.FC<MediaUploadProps> = ({
               >
                 <List.Item.Meta
                   avatar={
-                    <Image width={50} src={`${item.url}`} alt={item.name} />
+                    <Image
+                      width={50}
+                      src={`${item.file_url}`}
+                      alt={item.name}
+                    />
                   }
                   title={item.name}
                 />

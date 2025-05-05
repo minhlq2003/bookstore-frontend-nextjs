@@ -82,9 +82,9 @@ const EditMedia: React.FC = () => {
   };
 
   const handleCopyUrl = () => {
-    if (mediaData && mediaData.url) {
+    if (mediaData && mediaData.file_url) {
       navigator.clipboard
-        .writeText(`$${mediaData.url}`)
+        .writeText(`$${mediaData.file_url}`)
         .then(() => message.success(t("URL copied to clipboard!")))
         .catch(() => message.error(t("Failed to copy URL")));
     }
@@ -93,7 +93,7 @@ const EditMedia: React.FC = () => {
   const handleDownloadFile = (e: React.MouseEvent) => {
     e.preventDefault();
     if (mediaData) {
-      fetch(`${mediaData.url}`, {
+      fetch(`${mediaData.file_url}`, {
         method: "GET",
         headers: {
           "Content-Type": mediaData.mime,
@@ -190,7 +190,7 @@ const EditMedia: React.FC = () => {
                         style={{ alignItems: "flex-start" }}
                       >
                         <Image
-                          src={`${mediaData?.url}`}
+                          src={`${mediaData?.file_url}`}
                           alt={mediaData?.name}
                           height={350}
                         />
@@ -251,7 +251,7 @@ const EditMedia: React.FC = () => {
             </p>
             <p>
               <strong>{t("File URL:")}</strong>{" "}
-              <a href={mediaData?.url}>{mediaData?.url}</a>
+              <a href={mediaData?.file_url}>{mediaData?.file_url}</a>
             </p>
             <p>
               <strong>{t("File size:")}</strong> {mediaData?.size}

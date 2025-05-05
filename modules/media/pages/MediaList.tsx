@@ -14,7 +14,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { formatDate } from "../../../lib/utils";
-import { deleteMedia, fetchMedia, updateMedia } from "../services/apiServices";
+import { deleteMedia, updateMedia } from "../services/apiServices";
 import MediaModalBodyEdit from "./MediaModalEditBody";
 import {
   FileUpdate,
@@ -23,12 +23,13 @@ import {
   Pagination,
 } from "@/constant/types";
 import { useTranslation } from "react-i18next";
+import { getMedia } from "@/modules/services/mediaService";
 
 interface MediaListProps {
   searchTerm?: string;
   isView?: boolean;
   isOpenModal?: boolean;
-  onSelectMedia?: (media: MediaData) => void;
+  onSelectMedia?: (media: string) => void;
 }
 
 const MediaList = ({
@@ -55,11 +56,10 @@ const MediaList = ({
   const [selectedMedia, setSelectedMedia] = useState<null | number>(null);
 
   const fetchMediaData = async (paginate?: Pagination, searchTerm?: string) => {
-    const response = await fetchMedia(
-      paginate?.current ?? 1,
-      20,
-      searchTerm ?? ""
-    );
+    const response = await getMedia({
+      page: paginate?.page || 1,
+      limit: paginate?.pageSize || 40,
+    });
     return response;
   };
 
@@ -68,15 +68,11 @@ const MediaList = ({
       setValue("loading", true);
       try {
         const response = await fetchMediaData(paginate, searchTerm);
-        if (response?.error) {
-          setValue("error", response?.error?.message);
-          return;
-        }
-        setValue("dataItem", response.length > 0 ? response : []);
+        setValue("dataItem", response?.data?.length ? response.data : []);
         setValue("pagination", {
           ...pagination,
-          total: response?.meta?.pagination.total ?? 0,
-          current: response?.meta?.pagination.page ?? 1,
+          total: response?.pagination.total ?? 0,
+          current: response?.pagination.page ?? 1,
         });
         setValue("error", null);
       } catch (err) {
@@ -89,10 +85,10 @@ const MediaList = ({
   );
 
   const handleSeeMore = async () => {
-    const newPage = (pagination.current ?? 0) + 1;
+    const newPage = (pagination.page ?? 0) + 1;
     const newPagination: Pagination = {
       current: newPage,
-      pageSize: 24,
+      pageSize: 40,
       total: pagination.total,
       page: newPage,
     };
@@ -186,7 +182,7 @@ const MediaList = ({
 
   const handleSelectMedia = (media: MediaData) => {
     if (onSelectMedia) {
-      onSelectMedia(media);
+      onSelectMedia(media.file_url);
     }
     setSelectedMedia(null);
   };
@@ -203,7 +199,7 @@ const MediaList = ({
       width: 60,
       render: (formats: string, record: MediaData) => (
         <Image
-          src={`${formats || record.url}`}
+          src={`${formats || record.file_url}`}
           height={40}
           width={40}
           className="object-contain"
@@ -213,14 +209,14 @@ const MediaList = ({
     },
     {
       title: t("Name"),
-      dataIndex: ["name"],
+      dataIndex: ["file_name"],
       key: "name",
       width: 200,
       sorter: (a, b) => a.name.localeCompare(b.name),
     },
     {
       title: t("Published"),
-      dataIndex: ["createdAt"],
+      dataIndex: ["created_at"],
       key: "createdAt",
       width: 100,
       render: (createdAt: string) => {
@@ -237,7 +233,7 @@ const MediaList = ({
     },
     {
       title: t("Last Updated"),
-      dataIndex: ["updatedAt"],
+      dataIndex: ["created_at"],
       key: "updatedAt",
       width: 100,
       render: (updatedAt: string) => {
@@ -282,7 +278,7 @@ const MediaList = ({
   return (
     <div
       style={{
-        height: isOpenModal ? "650px" : "auto",
+        height: isOpenModal ? "600px" : "auto",
         overflowY: isOpenModal ? "scroll" : "visible",
         marginTop: isOpenModal ? "50px" : "0px",
       }}
@@ -308,7 +304,7 @@ const MediaList = ({
             {dataItem?.map((media, index) => (
               <Col span={3} key={index} className="py-2">
                 <Image
-                  src={`${media.url}`}
+                  src={`${media.file_url}`}
                   height={100}
                   width="100%"
                   className="object-contain cursor-pointer"

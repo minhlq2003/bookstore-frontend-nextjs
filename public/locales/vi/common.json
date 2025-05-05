@@ -55,5 +55,27 @@
     "Size": "Kích thước",
     "Pages": "Số trang",
     "Description": "Mô tả",
-    "Relevant Books": "Sách liên quan"
+    "Relevant Books": "Sách liên quan",
+    "Books": "Sách",
+    "Create Book": "Thêm sách",
+    "Dashboard": "Bảng điều khiển",
+    "Orders": "Đơn hàng",
+    "Media": "Thư viện",
+    "Posts": "Bài viết",
+    "Create Post": "Thêm bài viết",
+    "Users": "Người dùng",
+    "Create user": "Thêm người dùng",
+    "Setting":"Cài đặt",
+    "List Books": "Danh Sách Sách",
+    "Edit Books": "SỬa Sách",
+    "List Posts": "Danh sách bài viết",
+    "Edit Post": "Sửa bài viết",
+    "Admin": "Quản trị viên",
+    "Categories": "Danh mục",
+    "Create Category":"Thêm danh mục",
+    "Find book...": "Tìm kiếm sách...",
+    "Add Book": "Thêm sách",
+    "Save Change": "Lưu thay đổi",
+    "Edit Book": "Sửa sách"
+
 }

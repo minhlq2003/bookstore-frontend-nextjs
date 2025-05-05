@@ -2,7 +2,10 @@ import { ChangeEvent } from "react";
 
 export interface Book {
   import_price: string;
-  book_images: string[];
+  book_images: {
+    id: number;
+    url: string;
+  }[];
   id: number;
   title: string;
   subTitle?: string;
@@ -12,7 +15,7 @@ export interface Book {
   imageUrl: string;
   discount?: number;
   genre?: string;
-  publisher?: string;
+  publisher?: Publisher;
   publishedDate?: string;
   weight?: number;
   size?: string;
@@ -20,9 +23,11 @@ export interface Book {
   description?: string;
   sold?: number;
   storage?: number;
-  categories?: string;
+  categories?: Category;
   category?: string;
   quantity?: number;
+  stock?: number;
+  publish_year: number;
 }
 
 export type ApiBook = {
@@ -34,7 +39,7 @@ export type ApiBook = {
   rating?: number;
   book_images?: { url: string }[];
   import_price?: number;
-}
+};
 
 export interface PathItem {
   [k: string]: {
@@ -223,7 +228,7 @@ export interface MediaData {
   ext: string;
   mime: string;
   size: number;
-  url: string;
+  file_url: string;
   previewUrl: string;
   provider: string;
   provider_metadata: string;
@@ -261,4 +266,9 @@ export interface Pagination {
 
 export interface InputSearchProps {
   handleSearchChange: (event: ChangeEvent<HTMLInputElement>) => void;
+}
+
+export interface MediaResponse {
+  data: MediaData[];
+  pagination: Pagination;
 }

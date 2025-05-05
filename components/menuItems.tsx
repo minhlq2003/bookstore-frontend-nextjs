@@ -188,8 +188,8 @@ export const menuItems: Array<CustomMenuItem> = [
     icon: <DatabaseOutlined />,
   },
   {
-    label: "Post",
-    key: "post",
+    label: "Posts",
+    key: "posts",
     icon: <FileOutlined />,
     children: postItems,
   },
