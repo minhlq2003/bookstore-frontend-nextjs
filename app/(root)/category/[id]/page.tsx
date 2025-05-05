@@ -4,14 +4,15 @@ import Image from "next/image";
 import imgBook from "@/public/images/book-img.png";
 import BookItem from "@/components/book-item";
 import { useParams } from "next/navigation";
-import {ApiBook, Book} from "@/constant/types";
+import { ApiBook, Book } from "@/constant/types";
 import { useEffect, useState, useCallback } from "react";
 
 function Category() {
   const { t } = useTranslation("common");
   const { id } = useParams();
 
-  const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000";
+  const apiBaseUrl =
+    process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000";
 
   const [newArrivals, setNewArrivals] = useState<Book[]>([]);
   const [recommendations, setRecommendations] = useState<Book[]>([]);
@@ -19,7 +20,9 @@ function Category() {
   const [loadingRecommendations, setLoadingRecommendations] = useState(true);
 
   // Helper to map API data to Book type
-  const mapApiBookToBook = (apiBook: ApiBook): {
+  const mapApiBookToBook = (
+    apiBook: ApiBook
+  ): {
     id: number;
     title: string;
     subTitle: string;
@@ -27,7 +30,7 @@ function Category() {
     imageUrl: string;
     author: string;
     rating: number;
-    book_images: { url: string }[]
+    book_images: { url: string }[];
   } => ({
     id: apiBook.id,
     title: apiBook.title,
@@ -92,7 +95,7 @@ function Category() {
       <div className="bg-gray-200 max-w-[1440px] mx-auto">
         <div className="sm:rounded-xl rounded-none overflow-hidden">
           <div className="bg-[#0B3D91] text-white py-4 text-left sm:text-3xl text-xl font-bold sm:pl-10 pl-3">
-            {t(`${id?.toUpperCase()} BOOKS`)}
+            {t(`${id} BOOKS`)}
           </div>
 
           <div className="mx-auto sm:p-6 p-3 bg-[#0B3D9180] text-white">

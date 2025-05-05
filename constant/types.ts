@@ -1,6 +1,11 @@
+import { ChangeEvent } from "react";
+
 export interface Book {
   import_price: string;
-  book_images: string[];
+  book_images: {
+    id: number;
+    url: string;
+  }[];
   id: number;
   title: string;
   subTitle?: string;
@@ -10,7 +15,7 @@ export interface Book {
   imageUrl: string;
   discount?: number;
   genre?: string;
-  publisher?: string;
+  publisher?: Publisher;
   publishedDate?: string;
   weight?: number;
   size?: string;
@@ -18,8 +23,13 @@ export interface Book {
   description?: string;
   sold?: number;
   storage?: number;
+  categories?: Category;
   category?: string;
+  quantity?: number;
+  stock?: number;
+  publish_year: number;
 }
+
 export type ApiBook = {
   id: number;
   title: string;
@@ -28,7 +38,9 @@ export type ApiBook = {
   author: string;
   rating?: number;
   book_images?: { url: string }[];
+  import_price?: number;
 };
+
 export interface PathItem {
   [k: string]: {
     PATH: string;
@@ -162,13 +174,13 @@ export type Order = {
   receiverName: string;
   receiverPhone: string;
   address: string;
-  paymentMethod: PaymentMethod;
+  payment_method: PaymentMethod;
   orderStatus: OrderStatus;
   total: number;
-  userId?: string;
-  orderDetails: OrderDetail[];
-  createdAt: string;
-  updatedAt: string;
+  user_id?: string;
+  order_details: OrderDetail[];
+  created_at: string;
+  updated_at: string;
 };
 
 export type OrderResponse = {
@@ -180,10 +192,83 @@ export type OrderResponse = {
 export type ListOrdersResponse = {
   code: number;
   message?: string;
-  data: {
-    pageNo: number;
-    pageSize: number;
-    totalPages: number;
-    items: Order[];
-  };
+  data: Order[];
+  page: number;
+  total: number;
+  totalPages: number;
 };
+
+export interface Address {
+  id: number;
+  user_id: number;
+  address: string;
+  receiver_name: string;
+  receiver_phone: string;
+}
+
+export interface User {
+  id: number;
+  username: string;
+  name: string;
+  email: string;
+  avatar: string;
+  status: number;
+  role: string;
+  addresses: Address[];
+}
+
+export interface MediaData {
+  id: number;
+  name: string;
+  alternativeText: string;
+  caption: string;
+  width: number;
+  height: number;
+  hash: string;
+  ext: string;
+  mime: string;
+  size: number;
+  file_url: string;
+  previewUrl: string;
+  provider: string;
+  provider_metadata: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface FileUpdate {
+  fileInfo?: {
+    name: string;
+    alternativeText: string;
+    caption: string;
+    width?: number;
+    height?: number;
+  };
+  file?: File;
+}
+
+export interface FormValuesMedia {
+  pagination: Pagination;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+  dataItem: MediaData[];
+  loading: boolean;
+  error: string | null;
+}
+
+export interface Pagination {
+  page?: number;
+  pageSize: number | undefined;
+  current: number | undefined;
+  total: number | undefined;
+}
+
+export interface InputSearchProps {
+  handleSearchChange: (event: ChangeEvent<HTMLInputElement>) => void;
+}
+
+export interface MediaResponse {
+  data: MediaData[];
+  pagination: Pagination;
+}

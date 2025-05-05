@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@ant-design/icons": "^6.0.0",
+    "@ant-design/v5-patch-for-react-19": "^1.0.3",
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
     "@fortawesome/free-brands-svg-icons": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
@@ -18,10 +20,10 @@
     "@heroui/system": "^2.4.7",
     "@heroui/table": "^2.2.9",
     "@heroui/theme": "^2.4.6",
-    "@next/swc-win32-x64-msvc": "^15.2.3",
+    "@next/swc-win32-x64-msvc": "^15.3.1",
     "@radix-ui/react-select": "^2.1.6",
     "antd": "^5.24.4",
-    "axios": "^1.8.4",
+    "axios": "^1.9.0",
     "chart.js": "^4.4.8",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -38,7 +40,10 @@
     "react-chartjs-2": "^5.3.0",
     "react-countup": "^6.5.3",
     "react-dom": "^19.0.0",
+    "react-easy-crop": "^5.4.1",
+    "react-hook-form": "^7.56.1",
     "react-i18next": "^15.4.0",
+    "react-toastify": "^11.0.5",
     "shadcn": "^2.4.0-canary.9",
     "tailwind-merge": "^3.0.1",
     "tailwindcss-animate": "^1.0.7"

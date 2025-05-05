@@ -1,150 +1,23 @@
-import { BookDetails } from "@/constant/types";
-import { faRemove } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+"use client";
+import { Book } from "@/constant/types";
+import { useEffect, useState } from "react";
 import Image from "next/image";
-import React from "react";
+import { useTranslation } from "next-i18next";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faRemove } from "@fortawesome/free-solid-svg-icons";
 
-const page = () => {
-  const books: BookDetails[] = [
-    {
-      id: 1,
-      title: "CHASING NEW HORIZONS",
-      subTitle: "Inside the Epic First Mission to Pluto",
-      price: 25.0,
-      imageUrl:
-        "https://s3-alpha-sig.figma.com/img/655f/c8c0/309c950754d34dae6569f2f7cdd56c8e?Expires=1740355200&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=G2bllpJ2iOZpmP1FPY-wVKixum3gNTJ2DxPb6Y-ODtv2EXnLc-eWxJ2bofLr-mi7KSGC3o-QWcVghIqRCd4i71Nwp6Hp~WBt9ummne0N31TB0lf4nLQlZy3p4maLN3dINZtiDcvtcpckoDzIQwfCIIDOwWbA5cCV25EppdpKZcX~1ZjgTQBweRy87psNsxarFFrUIDbi~7Yi24RJ0VRkyhSZmnj48wD~JOdKItCWERacpW3wqJlpk0BrPMPIio1suC459-ZU~mIN7nt91CGXtGk3YG7FNxiwwpSuWvYtc3vNlLnugYFtsS4c~FE9X5dHcMlUpH7CesPQoGHEI5jSJg__",
-      author: "Alan Stern",
-      rating: 4.5,
-      discount: 20.0,
-      genre: "Science, Astronautv",
-      publisher: "Picador",
-      publishedDate: "May 1, 2018",
-      weight: 1.1,
-      size: "5.5 x 1 x 8.2 inches",
-      pages: 320,
-      description:
-        "Chasing New Horizons tells the captivating story of NASA's New Horizons mission—the first spacecraft to explore Pluto—and the relentless pursuit of discovery that brought it to life. Authored by Alan Stern, the mission's principal investigator, and David Grinspoon, an award-winning astrobiologist, this book takes readers behind the scenes of one of the most daring and groundbreaking space missions in history." +
-        "The narrative unfolds over decades of vision, determination, and ingenuity, as a team of scientists and engineers overcame immense technical, political, and financial hurdles to accomplish what once seemed impossible. From New Horizons' launch in 2006 to its dramatic flyby of Pluto in 2015, the book captures the exhilaration of discovery, the tension of high-stakes science, and the profound impact of viewing a distant world up close for the first time." +
-        "Rich with stunning images of Pluto and its moons, 'Chasing New Horizons' is more than just a chronicle of a mission—it’s an inspiring testament to human curiosity and the drive to explore the unknown.",
-      sold: 100,
-      storage: 50,
-    },
-    {
-      id: 2,
-      title: "CHASING NEW HORIZONS",
-      subTitle: "Inside the Epic First Mission to Pluto",
-      price: 25.0,
-      imageUrl:
-        "https://s3-alpha-sig.figma.com/img/655f/c8c0/309c950754d34dae6569f2f7cdd56c8e?Expires=1740355200&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=G2bllpJ2iOZpmP1FPY-wVKixum3gNTJ2DxPb6Y-ODtv2EXnLc-eWxJ2bofLr-mi7KSGC3o-QWcVghIqRCd4i71Nwp6Hp~WBt9ummne0N31TB0lf4nLQlZy3p4maLN3dINZtiDcvtcpckoDzIQwfCIIDOwWbA5cCV25EppdpKZcX~1ZjgTQBweRy87psNsxarFFrUIDbi~7Yi24RJ0VRkyhSZmnj48wD~JOdKItCWERacpW3wqJlpk0BrPMPIio1suC459-ZU~mIN7nt91CGXtGk3YG7FNxiwwpSuWvYtc3vNlLnugYFtsS4c~FE9X5dHcMlUpH7CesPQoGHEI5jSJg__",
-      author: "Alan Stern",
-      rating: 4.5,
-      discount: 20.0,
-      genre: "Science, Astronautv",
-      publisher: "Picador",
-      publishedDate: "May 1, 2018",
-      weight: 1.1,
-      size: "5.5 x 1 x 8.2 inches",
-      pages: 320,
-      description:
-        "Chasing New Horizons tells the captivating story of NASA's New Horizons mission—the first spacecraft to explore Pluto—and the relentless pursuit of discovery that brought it to life. Authored by Alan Stern, the mission's principal investigator, and David Grinspoon, an award-winning astrobiologist, this book takes readers behind the scenes of one of the most daring and groundbreaking space missions in history." +
-        "The narrative unfolds over decades of vision, determination, and ingenuity, as a team of scientists and engineers overcame immense technical, political, and financial hurdles to accomplish what once seemed impossible. From New Horizons' launch in 2006 to its dramatic flyby of Pluto in 2015, the book captures the exhilaration of discovery, the tension of high-stakes science, and the profound impact of viewing a distant world up close for the first time." +
-        "Rich with stunning images of Pluto and its moons, 'Chasing New Horizons' is more than just a chronicle of a mission—it’s an inspiring testament to human curiosity and the drive to explore the unknown.",
-      sold: 100,
-      storage: 50,
-    },
-    {
-      id: 3,
-      title: "CHASING NEW HORIZONS",
-      subTitle: "Inside the Epic First Mission to Pluto",
-      price: 25.0,
-      imageUrl:
-        "https://s3-alpha-sig.figma.com/img/655f/c8c0/309c950754d34dae6569f2f7cdd56c8e?Expires=1740355200&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=G2bllpJ2iOZpmP1FPY-wVKixum3gNTJ2DxPb6Y-ODtv2EXnLc-eWxJ2bofLr-mi7KSGC3o-QWcVghIqRCd4i71Nwp6Hp~WBt9ummne0N31TB0lf4nLQlZy3p4maLN3dINZtiDcvtcpckoDzIQwfCIIDOwWbA5cCV25EppdpKZcX~1ZjgTQBweRy87psNsxarFFrUIDbi~7Yi24RJ0VRkyhSZmnj48wD~JOdKItCWERacpW3wqJlpk0BrPMPIio1suC459-ZU~mIN7nt91CGXtGk3YG7FNxiwwpSuWvYtc3vNlLnugYFtsS4c~FE9X5dHcMlUpH7CesPQoGHEI5jSJg__",
-      author: "Alan Stern",
-      rating: 4.5,
-      discount: 20.0,
-      genre: "Science, Astronautv",
-      publisher: "Picador",
-      publishedDate: "May 1, 2018",
-      weight: 1.1,
-      size: "5.5 x 1 x 8.2 inches",
-      pages: 320,
-      description:
-        "Chasing New Horizons tells the captivating story of NASA's New Horizons mission—the first spacecraft to explore Pluto—and the relentless pursuit of discovery that brought it to life. Authored by Alan Stern, the mission's principal investigator, and David Grinspoon, an award-winning astrobiologist, this book takes readers behind the scenes of one of the most daring and groundbreaking space missions in history." +
-        "The narrative unfolds over decades of vision, determination, and ingenuity, as a team of scientists and engineers overcame immense technical, political, and financial hurdles to accomplish what once seemed impossible. From New Horizons' launch in 2006 to its dramatic flyby of Pluto in 2015, the book captures the exhilaration of discovery, the tension of high-stakes science, and the profound impact of viewing a distant world up close for the first time." +
-        "Rich with stunning images of Pluto and its moons, 'Chasing New Horizons' is more than just a chronicle of a mission—it’s an inspiring testament to human curiosity and the drive to explore the unknown.",
-      sold: 100,
-      storage: 50,
-    },
-    {
-      id: 4,
-      title: "CHASING NEW HORIZONS",
-      subTitle: "Inside the Epic First Mission to Pluto",
-      price: 25.0,
-      imageUrl:
-        "https://s3-alpha-sig.figma.com/img/655f/c8c0/309c950754d34dae6569f2f7cdd56c8e?Expires=1740355200&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=G2bllpJ2iOZpmP1FPY-wVKixum3gNTJ2DxPb6Y-ODtv2EXnLc-eWxJ2bofLr-mi7KSGC3o-QWcVghIqRCd4i71Nwp6Hp~WBt9ummne0N31TB0lf4nLQlZy3p4maLN3dINZtiDcvtcpckoDzIQwfCIIDOwWbA5cCV25EppdpKZcX~1ZjgTQBweRy87psNsxarFFrUIDbi~7Yi24RJ0VRkyhSZmnj48wD~JOdKItCWERacpW3wqJlpk0BrPMPIio1suC459-ZU~mIN7nt91CGXtGk3YG7FNxiwwpSuWvYtc3vNlLnugYFtsS4c~FE9X5dHcMlUpH7CesPQoGHEI5jSJg__",
-      author: "Alan Stern",
-      rating: 4.5,
-      discount: 20.0,
-      genre: "Science, Astronautv",
-      publisher: "Picador",
-      publishedDate: "May 1, 2018",
-      weight: 1.1,
-      size: "5.5 x 1 x 8.2 inches",
-      pages: 320,
-      description:
-        "Chasing New Horizons tells the captivating story of NASA's New Horizons mission—the first spacecraft to explore Pluto—and the relentless pursuit of discovery that brought it to life. Authored by Alan Stern, the mission's principal investigator, and David Grinspoon, an award-winning astrobiologist, this book takes readers behind the scenes of one of the most daring and groundbreaking space missions in history." +
-        "The narrative unfolds over decades of vision, determination, and ingenuity, as a team of scientists and engineers overcame immense technical, political, and financial hurdles to accomplish what once seemed impossible. From New Horizons' launch in 2006 to its dramatic flyby of Pluto in 2015, the book captures the exhilaration of discovery, the tension of high-stakes science, and the profound impact of viewing a distant world up close for the first time." +
-        "Rich with stunning images of Pluto and its moons, 'Chasing New Horizons' is more than just a chronicle of a mission—it’s an inspiring testament to human curiosity and the drive to explore the unknown.",
-      sold: 100,
-      storage: 50,
-    },
-    {
-      id: 5,
-      title: "CHASING NEW HORIZONS",
-      subTitle: "Inside the Epic First Mission to Pluto",
-      price: 25.0,
-      imageUrl:
-        "https://s3-alpha-sig.figma.com/img/655f/c8c0/309c950754d34dae6569f2f7cdd56c8e?Expires=1740355200&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=G2bllpJ2iOZpmP1FPY-wVKixum3gNTJ2DxPb6Y-ODtv2EXnLc-eWxJ2bofLr-mi7KSGC3o-QWcVghIqRCd4i71Nwp6Hp~WBt9ummne0N31TB0lf4nLQlZy3p4maLN3dINZtiDcvtcpckoDzIQwfCIIDOwWbA5cCV25EppdpKZcX~1ZjgTQBweRy87psNsxarFFrUIDbi~7Yi24RJ0VRkyhSZmnj48wD~JOdKItCWERacpW3wqJlpk0BrPMPIio1suC459-ZU~mIN7nt91CGXtGk3YG7FNxiwwpSuWvYtc3vNlLnugYFtsS4c~FE9X5dHcMlUpH7CesPQoGHEI5jSJg__",
-      author: "Alan Stern",
-      rating: 4.5,
-      discount: 20.0,
-      genre: "Science, Astronautv",
-      publisher: "Picador",
-      publishedDate: "May 1, 2018",
-      weight: 1.1,
-      size: "5.5 x 1 x 8.2 inches",
-      pages: 320,
-      description:
-        "Chasing New Horizons tells the captivating story of NASA's New Horizons mission—the first spacecraft to explore Pluto—and the relentless pursuit of discovery that brought it to life. Authored by Alan Stern, the mission's principal investigator, and David Grinspoon, an award-winning astrobiologist, this book takes readers behind the scenes of one of the most daring and groundbreaking space missions in history." +
-        "The narrative unfolds over decades of vision, determination, and ingenuity, as a team of scientists and engineers overcame immense technical, political, and financial hurdles to accomplish what once seemed impossible. From New Horizons' launch in 2006 to its dramatic flyby of Pluto in 2015, the book captures the exhilaration of discovery, the tension of high-stakes science, and the profound impact of viewing a distant world up close for the first time." +
-        "Rich with stunning images of Pluto and its moons, 'Chasing New Horizons' is more than just a chronicle of a mission—it’s an inspiring testament to human curiosity and the drive to explore the unknown.",
-      sold: 100,
-      storage: 50,
-    },
-    {
-      id: 6,
-      title: "CHASING NEW HORIZONS",
-      subTitle: "Inside the Epic First Mission to Pluto",
-      price: 25.0,
-      imageUrl:
-        "https://s3-alpha-sig.figma.com/img/655f/c8c0/309c950754d34dae6569f2f7cdd56c8e?Expires=1740355200&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=G2bllpJ2iOZpmP1FPY-wVKixum3gNTJ2DxPb6Y-ODtv2EXnLc-eWxJ2bofLr-mi7KSGC3o-QWcVghIqRCd4i71Nwp6Hp~WBt9ummne0N31TB0lf4nLQlZy3p4maLN3dINZtiDcvtcpckoDzIQwfCIIDOwWbA5cCV25EppdpKZcX~1ZjgTQBweRy87psNsxarFFrUIDbi~7Yi24RJ0VRkyhSZmnj48wD~JOdKItCWERacpW3wqJlpk0BrPMPIio1suC459-ZU~mIN7nt91CGXtGk3YG7FNxiwwpSuWvYtc3vNlLnugYFtsS4c~FE9X5dHcMlUpH7CesPQoGHEI5jSJg__",
-      author: "Alan Stern",
-      rating: 4.5,
-      discount: 20.0,
-      genre: "Science, Astronautv",
-      publisher: "Picador",
-      publishedDate: "May 1, 2018",
-      weight: 1.1,
-      size: "5.5 x 1 x 8.2 inches",
-      pages: 320,
-      description:
-        "Chasing New Horizons tells the captivating story of NASA's New Horizons mission—the first spacecraft to explore Pluto—and the relentless pursuit of discovery that brought it to life. Authored by Alan Stern, the mission's principal investigator, and David Grinspoon, an award-winning astrobiologist, this book takes readers behind the scenes of one of the most daring and groundbreaking space missions in history." +
-        "The narrative unfolds over decades of vision, determination, and ingenuity, as a team of scientists and engineers overcame immense technical, political, and financial hurdles to accomplish what once seemed impossible. From New Horizons' launch in 2006 to its dramatic flyby of Pluto in 2015, the book captures the exhilaration of discovery, the tension of high-stakes science, and the profound impact of viewing a distant world up close for the first time." +
-        "Rich with stunning images of Pluto and its moons, 'Chasing New Horizons' is more than just a chronicle of a mission—it’s an inspiring testament to human curiosity and the drive to explore the unknown.",
-      sold: 100,
-      storage: 50,
-    },
-  ];
+const CartPage = () => {
+  const [cartItems, setCartItems] = useState<Book[]>([]);
+  const { t } = useTranslation("common");
+
+  useEffect(() => {
+    const cartData = localStorage.getItem("cart");
+    if (cartData) {
+      const parsedCart = JSON.parse(cartData) as Book[];
+      setCartItems(parsedCart);
+    }
+  }, []);
+
   return (
     <div className="max-w-[1200px] mx-auto h-screen py-10 md:py-20 lg:py-24 bg-white">
       <h1 className=" text-center text-base md:text-xl lg:text-3xl py-3 text-darkblue font-bold uppercase">
@@ -162,13 +35,13 @@ const page = () => {
             <span>Total</span>
             <span>{""}</span>
           </div>
-          {books.map((item: BookDetails) => (
+          {cartItems.map((item: Book) => (
             <div key={item.id} className="flex flex-col gap-2">
               <div className="flex items-center justify-between py-4">
                 <div className="flex items-center gap-4 text-xs lg:text-base">
                   <input type="radio" />
                   <Image
-                    src={item.imageUrl}
+                    src={item.book_images[0].url}
                     alt="Book"
                     width={100}
                     height={100}
@@ -181,14 +54,17 @@ const page = () => {
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <button className="px-1 md:px-2 md:py-1 border rounded">−</button>
+                  <button className="px-1 md:px-2 md:py-1 border rounded">
+                    −
+                  </button>
                   <span>1</span>
-                  <button className="px-1 md:px-2 md:py-1 border rounded">+</button>
+                  <button className="px-1 md:px-2 md:py-1 border rounded">
+                    +
+                  </button>
                 </div>
 
                 <p className="text-blue-600">${item.price}</p>
                 <FontAwesomeIcon icon={faRemove} className="size-5" />
-                
               </div>
               <hr className="my-3 border border-black w-full" />
             </div>
@@ -210,7 +86,7 @@ const page = () => {
             </div>
           </div>
           <button className="bg-blue text-white w-full h-7 md:h-9 lg:h-12 rounded-lg">
-            Add To Cart
+            Checkout
           </button>
         </div>
       </div>
@@ -218,4 +94,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default CartPage;

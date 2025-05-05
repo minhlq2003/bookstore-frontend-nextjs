@@ -31,7 +31,7 @@ function HeaderCMS({ collapsed, setCollapsed, userAvatar }: HeaderCMSProps) {
       description: t("You have successfully logged out."),
       placement: "topRight",
     });
-    router.push("/login");
+    router.push("/signin");
   };
   const changeLanguage = (newLang: string) => {
     i18n.changeLanguage(newLang);
@@ -51,7 +51,7 @@ function HeaderCMS({ collapsed, setCollapsed, userAvatar }: HeaderCMSProps) {
     async function checkLoginStatus() {
       const loggedIn = await isLogin();
       const isAccountLoggedIn = localStorage.getItem("user");
-      if(loggedIn || isAccountLoggedIn) {
+      if (loggedIn || isAccountLoggedIn) {
         setIsLoggedIn(true);
       }
     }
@@ -63,7 +63,7 @@ function HeaderCMS({ collapsed, setCollapsed, userAvatar }: HeaderCMSProps) {
   };
 
   const handleProfileClick = () => {
-    router.push("/users/profile");
+    router.push("/admin/profile");
   };
 
   const handleClickOutside = (event: MouseEvent) => {
@@ -110,7 +110,7 @@ function HeaderCMS({ collapsed, setCollapsed, userAvatar }: HeaderCMSProps) {
         <Image
           preview={false}
           className="w-8 h-8 rounded-full border-2 border-indigo-400 cursor-pointer"
-          src={`/images/avatar-default.svg`}
+          src={`/default-image.jpg`}
           alt="User Avatar"
           onClick={handleUserMenuClick}
           width={32}

@@ -27,28 +27,26 @@ const Page = () => {
   const [error, setError] = useState<string | null>(null);
 
   const { id } = useParams();
-  const firstGenre = book?.genre?.split(",")[0];
 
   useEffect(() => {
     const fetchBookDetails = async () => {
       setLoading(true);
       setError(null);
-      
+
       try {
         const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
         const response = await fetch(`${apiBaseUrl}/book/details/${id}`);
-        
+
         if (!response.ok) {
           throw new Error(`Failed to fetch book details: ${response.status}`);
         }
-        
+
         const data = await response.json();
         setBook(data.data);
-        
+
         // Fetch related books (this could be a separate API call or part of the same response)
         // For now, we'll just use the same book as a placeholder for related books
         setRelatedBooks(Array(4).fill(data.data));
-        
       } catch (err) {
         console.error("Error fetching book details:", err);
         setError("Failed to load book details. Please try again later.");
@@ -56,7 +54,7 @@ const Page = () => {
         setLoading(false);
       }
     };
-    
+
     if (id) {
       fetchBookDetails();
     }
@@ -74,16 +72,43 @@ const Page = () => {
     }
   };
 
+  const handleAddToCart = () => {
+    if (book) {
+      let cartItems = localStorage.getItem("cart");
+      let cart = cartItems ? JSON.parse(cartItems) : [];
+      const existingItem = cart.find((item: Book) => item.id === book.id);
+      if (existingItem) {
+        existingItem.quantity = (existingItem.quantity || 1) + quantity;
+      } else {
+        cart.push({ ...book, quantity });
+      }
+      localStorage.setItem("cart", JSON.stringify(cart));
+      alert(`Added ${quantity} ${book.title} to cart`);
+    }
+  };
+
   if (loading) {
-    return <div className="max-w-[1200px] mx-auto bg-[#ECECEC] font-merriweather p-10 text-center">Loading...</div>;
+    return (
+      <div className="max-w-[1200px] mx-auto bg-[#ECECEC] font-merriweather p-10 text-center">
+        Loading...
+      </div>
+    );
   }
 
   if (error) {
-    return <div className="max-w-[1200px] mx-auto bg-[#ECECEC] font-merriweather p-10 text-center text-red-500">{error}</div>;
+    return (
+      <div className="max-w-[1200px] mx-auto bg-[#ECECEC] font-merriweather p-10 text-center text-red-500">
+        {error}
+      </div>
+    );
   }
 
   if (!book) {
-    return <div className="max-w-[1200px] mx-auto bg-[#ECECEC] font-merriweather p-10 text-center">Book not found</div>;
+    return (
+      <div className="max-w-[1200px] mx-auto bg-[#ECECEC] font-merriweather p-10 text-center">
+        Book not found
+      </div>
+    );
   }
   return (
     <div className="max-w-[1200px] mx-auto bg-[#ECECEC] font-merriweather">
@@ -93,7 +118,7 @@ const Page = () => {
             item: "text-black data-[current=true]:text-customblue/60",
           }}
         >
-          <BreadcrumbItem>{firstGenre}</BreadcrumbItem>
+          <BreadcrumbItem>{book?.categories?.name}</BreadcrumbItem>
           <BreadcrumbItem>{book?.title}</BreadcrumbItem>
         </Breadcrumbs>
       </div>
@@ -113,19 +138,19 @@ const Page = () => {
             <h1 className="text-2xl md:text-3xl">{book?.title}</h1>
           </div>
           <div className="flex gap-5 md:gap-7 lg:gap-12">
-            <p>{book?.author} (Author)</p>
-            <p>Publisher: {book?.publisher}</p>
+            <p>Author: {book?.author}</p>
+            <p>Publisher: {book?.publisher?.name}</p>
           </div>
           <div className="flex">
-            <FontAwesomeIcon icon={faStar} className="text-blue size-5" />
             <p className="text-blue">
-              {book?.rating} <span>(100 reivews)</span>
+              <span>Reviews: 100</span> {book?.rating}
             </p>
+            <FontAwesomeIcon icon={faStar} className="text-blue size-5" />
           </div>
-          <p>Genre: {book?.genre}</p>
+          <p>Genre: {book?.categories?.name}</p>
           <div className="flex gap-5 md:gap-7 lg:gap-12">
             <p>Sold: {book?.sold}</p>
-            <p>Storage: {book?.storage}</p>
+            <p>Storage: {book?.stock}</p>
           </div>
           <div className="flex items-center justify-between">
             <div className="flex gap-3">
@@ -133,7 +158,7 @@ const Page = () => {
                 ${Number(book?.price).toFixed(2)}
               </p>
               <p className="-translate-y-0.5 text-gray-500 line-through">
-                ${(Number(book?.price)+Number(book?.import_price)).toFixed(2)}
+                ${(Number(book?.price) + Number(book?.import_price)).toFixed(2)}
               </p>
             </div>
             <div className="flex items-center gap-3">
@@ -152,7 +177,10 @@ const Page = () => {
               />
             </div>
           </div>
-          <button className="bg-blue text-white w-full h-7 md:h-9 lg:h-12 rounded-lg">
+          <button
+            className="bg-blue text-white w-full h-7 md:h-9 lg:h-12 rounded-lg"
+            onClick={handleAddToCart}
+          >
             Add To Cart
           </button>
         </div>
@@ -175,7 +203,7 @@ const Page = () => {
               <TableCell className="text-black/60 md:text-base">
                 {t("Genre")}
               </TableCell>
-              <TableCell>{book?.genre}</TableCell>
+              <TableCell>{book?.categories?.name}</TableCell>
             </TableRow>
             <TableRow key={2}>
               <TableCell className="text-black/60 md:text-base">
@@ -187,16 +215,14 @@ const Page = () => {
               <TableCell className="text-black/60 md:text-base">
                 {t("Publisher")}
               </TableCell>
-              <TableCell>{book?.publisher}</TableCell>
+              <TableCell>{book?.publisher?.name}</TableCell>
             </TableRow>
             <TableRow key={4}>
               <TableCell className="text-black/60 md:text-base">
                 {t("Year")}
               </TableCell>
               <TableCell>
-                {book?.publishedDate
-                  ? new Date(book.publishedDate).getFullYear()
-                  : "N/A"}
+                {book?.publish_year ? book?.publish_year : "N/A"}
               </TableCell>
             </TableRow>
             <TableRow key={5} className="bg-gray-200 rounded-xl">
@@ -233,7 +259,7 @@ const Page = () => {
       </p>
       <div className="flex overflow-x-auto px-7 gap-5 pb-5">
         {relatedBooks.map((book, index) => (
-          <div key={`related_`+index}>
+          <div key={`related_` + index}>
             <BookItem book={book} />
           </div>
         ))}

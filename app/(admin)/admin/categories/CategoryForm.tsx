@@ -1,10 +1,11 @@
 'use client'
 
+import { Category } from '@/constant/types'
 import { Form, FormInstance, Input } from 'antd'
 
 interface CategoryFormProps {
   form: FormInstance
-  onFinish: (values: CategoryFormValues) => void
+  onFinish: (values: Category) => void
   onFinishFailed?: () => void
   initialValues?: Partial<CategoryFormValues>
 }
@@ -34,7 +35,14 @@ export default function CategoryForm({
         name='name'
         rules={[{ required: true, message: 'Vui lòng nhập tên danh mục!' }]}
       >
-        <Input placeholder='Nhập tên danh mục' />
+        <Input
+          onBlur={() => {
+            const slug = form.getFieldValue("name").trim().replace(/\s+/g, '-').toLowerCase()
+            console.log("slug=", slug);
+
+            form.setFieldValue("slug", slug)
+          }}
+          placeholder='Nhập tên danh mục' />
       </Form.Item>
 
       <Form.Item

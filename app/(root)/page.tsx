@@ -5,7 +5,7 @@ import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import Image, { StaticImageData } from "next/image";
 import { Images } from "@/constant/images";
-import {ApiBook, Book} from "@/constant/types";
+import { ApiBook, Book } from "@/constant/types";
 import BookItem from "@/components/book-item";
 
 function Home() {
@@ -43,7 +43,7 @@ function Home() {
               {
                 url: book.book_images?.[0]?.url || "/default-image.jpg",
               }
-              ]
+            ]
           }));
 
           setNewArrivals(transformedBooks);
@@ -100,13 +100,13 @@ function Home() {
   }, []);
 
   const featuredBook = {
-      title: "CHASING NEW HORIZONS",
+    title: "CHASING NEW HORIZONS",
     author: "By Alan Stern",
     description:
       "The book tells a story of a space probe to Pluto, that was proposed by the author, Alan Stern, in the early 1990s.",
-      price: 19.0,
+    price: 19.0,
     image: Images.bookImg,
-};
+  };
 
   return (
     <Suspense fallback={<div>Loading...</div>}>

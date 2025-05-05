@@ -5,7 +5,7 @@ export const DASHBOARD: PathItem = {
 };
 
 export const PUBLIC: PathItem = {
-  LOGIN: { PATH: "/login", LABEL: "Đăng nhập", BREADCRUMB: ["Đăng nhập"] },
+  LOGIN: { PATH: "/signin", LABEL: "Đăng nhập", BREADCRUMB: ["Đăng nhập"] },
   FORGOT_PASSWORD: { PATH: "/forgot-password", LABEL: "", BREADCRUMB: [] },
   RESET_PASSWORD: { PATH: "/reset-password", LABEL: "", BREADCRUMB: [] },
 };
@@ -57,13 +57,13 @@ export const SEOSETTING: PathItem = {
 };
 
 export const MEDIA: PathItem = {
-  LIST: { PATH: "/upload", LABEL: "Library", BREADCRUMB: ["Library"] },
+  LIST: { PATH: "/media", LABEL: "Library", BREADCRUMB: ["Library"] },
   CREATE: {
-    PATH: "/upload/create",
+    PATH: "/media/create",
     LABEL: "Add New Media File",
     BREADCRUMB: ["Add New Media File"],
   },
-  EDIT: { PATH: "/upload", LABEL: "", BREADCRUMB: [] },
+  EDIT: { PATH: "/media", LABEL: "", BREADCRUMB: [] },
 };
 export const CONTACTFORM: PathItem = {
   LIST: {

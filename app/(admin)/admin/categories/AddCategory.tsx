@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import CategoryForm, { CategoryFormValues } from "./CategoryForm";
 import { PlusCircleIcon } from "lucide-react";
 import React from "react";
+import { createCategory } from "@/modules/services/categoryService";
 
 interface AddCategoryProps {
   refreshData: () => void;
@@ -17,6 +18,7 @@ export default function AddCategory({ refreshData }: AddCategoryProps) {
   const onFinish = async (values: CategoryFormValues) => {
     try {
       // cal api
+      createCategory(values);
       message.success("Danh mục đã được thêm thành công!");
       form.resetFields();
       router.push("/admin/categories");
@@ -31,7 +33,7 @@ export default function AddCategory({ refreshData }: AddCategoryProps) {
   };
 
   return (
-    <div className="min-h-[85vh] w-1/2 bg-white dark:bg-gray-900 flex flex-col items-center justify-start rounded-lg shadow-sm gap-4 px-4">
+    <div className="w-1/2 bg-white dark:bg-gray-900 flex flex-col items-center justify-start rounded-lg shadow-sm gap-4 px-4">
       <div className="w-full max-w-2xl">
         <CategoryForm
           form={form}

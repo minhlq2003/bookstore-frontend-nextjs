@@ -9,7 +9,6 @@ import { LayoutSider } from "@/components/Sider";
 import { I18nextProvider, useTranslation } from "react-i18next";
 import LocaleProvider from "@/components/locale-provider";
 import { i18nInstance } from "@/language/i18n";
-import UserService from "@/modules/services/userServices";
 import HeaderCMS from "@/components/header-cms";
 import "../../../globals.css";
 
@@ -23,26 +22,16 @@ export default function RootLayout({
 
   const [userAvatar, setUserAvatar] = useState<string>("");
   const router = useRouter();
-  const userServices = UserService();
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       const user = JSON.parse(localStorage.getItem("user") || "{}");
       if (!user || !user.id) {
-        router.push("/login");
+        router.push("/signin");
       } else {
-        fetchUser(user.id);
       }
     }
   }, [router]);
-
-  const fetchUser = async (id: number) => {
-    try {
-      const response = await userServices.getUserById(id);
-    } catch (error) {
-      message.error("Failed to fetch user data. Please try again.");
-    }
-  };
 
   return (
     <html lang={"en"}>
@@ -68,7 +57,15 @@ export default function RootLayout({
                         className="site-layout-background rounded-[8px]"
                         style={styles.layout}
                       >
-                        <Content style={{ padding: "0 12px" }}>
+                        <Content
+                          style={{
+                            padding: "0 12px",
+                            overflowY: "scroll",
+                            height: "calc(100vh - 210px)",
+                            backgroundColor: "#fff",
+                            borderRadius: "8px",
+                          }}
+                        >
                           {children}
                         </Content>
                       </Layout>
