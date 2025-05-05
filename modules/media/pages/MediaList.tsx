@@ -57,8 +57,8 @@ const MediaList = ({
 
   const fetchMediaData = async (paginate?: Pagination, searchTerm?: string) => {
     const response = await getMedia({
-      page: paginate?.page,
-      limit: paginate?.pageSize,
+      page: paginate?.page || 1,
+      limit: paginate?.pageSize || 40,
     });
     return response;
   };
@@ -88,7 +88,7 @@ const MediaList = ({
     const newPage = (pagination.page ?? 0) + 1;
     const newPagination: Pagination = {
       current: newPage,
-      pageSize: 24,
+      pageSize: 40,
       total: pagination.total,
       page: newPage,
     };

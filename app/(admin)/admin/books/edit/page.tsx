@@ -21,16 +21,13 @@ const EditBook = () => {
   const id = searchParams.get("id");
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
 
-  const handleFetchBook = useCallback(
-    async (id: string) => {
-      setLoading(true);
-      const res = await getBookById(id);
-      setBook(res?.data || null);
+  const handleFetchBook = useCallback(async (id: string) => {
+    setLoading(true);
+    const res = await getBookById(id);
+    setBook(res?.data || null);
 
-      setLoading(false);
-    },
-    [form]
-  );
+    setLoading(false);
+  }, []);
 
   const onFinish = async (values: Book) => {
     //const slug = values.title.trim().replace(/\s+/g, "-").toLowerCase();
