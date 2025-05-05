@@ -1,6 +1,11 @@
+import { ChangeEvent } from "react";
+
 export interface Book {
   import_price: string;
-  book_images: string[];
+  book_images: {
+    id: number;
+    url: string;
+  }[];
   id: number;
   title: string;
   subTitle?: string;
@@ -10,7 +15,7 @@ export interface Book {
   imageUrl: string;
   discount?: number;
   genre?: string;
-  publisher?: string;
+  publisher?: Publisher;
   publishedDate?: string;
   weight?: number;
   size?: string;
@@ -18,10 +23,13 @@ export interface Book {
   description?: string;
   sold?: number;
   storage?: number;
-  categories?: string;
+  categories?: Category;
   category?: string;
   quantity?: number;
+  stock?: number;
+  publish_year: number;
 }
+
 export type ApiBook = {
   id: number;
   title: string;
@@ -30,7 +38,9 @@ export type ApiBook = {
   author: string;
   rating?: number;
   book_images?: { url: string }[];
+  import_price?: number;
 };
+
 export interface PathItem {
   [k: string]: {
     PATH: string;
@@ -205,4 +215,60 @@ export interface User {
   status: number;
   role: string;
   addresses: Address[];
+}
+
+export interface MediaData {
+  id: number;
+  name: string;
+  alternativeText: string;
+  caption: string;
+  width: number;
+  height: number;
+  hash: string;
+  ext: string;
+  mime: string;
+  size: number;
+  file_url: string;
+  previewUrl: string;
+  provider: string;
+  provider_metadata: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface FileUpdate {
+  fileInfo?: {
+    name: string;
+    alternativeText: string;
+    caption: string;
+    width?: number;
+    height?: number;
+  };
+  file?: File;
+}
+
+export interface FormValuesMedia {
+  pagination: Pagination;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+  dataItem: MediaData[];
+  loading: boolean;
+  error: string | null;
+}
+
+export interface Pagination {
+  page?: number;
+  pageSize: number | undefined;
+  current: number | undefined;
+  total: number | undefined;
+}
+
+export interface InputSearchProps {
+  handleSearchChange: (event: ChangeEvent<HTMLInputElement>) => void;
+}
+
+export interface MediaResponse {
+  data: MediaData[];
+  pagination: Pagination;
 }

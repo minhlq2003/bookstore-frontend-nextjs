@@ -19,19 +19,19 @@ export default function ProductPage() {
   };
 
   return (
-    <div className="min-h-[85vh] bg-white dark:bg-gray-900 flex flex-col items-center justify-start rounded-lg shadow-sm gap-4 px-4 pt-10">
+    <div className="min-h-full bg-white dark:bg-gray-900 flex flex-col items-center justify-start rounded-lg shadow-sm gap-4 px-4 pt-10">
       <div className="flex justify-between w-full ">
         <h1 className="ml-[10px] text-3xl font-bold">Quản lý danh mục</h1>
 
         <div className="flex gap-2">
           <Input
             type="text"
-            placeholder="Tìm kiếm sách..."
+            placeholder="Tìm kiếm danh mục..."
             value={searchTerm}
             onChange={handleSearchChange}
             className="p-2 rounded-md border border-gray-300 dark:border-gray-600"
           />
-          <Button>
+          <Button className="px-4 py-5 items-center justify-center">
             <Search className="text-gray-600" />
           </Button>
         </div>

@@ -1,8 +1,8 @@
 "use client";
 
 import { Form, Input, InputNumber, Select, FormInstance } from "antd";
-import React, { useEffect, useState } from "react";
-import { Order, PaymentMethod, OrderStatus } from "@/constant/types";
+import React from "react";
+import { Order } from "@/constant/types";
 
 const { TextArea } = Input;
 

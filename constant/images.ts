@@ -9,6 +9,8 @@ import historyIcon from "../public/images/icon-history-genre.png";
 import mysteryIcon from "../public/images/icon-mystery-genre.png";
 import scienceIcon from "../public/images/icon-science-genre.png";
 import educationIcon from "../public/images/icon-education-genre.png";
+import profileAvatar from "../public/images/profileAvatar.png";
+import bgProfile from "../public/images/bg-profile.png";
 
 export const Images = {
   googleIcon: GoogleIcon,
@@ -22,4 +24,6 @@ export const Images = {
   mysteryIcon: mysteryIcon,
   scienceIcon: scienceIcon,
   educationIcon: educationIcon,
+  profileAvatar: profileAvatar,
+  bgProfile: bgProfile,
 };

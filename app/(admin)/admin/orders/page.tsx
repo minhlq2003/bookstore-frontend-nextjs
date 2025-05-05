@@ -23,15 +23,15 @@ export default function OrderPage() {
             placeholder="Tìm kiếm đơn hàng..."
             value={searchTerm}
             onChange={handleSearchChange}
-            className="p-2 rounded-md border border-gray-300 dark:border-gray-600"
+            className="px-2 rounded-md border border-gray-300 dark:border-gray-600"
           />
-          <Button variant="outlined">
+          <Button variant="outlined" className="h-[36px]">
             <Search className="text-gray-600" />
           </Button>
         </div>
       </div>
 
-      <ListOrder />
+      <ListOrder searchTerm={searchTerm} />
     </div>
   );
 }
