@@ -47,7 +47,6 @@ const Page = () => {
         // Fetch related books (this could be a separate API call or part of the same response)
         // For now, we'll just use the same book as a placeholder for related books
         setRelatedBooks(Array(4).fill(data.data));
-
       } catch (err) {
         console.error("Error fetching book details:", err);
         setError("Failed to load book details. Please try again later.");
@@ -88,17 +87,28 @@ const Page = () => {
     }
   };
 
-
   if (loading) {
-    return <div className="max-w-[1200px] mx-auto bg-[#ECECEC] font-merriweather p-10 text-center">Loading...</div>;
+    return (
+      <div className="max-w-[1200px] mx-auto bg-[#ECECEC] font-merriweather p-10 text-center">
+        Loading...
+      </div>
+    );
   }
 
   if (error) {
-    return <div className="max-w-[1200px] mx-auto bg-[#ECECEC] font-merriweather p-10 text-center text-red-500">{error}</div>;
+    return (
+      <div className="max-w-[1200px] mx-auto bg-[#ECECEC] font-merriweather p-10 text-center text-red-500">
+        {error}
+      </div>
+    );
   }
 
   if (!book) {
-    return <div className="max-w-[1200px] mx-auto bg-[#ECECEC] font-merriweather p-10 text-center">Book not found</div>;
+    return (
+      <div className="max-w-[1200px] mx-auto bg-[#ECECEC] font-merriweather p-10 text-center">
+        Book not found
+      </div>
+    );
   }
   return (
     <div className="max-w-[1200px] mx-auto bg-[#ECECEC] font-merriweather">
@@ -129,13 +139,13 @@ const Page = () => {
           </div>
           <div className="flex gap-5 md:gap-7 lg:gap-12">
             <p>Author: {book?.author}</p>
-            <p>Publisher: {book?.publishers?.name}</p>
+            <p>Publisher: {book?.publisher?.name}</p>
           </div>
           <div className="flex">
             <p className="text-blue">
               <span>Reviews: 100</span> {book?.rating}
             </p>
-            <FontAwesomeIcon icon={ faStar } className="text-blue size-5" />
+            <FontAwesomeIcon icon={faStar} className="text-blue size-5" />
           </div>
           <p>Genre: {book?.categories?.name}</p>
           <div className="flex gap-5 md:gap-7 lg:gap-12">
@@ -205,16 +215,14 @@ const Page = () => {
               <TableCell className="text-black/60 md:text-base">
                 {t("Publisher")}
               </TableCell>
-              <TableCell>{book?.publishers?.name}</TableCell>
+              <TableCell>{book?.publisher?.name}</TableCell>
             </TableRow>
             <TableRow key={4}>
               <TableCell className="text-black/60 md:text-base">
                 {t("Year")}
               </TableCell>
               <TableCell>
-                {book?.publish_year
-                  ? book?.publish_year
-                  : "N/A"}
+                {book?.publish_year ? book?.publish_year : "N/A"}
               </TableCell>
             </TableRow>
             <TableRow key={5} className="bg-gray-200 rounded-xl">

@@ -42,21 +42,22 @@ const BookForm: React.FC<{
   const handleSelectMedia = (media: string) => {
     setSelectedMedia(media);
     setIsModalOpen(false);
+    setUploadedImages([...uploadedImages, media]);
+    console.log("add", media);
+    console.log("upload images: ", uploadedImages);
   };
 
   useEffect(() => {
-    //get categories
-    // get publishers
-    // get discounts
+    setCategories([]);
+    setDiscounts([]);
+    setPublishers([]);
   }, []);
 
   const handleSubmit = () => {
     onFinish(form.getFieldsValue());
   };
-  const handleRemoveImage = (url: string) => {
-    setUploadedImages((prevImages) =>
-      prevImages.filter((image) => image !== url)
-    );
+  const handleRemoveImage = (index: number) => {
+    setUploadedImages((prevImages) => prevImages.filter((_, i) => i !== index));
   };
 
   return (
@@ -209,7 +210,7 @@ const BookForm: React.FC<{
                     className="w-16 h-16 object-cover"
                   />
                   <TrashIcon
-                    onClick={() => handleRemoveImage(url)}
+                    onClick={() => handleRemoveImage(index)}
                     className="cursor-pointer text-red-500"
                   />
                 </div>

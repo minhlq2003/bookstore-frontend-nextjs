@@ -62,7 +62,7 @@ const MediaModalEditBody: React.FC<MediaModalBodyProps> = ({
 
   const handleDownloadFile = (e: React.MouseEvent) => {
     e.preventDefault();
-    fetch(`${media.url}`, {
+    fetch(`${media.file_url}`, {
       method: "GET",
       headers: {
         "Content-Type": media.mime,
@@ -119,7 +119,7 @@ const MediaModalEditBody: React.FC<MediaModalBodyProps> = ({
             <div style={{ display: "grid", justifyItems: "center" }}>
               <Image
                 color="white"
-                src={`${media.url}`}
+                src={`${media.file_url}`}
                 width={mediaWidth}
                 height={mediaHeight}
                 className="object-cover"

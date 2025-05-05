@@ -35,7 +35,7 @@ const CartPage = () => {
             <span>Total</span>
             <span>{""}</span>
           </div>
-          {cartItems.map((item: BookDetails) => (
+          {cartItems.map((item: Book) => (
             <div key={item.id} className="flex flex-col gap-2">
               <div className="flex items-center justify-between py-4">
                 <div className="flex items-center gap-4 text-xs lg:text-base">
@@ -54,14 +54,17 @@ const CartPage = () => {
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <button className="px-1 md:px-2 md:py-1 border rounded">−</button>
+                  <button className="px-1 md:px-2 md:py-1 border rounded">
+                    −
+                  </button>
                   <span>1</span>
-                  <button className="px-1 md:px-2 md:py-1 border rounded">+</button>
+                  <button className="px-1 md:px-2 md:py-1 border rounded">
+                    +
+                  </button>
                 </div>
 
                 <p className="text-blue-600">${item.price}</p>
                 <FontAwesomeIcon icon={faRemove} className="size-5" />
-
               </div>
               <hr className="my-3 border border-black w-full" />
             </div>
