@@ -218,8 +218,13 @@ export interface User {
 }
 
 export interface MediaData {
+  name: any;
+  file_url: string;
+  attachment: MediaData;
+  fileName: string | undefined;
+  file_name: string;
   id: number;
-  name: string;
+  userId: number;
   alternativeText: string;
   caption: string;
   width: number;
@@ -228,11 +233,12 @@ export interface MediaData {
   ext: string;
   mime: string;
   size: number;
-  file_url: string;
+  fileUrl: string;
   previewUrl: string;
   provider: string;
   provider_metadata: string;
   createdAt: string;
+  created_at: string;
   updatedAt: string;
 }
 
