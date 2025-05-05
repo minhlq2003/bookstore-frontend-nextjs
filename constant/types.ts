@@ -223,7 +223,7 @@ export interface MediaData {
   ext: string;
   mime: string;
   size: number;
-  url: string;
+  file_url: string;
   previewUrl: string;
   provider: string;
   provider_metadata: string;
@@ -261,4 +261,9 @@ export interface Pagination {
 
 export interface InputSearchProps {
   handleSearchChange: (event: ChangeEvent<HTMLInputElement>) => void;
+}
+
+export interface MediaResponse {
+  data: MediaData[];
+  pagination: Pagination;
 }

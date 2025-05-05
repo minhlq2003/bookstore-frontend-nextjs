@@ -62,6 +62,8 @@ export default function RootLayout({
                             padding: "0 12px",
                             overflowY: "scroll",
                             height: "calc(100vh - 210px)",
+                            backgroundColor: "#fff",
+                            borderRadius: "8px",
                           }}
                         >
                           {children}

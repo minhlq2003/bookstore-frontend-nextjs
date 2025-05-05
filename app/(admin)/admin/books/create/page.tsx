@@ -7,8 +7,10 @@ import { PlusCircleIcon } from "lucide-react";
 import { useState } from "react";
 import { Book } from "@/constant/types";
 import { createBook } from "@/modules/services/bookService";
+import { useTranslation } from "react-i18next";
 
 export default function AddBook() {
+  const { t } = useTranslation("common");
   const [form] = Form.useForm();
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
 
@@ -40,7 +42,7 @@ export default function AddBook() {
     <div className="min-h-[85vh] bg-white dark:bg-gray-900 flex flex-col items-center justify-start rounded-lg shadow-sm gap-4 px-4 pt-10">
       <div className="w-full">
         <Title level={2} className="m-0">
-          Thêm sách mới
+          {t("Create Book")}
         </Title>
         <div className="flex justify-between">
           <BookForm
@@ -56,7 +58,7 @@ export default function AddBook() {
           onClick={() => onFinish(form.getFieldsValue())}
           icon={<PlusCircleIcon />}
         >
-          Thêm sách
+          {t("Add Book")}
         </Button>
       </div>
     </div>

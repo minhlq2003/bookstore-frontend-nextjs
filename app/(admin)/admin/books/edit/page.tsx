@@ -9,8 +9,10 @@ import { useSearchParams } from "next/navigation";
 import { CheckCircleIcon } from "lucide-react";
 import { Book } from "@/constant/types";
 import { getBookById, updateBook } from "@/modules/services/bookService";
+import { useTranslation } from "react-i18next";
 
 const EditBook = () => {
+  const { t } = useTranslation("common");
   const [loading, setLoading] = useState(false);
   const [book, setBook] = useState<Book | null>(null);
   const [form] = Form.useForm();
@@ -82,7 +84,7 @@ const EditBook = () => {
       ) : (
         <div className="p-4 w-full">
           <Space>
-            <Title level={2}>Chỉnh sửa sách</Title>
+            <Title level={2}> {t("Edit Book")} </Title>
           </Space>
           <div className="flex justify-between">
             <BookForm
@@ -98,7 +100,7 @@ const EditBook = () => {
             onClick={() => onFinish(form.getFieldsValue())}
             icon={<CheckCircleIcon />}
           >
-            Lưu thay đổi
+            {t("Save Change")}
           </Button>
         </div>
       )}

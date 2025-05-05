@@ -66,8 +66,8 @@ export default {
       },
     },
     screens: {
-      sm: "375px",
-      md: "768px",
+      sm: "767px",
+      md: "1040px",
       lg: "1440px",
     },
   },
