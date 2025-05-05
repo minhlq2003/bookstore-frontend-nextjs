@@ -18,9 +18,9 @@ export interface Book {
   description?: string;
   sold?: number;
   storage?: number;
+  categories?: string;
   category?: string;
   quantity?: number;
-  categories?: string;
 }
 export type ApiBook = {
   id: number;
@@ -164,13 +164,13 @@ export type Order = {
   receiverName: string;
   receiverPhone: string;
   address: string;
-  paymentMethod: PaymentMethod;
+  payment_method: PaymentMethod;
   orderStatus: OrderStatus;
   total: number;
-  userId?: string;
-  orderDetails: OrderDetail[];
-  createdAt: string;
-  updatedAt: string;
+  user_id?: string;
+  order_details: OrderDetail[];
+  created_at: string;
+  updated_at: string;
 };
 
 export type OrderResponse = {
