@@ -41,7 +41,7 @@ const Media = ({ isOpenModal, onSelectMedia }: MediaProp) => {
           <Button
             color="primary"
             variant="outlined"
-            onClick={() => router.push("/admin/upload/create")}
+            onClick={() => router.push("/admin/media/create")}
             className="rounded-md"
           >
             {t("Add New Media File")}
