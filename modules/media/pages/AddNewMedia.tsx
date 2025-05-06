@@ -57,7 +57,7 @@ const MediaUpload: React.FC<MediaUploadProps> = ({
           }
           setUploadedFiles((prev) => [
             ...prev,
-            ...(Array.isArray(response) ? response : [response]),
+            response.attachment,
           ]);
           setFileList([]);
           message.success(t("Media uploaded successfully!"));
@@ -107,7 +107,7 @@ const MediaUpload: React.FC<MediaUploadProps> = ({
   };
 
   const handleEdit = (file: MediaData) => {
-    router.push(`/admin/upload/edit?id=${file.id}`);
+    router.push(`/admin/media/edit?id=${file.id}`);
   };
 
   return (
@@ -205,11 +205,11 @@ const MediaUpload: React.FC<MediaUploadProps> = ({
                   avatar={
                     <Image
                       width={50}
-                      src={`${item.file_url}`}
-                      alt={item.name}
+                      src={`${item.fileUrl}`}
+                      alt={item.fileName}
                     />
                   }
-                  title={item.name}
+                  title={item.fileName}
                 />
               </List.Item>
             )}

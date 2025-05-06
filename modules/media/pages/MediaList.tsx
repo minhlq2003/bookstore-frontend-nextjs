@@ -110,7 +110,7 @@ const MediaList = ({
   };
 
   const handleEdit = (id: number) => {
-    router.push(`/admin/upload/edit?id=${id}`);
+    router.push(`/admin/media/edit?id=${id}`);
   };
 
   const handleDelete = async (id: number) => {
@@ -212,7 +212,7 @@ const MediaList = ({
       dataIndex: ["file_name"],
       key: "name",
       width: 200,
-      sorter: (a, b) => a.name.localeCompare(b.name),
+      sorter: (a, b) => a.file_name.localeCompare(b.file_name),
     },
     {
       title: t("Published"),
@@ -229,7 +229,7 @@ const MediaList = ({
           </span>
         );
       },
-      sorter: (a, b) => a.createdAt.localeCompare(b.createdAt),
+      sorter: (a, b) => a.created_at.localeCompare(b.created_at),
     },
     {
       title: t("Last Updated"),
@@ -246,7 +246,7 @@ const MediaList = ({
           </span>
         );
       },
-      sorter: (a, b) => a.updatedAt.localeCompare(b.updatedAt),
+      sorter: (a, b) => a.created_at.localeCompare(b.created_at),
     },
     {
       title: t("Action"),

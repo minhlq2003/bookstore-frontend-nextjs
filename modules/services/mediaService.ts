@@ -19,7 +19,7 @@ export const getMedia = async (params?: { page?: number; limit?: number }) => {
   return response;
 };
 
-export const uploadMedia = (data: FormData, id: number) =>
+export const uploadMedia = (data: FormData, id: number)  =>
   http.post<MediaData>(`${API_PREFIX_BOOK_PATH}/upload/${id}`, data, {
     headers: {
       "Content-Type": "multipart/form-data",
