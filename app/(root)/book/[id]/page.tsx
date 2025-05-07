@@ -1,5 +1,5 @@
 "use client";
-import { Book } from "@/constant/types";
+import { Book, User } from "@/constant/types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar, faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
 import { BreadcrumbItem, Breadcrumbs } from "@heroui/breadcrumbs";
@@ -17,6 +17,7 @@ import {
   TableRow,
 } from "@heroui/table";
 import BookItem from "@/components/book-item";
+import { addToCart } from "@/modules/services/cartService";
 
 const Page = () => {
   const { t } = useTranslation("common");
@@ -25,8 +26,20 @@ const Page = () => {
   const [relatedBooks, setRelatedBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
+  const [user, setUser] = useState<User | null>(null);
   const { id } = useParams();
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      try {
+        const parsedUser = JSON.parse(storedUser);
+        setUser(parsedUser);
+      } catch (e) {
+        console.error('Failed to parse user from localStorage', e);
+      }
+    }
+  }, []);
 
   useEffect(() => {
     const fetchBookDetails = async () => {
@@ -71,19 +84,21 @@ const Page = () => {
       setQuantity((prev) => prev - 1);
     }
   };
-
-  const handleAddToCart = () => {
-    if (book) {
-      let cartItems = localStorage.getItem("cart");
-      let cart = cartItems ? JSON.parse(cartItems) : [];
-      const existingItem = cart.find((item: Book) => item.id === book.id);
-      if (existingItem) {
-        existingItem.quantity = (existingItem.quantity || 1) + quantity;
+  
+  const handleAddToCart = async() => {
+    if (!book || !user) return;
+    try {
+      console.log("Adding to cart:", user.id, book.id, quantity);
+      
+      const response = await addToCart(user.id, book.id, quantity);
+      if (response?.success) {
+        alert("Book added to cart successfully");
+        console.log("Book added to cart successfully");
       } else {
-        cart.push({ ...book, quantity });
+        console.error("Failed to add book to cart:");
       }
-      localStorage.setItem("cart", JSON.stringify(cart));
-      alert(`Added ${quantity} ${book.title} to cart`);
+    } catch (error) {
+      console.error("Error while adding to cart:", error);
     }
   };
 
