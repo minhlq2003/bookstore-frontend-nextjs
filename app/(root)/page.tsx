@@ -1,122 +1,168 @@
 "use client";
 
-import { useTranslation } from "next-i18next";
-import { Suspense, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { Suspense, useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import Image, { StaticImageData } from "next/image";
 import { Images } from "@/constant/images";
-import { ApiBook, Book } from "@/constant/types";
+import { Book, ApiBook } from "@/constant/types";
 import BookItem from "@/components/book-item";
+import { searchBooks, getBooks } from "@/modules/services/bookService";
+import { message, Spin, Button as AntButton } from "antd";
+
+interface HeroBookDisplay {
+  id: number;
+  title: string;
+  author: string;
+  description: string;
+  price: number;
+  imageUrl: string;
+}
+
+const mapApiBookToDisplayBook = (apiBook: any): HeroBookDisplay => {
+  return {
+    id: apiBook.id,
+    title: apiBook.title || "Không có tiêu đề",
+    author: apiBook.author || "Không rõ tác giả",
+    description: apiBook.description || "Không có mô tả.",
+    price: parseFloat(apiBook.price) || 0.0,
+    imageUrl: apiBook.book_images?.[0]?.url || Images.bookImg?.src || "/default-book-cover.jpg",
+  };
+};
+
+const mapApiBookToBookItemType = (apiBook: any): Book => {
+  return {
+    id: apiBook.id,
+    title: apiBook.title,
+    author: apiBook.author,
+    price: parseFloat(apiBook.price),
+    import_price: apiBook.import_price ? String(apiBook.import_price) : "0",
+    book_images: apiBook.book_images?.map((img: { url: string }) => ({ url: img.url })) || [],
+    imageUrl: apiBook.book_images?.[0]?.url || Images.bookImg?.src || "/default-book-cover.jpg",
+    description: apiBook.description,
+    sold: apiBook.sold,
+    publish_year: apiBook.publish_year,
+  };
+};
+
 
 function Home() {
   const { t } = useTranslation("common");
+
+  const [featuredBooksList, setFeaturedBooksList] = useState<HeroBookDisplay[]>([]);
+  const [activeFeaturedBook, setActiveFeaturedBook] = useState<HeroBookDisplay | null>(null);
+
   const [newArrivals, setNewArrivals] = useState<Book[]>([]);
   const [recommendedBooks, setRecommendedBooks] = useState<Book[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchNewArrivals = async () => {
-      setLoading(true);
-      setError(null);
+  const [loadingHero, setLoadingHero] = useState(true);
+  const [loadingNewArrivals, setLoadingNewArrivals] = useState(true);
+  const [loadingPopular, setLoadingPopular] = useState(true);
 
-      try {
-        const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-        const response = await fetch(`${apiBaseUrl}/book/new-arrivals/fiction`);
-
-        if (!response.ok) {
-          throw new Error(`Failed to fetch new arrivals: ${response.status}`);
-        }
-
-        const data = await response.json();
-
-        if (data.success && Array.isArray(data.data)) {
-          // Transform the API response to match the Book type
-          const transformedBooks = data.data.map((book: ApiBook) => ({
-            id: book.id,
-            title: book.title,
-            subTitle: book.description || "",
-            price: book.price,
-            author: book.author,
-            rating: book.rating || 4.0,
-            book_images: [
-              {
-                url: book.book_images?.[0]?.url || "/default-image.jpg",
-              }
-            ]
-          }));
-
-          setNewArrivals(transformedBooks);
-        } else {
-          throw new Error("Invalid data format received from API");
-        }
-      } catch (err) {
-        console.error("Error fetching new arrivals:", err);
-        setError("Failed to load new arrivals. Please try again later.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchNewArrivals();
-  }, []);
-
-  useEffect(() => {
-    const fetchRecommendedBooks = async () => {
-      try {
-        const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-        const response = await fetch(`${apiBaseUrl}/book/recommendations/fiction`);
-
-        if (!response.ok) {
-          throw new Error(`Failed to fetch recommendations: ${response.status}`);
-        }
-
-        const data = await response.json();
-
-        if (data.success && Array.isArray(data.data)) {
-          const transformedBooks = data.data.map((book: ApiBook) => ({
-            id: book.id,
-            title: book.title,
-            subTitle: book.description || "",
-            price: Number(book.price),
-            author: book.author,
-            rating: book.rating || 4.0,
-            import_price: Number(book.import_price) || 0,
-            book_images: book.book_images?.length
-              ? book.book_images.map((img: { url: string }) => ({ url: img.url }))
-              : [{ url: "/default-image.jpg" }]
-          }));
-
-          setRecommendedBooks(transformedBooks);
-        } else {
-          throw new Error("Invalid data format received from API");
-        }
-      } catch (err) {
-        console.error("Error fetching recommendations:", err);
-      }
-    };
-
-    fetchRecommendedBooks();
-  }, []);
-
-  const featuredBook = {
+  const fallbackHeroBook: HeroBookDisplay = {
+    id: 0,
     title: "CHASING NEW HORIZONS",
-    author: "By Alan Stern",
-    description:
-      "The book tells a story of a space probe to Pluto, that was proposed by the author, Alan Stern, in the early 1990s.",
-    price: 19.0,
-    image: Images.bookImg,
+    author: "Alan Stern & David Grinspoon",
+    description: "The book tells a story of a space probe to Pluto, that was proposed by the author, Alan Stern, in the early 1990s. This epic mission has revealed a new world of geological and atmospheric complexity.",
+    price: 19.00,
+    imageUrl: Images.bookImg?.src || "/default-book-cover.jpg",
+  };
+
+  useEffect(() => {
+    const fetchFeaturedBooks = async () => {
+      setLoadingHero(true);
+      let fetchedHeroBooks: HeroBookDisplay[] = [];
+      try {
+        let response = await searchBooks({ featured: true, limit: 5, sortBy: 'sold', sortOrder: 'desc' });
+        if (response && response.data) {
+          fetchedHeroBooks = response.data.map(mapApiBookToDisplayBook);
+        }
+
+        if (fetchedHeroBooks.length < 5) {
+          const needed = 5 - fetchedHeroBooks.length;
+          response = await searchBooks({ limit: needed, sortBy: 'sold', sortOrder: 'desc' });
+          if (response && response.data) {
+            response.data.forEach(book => {
+              if (fetchedHeroBooks.length < 5 && !fetchedHeroBooks.find(fb => fb.id === book.id)) {
+                fetchedHeroBooks.push(mapApiBookToDisplayBook(book));
+              }
+            });
+          }
+        }
+
+        if (fetchedHeroBooks.length < 5) {
+          const needed = 5 - fetchedHeroBooks.length;
+          const recentResponse = await getBooks({ limit: needed, sortBy: 'id', sortOrder: 'desc' });
+          if (recentResponse && recentResponse.data) {
+            recentResponse.data.forEach(book => {
+              if (fetchedHeroBooks.length < 5 && !fetchedHeroBooks.find(fb => fb.id === book.id)) {
+                fetchedHeroBooks.push(mapApiBookToDisplayBook(book));
+              }
+            });
+          }
+        }
+
+        setFeaturedBooksList(fetchedHeroBooks.slice(0, 5));
+        if (fetchedHeroBooks.length > 0) {
+          setActiveFeaturedBook(fetchedHeroBooks[0]);
+        } else {
+          setActiveFeaturedBook(fallbackHeroBook);
+        }
+      } catch (error) {
+        console.error("Error fetching featured books:", error);
+        message.error("Lỗi khi tải sách nổi bật. Hiển thị dữ liệu mẫu.");
+        setActiveFeaturedBook(fallbackHeroBook);
+        setFeaturedBooksList([]);
+      } finally {
+        setLoadingHero(false);
+      }
+    };
+    fetchFeaturedBooks();
+  }, []);
+
+  useEffect(() => {
+    const fetchOtherSections = async () => {
+      setLoadingNewArrivals(true);
+      setLoadingPopular(true);
+      try {
+        const arrivalsResponse = await searchBooks({ limit: 4, sortBy: 'publish_year', sortOrder: 'desc' });
+        if (arrivalsResponse && arrivalsResponse.data) {
+          setNewArrivals(arrivalsResponse.data.map(mapApiBookToBookItemType));
+        }
+
+        const popularResponse = await searchBooks({ limit: 4, sortBy: 'sold', sortOrder: 'desc' });
+        if (popularResponse && popularResponse.data) {
+          setRecommendedBooks(popularResponse.data.map(mapApiBookToBookItemType));
+        }
+      } catch (error) {
+        console.error("Error fetching new arrivals or popular collections:", error);
+        message.error("Lỗi khi tải sách cho các mục khác.");
+      } finally {
+        setLoadingNewArrivals(false);
+        setLoadingPopular(false);
+      }
+    };
+    fetchOtherSections();
+  }, []);
+
+
+  const handleFeaturedBookClick = (book: HeroBookDisplay) => {
+    setActiveFeaturedBook(book);
   };
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={
+      <div className="h-screen w-screen flex justify-center items-center">
+        <Spin size="large" tip="Đang tải trang..." />
+      </div>
+    }>
       <div className="w-full bg-[#ececec] sm:pt-5 pt-0 pb-20">
         {/* Hero Section */}
         <div className="max-w-[1440px] mx-auto bg-gray-200 rounded-xl overflow-hidden">
           <div className="bg-[#0B3D9180] text-white py-20 sm:py-32 px-7">
             <div className="max-w-[1440px] mx-auto text-center">
               <h1 className="text-4xl sm:text-5xl font-bold mb-4">
-                Unlock a World of <span className="text-[#0B3D91] px-2">Creativity</span>
+                Unlock a World of <span className="text-blue-300 px-2">Creativity</span>
               </h1>
               <p className="text-lg sm:text-xl mb-8">
                 Discover a creative world through books! We offer a vast collection to suit every taste,
@@ -124,72 +170,86 @@ function Home() {
               </p>
             </div>
           </div>
+
           <div className="mx-auto sm:p-6 p-3 bg-[#0B3D91] text-white">
-            <div className="flex flex-row items-center justify-between">
-              <div className="w-[40%] sm:pl-10 pl-0">
-                <h2 className="sm:text-2xl text-[16px] font-bold text-left mb-2">
-                  {featuredBook.title}
-                </h2>
-                <p className="text-left mb-2 sm:text-[16px] text-[10px]">
-                  {featuredBook.author}
-                </p>
-                <p className="mb-6 sm:block hidden text-justify">
-                  {featuredBook.description}
-                </p>{" "}
-                <div className="flex sm:space-x-4 space-x-2 items-center">
-                  <button className="bg-white text-black sm:px-4 px-2 sm:py-2 py-1 rounded-lg hover:bg-gray-400 shadow-lg text-sm">
-                    {t("See more")}
-                  </button>
-                  <div className="sm:flex flex-row items-center hidden gap-1">
-                    <span className=" mr-[-8] bg-white sm:py-2 sm:px-4 py-1 px-4 text-black rounded-lg shadow-lg text-sm">
-                      ${parseFloat(String(featuredBook.price)).toFixed(2)}
-                    </span>
-                    <button className="bg-blue-500 text-white sm:px-4 sm:py-2 hover:bg-blue-700 shadow-lg py-2 px-4 rounded-lg text-sm">
-                      {t("Buy now")}
-                    </button>
+            {loadingHero ? (
+              <div className="h-[300px] flex justify-center items-center">
+                <Spin size="large" tip={t("Đang tải sách nổi bật...") as string} />
+              </div>
+            ) : (
+              activeFeaturedBook && (
+                <div className="flex flex-col md:flex-row items-center md:items-start justify-between min-h-[300px]">
+                  <div className="w-full md:w-[40%] sm:pl-4 md:pl-10 pl-0 mb-6 md:mb-0 order-2 md:order-1">
+                    <h2 className="sm:text-3xl text-xl font-bold text-left mb-1">
+                      {activeFeaturedBook.title}
+                    </h2>
+                    <p className="text-left mb-3 sm:text-md text-sm opacity-80">
+                      {t("By")} {activeFeaturedBook.author}
+                    </p>
+                    <p className="mb-5 sm:text-base text-sm text-justify h-28 md:h-32 overflow-y-auto scrollbar-thin scrollbar-thumb-blue-300 scrollbar-track-transparent pr-2">
+                      {activeFeaturedBook.description}
+                    </p>
+                    <div className="flex sm:space-x-4 space-x-2 items-center">
+                      <Link href={`/book/${activeFeaturedBook.id}`} passHref>
+                        <AntButton type="default" ghost size="large">
+                          {t("See more")}
+                        </AntButton>
+                      </Link>
+                      <div className="flex flex-row items-center">
+                        <span className="bg-white py-2 px-4 text-black rounded-l-lg shadow-lg text-md font-semibold">
+                          ${activeFeaturedBook.price.toFixed(2)}
+                        </span>
+                        <Link href={`/book/${activeFeaturedBook.id}?action=buy`} passHref>
+                          <AntButton type="primary" size="large" className="rounded-l-none">
+                            {t("Buy now")}
+                          </AntButton>
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="w-full md:w-[55%] relative flex justify-center items-start flex-nowrap space-x-[-30px] md:space-x-[-50px] order-1 md:order-2 mb-8 md:mb-0 py-4">
+                    {featuredBooksList.map((book, index) => (
+                      <div
+                        key={book.id || index}
+                        title={book.title}
+                        className={`cursor-pointer transition-all duration-500 ease-out transform-gpu hover:z-30
+                                    w-[100px] h-[150px] sm:w-[120px] sm:h-[180px] md:w-[140px] md:h-[210px] lg:w-[150px] lg:h-[225px]
+                                    ${activeFeaturedBook?.id === book.id
+                            ? 'scale-110 z-20 shadow-2xl ring-4 ring-white ring-offset-2 ring-offset-[#0B3D91] rounded-lg'
+                            : 'scale-90 hover:scale-100 opacity-60 hover:opacity-100 shadow-lg'
+                          }`}
+                        style={{
+                          zIndex: featuredBooksList.length - index,
+                        }}
+                        onClick={() => handleFeaturedBookClick(book)}
+                      >
+                        <Image
+                          src={book.imageUrl}
+                          alt={book.title}
+                          layout="fill"
+                          objectFit="cover"
+                          className="rounded-md"
+                          priority={index < 3}
+                        />
+                      </div>
+                    ))}
+                    {featuredBooksList.length === 0 && !loadingHero && (
+                      <p className="text-center w-full text-gray-400">Không tìm thấy sách nổi bật.</p>
+                    )}
                   </div>
                 </div>
-              </div>
-              <div className="w-[60%] my-6 relative sm:h-[400px] h-[160px]">
-                <div className="relative ml-10">
-                  <Image
-                    src={featuredBook.image}
-                    alt={featuredBook.title}
-                    className="w-1/2 sm:w-1/3 rounded-lg sm:left-40 top-10 left-10 z-10 absolute hover:-rotate-6  hover:top-2 transition-all duration-200 hover:scale-110"
-                  />
-                  <Image
-                    src={featuredBook.image}
-                    alt={featuredBook.title}
-                    className="absolute top-10 left-0 sm:w-1/3 w-1/2 transform  rounded-lg shadow-md hover:-rotate-6  hover:top-2 transition-all duration-200 hover:scale-110 "
-                  />
-                  <Image
-                    src={featuredBook.image}
-                    alt={featuredBook.title}
-                    className="absolute top-10 sm:left-20 left-5 sm:w-1/3 w-1/2 transform  rounded-lg shadow-md hover:-rotate-6  hover:top-2 transition-all duration-200 hover:scale-110"
-                  />
-                  <Image
-                    src={featuredBook.image}
-                    alt={featuredBook.title}
-                    className="absolute top-10 sm:left-60 left-[60px] sm:w-1/3 w-1/2 transform z-20 rounded-lg shadow-md hover:-rotate-6  hover:top-2 transition-all duration-200 hover:scale-110"
-                  />
-                  <Image
-                    src={featuredBook.image}
-                    alt={featuredBook.title}
-                    className="absolute top-10 sm:left-80 left-20 sm:w-1/3 w-1/2 transform z-20  rounded-lg shadow-md hover:-rotate-6  hover:top-2 transition-all duration-200 hover:scale-110"
-                  />
-                </div>
-              </div>
-            </div>
+              )
+            )}
           </div>
         </div>
 
         {/* Popular Categories Section */}
         <div className="max-w-[1440px] mx-auto px-7 py-10">
-          <p className="text-2xl font-bold text-[#0b3d91] mb-5">
-            Popular Categories
+          <p className="text-2xl font-bold text-[#0b3d91] mb-6">
+            {t("Popular Categories")}
           </p>
-
-          <div className="flex justify-center items-center gap-10 md:gap-8 lg:gap-12 overflow-x-auto pb-10">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-6">
             <CategoryItem iconSrc={Images.fictionIcon} label="Fiction" />
             <CategoryItem iconSrc={Images.astronautIcon} label="Astronaut" />
             <CategoryItem iconSrc={Images.historyIcon} label="History" />
@@ -201,56 +261,65 @@ function Home() {
 
         {/* New Arrival Section */}
         <div className="max-w-[1440px] mx-auto px-7 py-10">
-          <h2 className="text-2xl font-bold text-[#0b3d91] mb-5">
+          <h2 className="text-2xl font-bold text-[#0b3d91] mb-6">
             {t("New Arrival")}
           </h2>
-          {loading ? (
-            <div className="text-center py-10">Loading new arrivals...</div>
-          ) : error ? (
-            <div className="text-center py-10 text-red-500">{error}</div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {loadingNewArrivals ? (
+            <div className="text-center py-10"><Spin tip={t("Đang tải sách mới...") as string} /></div>
+          ) : newArrivals.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
               {newArrivals.map((book) => (
                 <BookItem key={book.id} book={book} />
               ))}
             </div>
+          ) : (
+            <div className="text-center py-10 text-gray-500">{t("Chưa có sách mới.")}</div>
           )}
         </div>
 
         {/* Big Spring Sales Section */}
-        <div className="relative bg-white p-10 mb-10">
+        <div className="relative bg-white p-6 sm:p-10 mb-10 max-w-[1440px] mx-auto rounded-xl shadow-xl overflow-hidden">
           <Image
             src={Images.banner}
             alt="big-spring-sales"
-            className="rounded-xl shadow-lg"
             layout="responsive"
             width={1440}
-            height={400}
+            height={450}
+            objectFit="cover"
+            className="rounded-lg"
           />
         </div>
 
         {/* Popular Collection Section */}
         <div className="max-w-[1440px] mx-auto px-7 py-10">
-          <h2 className="text-2xl font-bold text-[#0b3d91] mb-5">
+          <h2 className="text-2xl font-bold text-[#0b3d91] mb-6">
             {t("Popular Collections")}
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {recommendedBooks.map((book) => (
-              <BookItem key={book.id} book={book} />
-            ))}
-          </div>
+          {loadingPopular ? (
+            <div className="text-center py-10"><Spin tip={t("Đang tải bộ sưu tập...") as string} /></div>
+          ) : recommendedBooks.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+              {recommendedBooks.map((book) => (
+                <BookItem key={book.id} book={book} />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-10 text-gray-500">{t("Chưa có bộ sưu tập nổi bật.")}</div>
+          )}
         </div>
       </div>
     </Suspense>
   );
 }
 
+// CategoryItem Component
 const CategoryItem: React.FC<{ iconSrc: string | StaticImageData; label: string }> = ({ iconSrc, label }) => {
+  const { t } = useTranslation("common");
   return (
-    <Link href={`/category/${label.toLowerCase()}`}>
-      <div className="flex flex-row items-center justify-center min-w-[150px] max-w-[150px] h-[60px] bg-white rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300 px-3 gap-2">
-        <Image src={iconSrc} alt={`${label} Icon`} width={24} height={24} />
-        <p className="text-sm font-normal text-black">{label}</p>
+    <Link href={`/category/${label.toLowerCase()}`} passHref>
+      <div className="flex flex-col items-center justify-center p-4 h-36 bg-white rounded-lg shadow-md hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 cursor-pointer text-center group">
+        <Image src={iconSrc} alt={`${label} Icon`} width={48} height={48} className="mb-3 group-hover:scale-110 transition-transform duration-300" />
+        <p className="text-sm font-semibold text-gray-700 group-hover:text-[#0b3d91] transition-colors duration-300">{t(label)}</p>
       </div>
     </Link>
   );
