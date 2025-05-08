@@ -209,31 +209,43 @@ function Home() {
                   </div>
 
                   <div className="w-full md:w-[55%] relative flex justify-center items-start flex-nowrap space-x-[-30px] md:space-x-[-50px] order-1 md:order-2 mb-8 md:mb-0 py-4">
-                    {featuredBooksList.map((book, index) => (
-                      <div
-                        key={book.id || index}
-                        title={book.title}
-                        className={`cursor-pointer transition-all duration-500 ease-out transform-gpu hover:z-30
-                                    w-[100px] h-[150px] sm:w-[120px] sm:h-[180px] md:w-[140px] md:h-[210px] lg:w-[150px] lg:h-[225px]
-                                    ${activeFeaturedBook?.id === book.id
-                            ? 'scale-110 z-20 shadow-2xl ring-4 ring-white ring-offset-2 ring-offset-[#0B3D91] rounded-lg'
-                            : 'scale-90 hover:scale-100 opacity-60 hover:opacity-100 shadow-lg'
-                          }`}
-                        style={{
-                          zIndex: featuredBooksList.length - index,
-                        }}
-                        onClick={() => handleFeaturedBookClick(book)}
-                      >
-                        <Image
-                          src={book.imageUrl}
-                          alt={book.title}
-                          layout="fill"
-                          objectFit="cover"
-                          className="rounded-md"
-                          priority={index < 3}
-                        />
-                      </div>
-                    ))}
+                    {featuredBooksList.map((book, index) => {
+                      const isActive = activeFeaturedBook?.id === book.id;
+
+                      let bookItemClasses = `
+                        relative
+                        cursor-pointer transition-all duration-300 ease-out transform-gpu
+                        w-[100px] h-[150px] sm:w-[120px] sm:h-[180px] md:w-[140px] md:h-[210px] lg:w-[150px] lg:h-[225px]
+                        rounded-md
+                      `;
+
+                      if (isActive) {
+                        bookItemClasses += ' scale-110 shadow-2xl ring-4 ring-white ring-offset-2 ring-offset-[#0B3D91] z-50';
+                      } else {
+                        bookItemClasses += ' scale-90 hover:scale-100 opacity-70 hover:opacity-100 shadow-lg hover:z-40';
+                      }
+
+                      return (
+                        <div
+                          key={book.id || index}
+                          title={book.title}
+                          className={bookItemClasses}
+                          style={{
+                            zIndex: index + 10,
+                          }}
+                          onClick={() => handleFeaturedBookClick(book)}
+                        >
+                          <Image
+                            src={book.imageUrl}
+                            alt={book.title}
+                            layout="fill"
+                            objectFit="cover"
+                            className="rounded-md"
+                            priority={index < 3}
+                          />
+                        </div>
+                      );
+                    })}
                     {featuredBooksList.length === 0 && !loadingHero && (
                       <p className="text-center w-full text-gray-400">Không tìm thấy sách nổi bật.</p>
                     )}
