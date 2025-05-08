@@ -10,3 +10,5 @@ const http = new HttpClient(BASE_URL);
 
 export const getUserById = (id: string) =>
   http.get<User>(`${API_PREFIX_PATH}/user/${id}`);
+
+export const changePassword = 
