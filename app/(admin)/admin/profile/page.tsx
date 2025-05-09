@@ -18,7 +18,12 @@ import { RcFile, UploadChangeParam, UploadFile } from "antd/es/upload";
 import { getToken } from "@/lib/HttpClient";
 import { useRouter } from "next/navigation";
 import { UserProfile } from "@/constant/types";
-import { userServices } from "@/modules/services/userServices";
+import {
+  getUserById,
+  changePassword,
+  getProfile,
+  uploadAvatar,
+} from "@/modules/services/userServices";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000";
 
@@ -42,7 +47,7 @@ const AdminProfilePage = () => {
       }
 
       try {
-        const response = await userServices.getProfile();
+        const response = await getProfile();
         if (response.user) {
           const fetchedUser = response.user;
           let firstName = "";
@@ -126,7 +131,7 @@ const AdminProfilePage = () => {
           return;
         }
         try {
-          await userServices.changePassword({
+          await changePassword({
             currentPassword: values.currentPassword,
             newPassword: values.newPassword,
           });
@@ -141,7 +146,7 @@ const AdminProfilePage = () => {
 
       if (avatarFile) {
         try {
-          const uploadResponse = await userServices.uploadAvatar(userProfile.id, avatarFile);
+          const uploadResponse = await uploadAvatar(userProfile.id, avatarFile);
           if (uploadResponse.attachment && uploadResponse.attachment.fileUrl) {
             setAvatarPreview(uploadResponse.attachment.fileUrl);
             setUserProfile(prev => ({ ...prev!, avatar: uploadResponse.attachment.fileUrl }));

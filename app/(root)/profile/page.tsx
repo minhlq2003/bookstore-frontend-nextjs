@@ -29,8 +29,17 @@ import {
 import { RcFile, UploadChangeParam, UploadFile } from "antd/es/upload";
 import { getToken } from "@/lib/HttpClient";
 import { useRouter } from "next/navigation";
-import { userServices } from "@/modules/services/userServices";
 import { Address, UserProfile } from "@/constant/types";
+import {
+  getUserById,
+  changePassword,
+  getProfile,
+  uploadAvatar,
+  getUserAddresses,
+  addAddress,
+  updateAddress,
+  deleteAddress
+} from "@/modules/services/userServices";
 const { Title, Text } = Typography;
 
 interface AddressFormModalProps {
@@ -148,7 +157,7 @@ const UserProfilePage = () => {
       return;
     }
     try {
-      const response = await userServices.getProfile();
+      const response = await getProfile();
       if (response.user) {
         const fetchedUser = response.user as any;
         let firstName = "";
@@ -249,7 +258,7 @@ const UserProfilePage = () => {
             return;
           }
           try {
-            await userServices.changePassword({
+            await changePassword({
               currentPassword: values.currentPassword,
               newPassword: values.newPassword,
             });
@@ -268,7 +277,7 @@ const UserProfilePage = () => {
       }
 
       if (avatarFile) {
-        const uploadResponse = await userServices.uploadAvatar(
+        const uploadResponse = await uploadAvatar(
           userProfile.id,
           avatarFile
         );
@@ -331,12 +340,12 @@ const UserProfilePage = () => {
     setAddressLoading(true);
     try {
       if (editingAddress) {
-        const response = await userServices.updateAddress(editingAddress.id, {
+        const response = updateAddress(editingAddress.id, {
           ...values,
         });
         message.success("Cập nhật địa chỉ thành công!");
       } else {
-        const response = await userServices.addAddress({
+        const response = addAddress({
           address: values.address,
           receiverName: values.receiver_name,
           receiverPhone: values.receiver_phone,
@@ -357,7 +366,7 @@ const UserProfilePage = () => {
   const handleDeleteAddress = async (addressId: number) => {
     setAddressLoading(true);
     try {
-      await userServices.deleteAddress(addressId);
+      deleteAddress(addressId);
       message.success("Xóa địa chỉ thành công!");
       await fetchUserProfileAndAddresses();
     } catch (error: any) {
