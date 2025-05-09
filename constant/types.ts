@@ -300,9 +300,10 @@ export interface UserProfileResponse {
   };
 }
 
-export interface ChangePasswordPayload {
-  currentPassword?: string;
-  newPassword?: string;
+export interface ChangePasswordResponse {
+  code: number;
+  message?: string;
+  data: User;
 }
 
 export interface Address {
