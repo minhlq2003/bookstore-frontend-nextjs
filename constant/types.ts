@@ -287,6 +287,7 @@ export interface UserProfile {
   avatar?: string;
   firstName?: string;
   lastName?: string;
+  addresses: Address[];
 }
 
 export interface UserProfileResponse {
