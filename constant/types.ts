@@ -278,3 +278,33 @@ export interface MediaResponse {
   data: MediaData[];
   pagination: Pagination;
 }
+
+export interface UserProfile {
+  id: number | string;
+  username: string;
+  email: string;
+  name?: string;
+  avatar?: string;
+  firstName?: string;
+  lastName?: string;
+}
+
+export interface UserProfileResponse {
+  user: {
+    id: number | string;
+    username: string;
+    email: string;
+    name?: string;
+    avatar?: string;
+  };
+}
+
+export interface ChangePasswordPayload {
+  currentPassword?: string;
+  newPassword?: string;
+}
+
+export interface ApiErrorResponse {
+  code: number;
+  message: string;
+}
