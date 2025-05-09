@@ -305,11 +305,6 @@ export interface ChangePasswordPayload {
   newPassword?: string;
 }
 
-export interface ApiErrorResponse {
-  code: number;
-  message: string;
-}
-
 export interface Address {
   id: number;
   address: string;
@@ -317,18 +312,11 @@ export interface Address {
   receiver_phone: string;
 }
 
-export interface AddressApiResponse {
+export interface AddressResponse {
   success?: boolean;
   data?: { address: Address | Address[] } | Address | Address[];
   newAddress?: Address;
   message?: string;
-}
-
-export interface GetAllAddressesResponse {
-  success: boolean;
-  data: {
-    address: Address[];
-  };
 }
 
 export interface CartResponse {
@@ -356,25 +344,25 @@ export interface CartListResponse {
 }
 
 export interface GetAddressResponse {
-  success:boolean;
+  success: boolean;
   data: {
     address: Address[]
   }
 }
 
 export interface AddNewAddressResponse {
-  success:boolean;
+  success: boolean;
   data: {
     newAddress: Address
   }
 }
 
 export interface CheckoutResponse {
-  success:boolean;
+  success: boolean;
   data: {
-    orderId:number,
-    address:String,
-    payment_method:String,
+    orderId: number,
+    address: String,
+    payment_method: String,
     total: number,
     message: String
   }
