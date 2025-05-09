@@ -36,9 +36,9 @@ import {
   getProfile,
   uploadAvatar,
   getUserAddresses,
-  addAddress,
+  addNewAddress,
   updateAddress,
-  deleteAddress
+  deleteAddress,
 } from "@/modules/services/userServices";
 const { Title, Text } = Typography;
 
@@ -258,10 +258,11 @@ const UserProfilePage = () => {
             return;
           }
           try {
-            await changePassword({
-              currentPassword: values.currentPassword,
-              newPassword: values.newPassword,
-            });
+            await changePassword(
+              Number(userProfile.id),
+              values.currentPassword,
+              values.newPassword
+            );
             profileForm.setFieldsValue({
               currentPassword: "",
               newPassword: "",
@@ -278,7 +279,7 @@ const UserProfilePage = () => {
 
       if (avatarFile) {
         const uploadResponse = await uploadAvatar(
-          userProfile.id,
+          Number(userProfile.id),
           avatarFile
         );
         if (uploadResponse.attachment && uploadResponse.attachment.fileUrl) {
@@ -345,12 +346,12 @@ const UserProfilePage = () => {
         });
         message.success("Cập nhật địa chỉ thành công!");
       } else {
-        const response = addAddress({
-          address: values.address,
-          receiverName: values.receiver_name,
-          receiverPhone: values.receiver_phone,
-          userId: userProfile.id,
-        });
+        const response = addNewAddress(
+          Number(userProfile.id),
+          values.address,
+          values.receiver_name,
+          values.receiver_phone
+        );
         message.success("Thêm địa chỉ mới thành công!");
       }
       await fetchUserProfileAndAddresses();

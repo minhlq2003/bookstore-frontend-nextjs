@@ -131,10 +131,11 @@ const AdminProfilePage = () => {
           return;
         }
         try {
-          await changePassword({
-            currentPassword: values.currentPassword,
-            newPassword: values.newPassword,
-          });
+          await changePassword(
+            Number(userProfile.id),
+            values.currentPassword,
+            values.newPassword
+          );
           form.setFieldsValue({ currentPassword: "", newPassword: "", confirmNewPassword: "" });
           message.success("Đổi mật khẩu thành công!");
           profileUpdatedSuccessfully = true;
@@ -146,7 +147,7 @@ const AdminProfilePage = () => {
 
       if (avatarFile) {
         try {
-          const uploadResponse = await uploadAvatar(userProfile.id, avatarFile);
+          const uploadResponse = await uploadAvatar(Number(userProfile.id), avatarFile);
           if (uploadResponse.attachment && uploadResponse.attachment.fileUrl) {
             setAvatarPreview(uploadResponse.attachment.fileUrl);
             setUserProfile(prev => ({ ...prev!, avatar: uploadResponse.attachment.fileUrl }));
