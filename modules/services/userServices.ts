@@ -1,4 +1,12 @@
-import { User, UserProfileResponse, ChangePasswordPayload, ApiErrorResponse } from "@/constant/types";
+import {
+  User,
+  UserProfileResponse,
+  ChangePasswordPayload,
+  ApiErrorResponse,
+  Address,
+  AddressApiResponse,
+  GetAllAddressesResponse,
+} from "@/constant/types";
 import { HttpClient, getToken } from "@/lib/HttpClient";
 
 const API_PREFIX_PATH = "/user";
@@ -87,4 +95,82 @@ export const userServices = {
     });
     return handleResponse<any>(response);
   },
-}
+
+  /**
+  * Lấy tất cả địa chỉ của một người dùng dựa trên userId.
+  */
+  getUserAddresses: async (userId: string | number): Promise<GetAllAddressesResponse> => {
+    const token = getToken();
+    if (!token) {
+      throw new Error("Token không tồn tại. Vui lòng đăng nhập lại.");
+    }
+    const response = await fetch(`${BASE_URL}/user/alladdress/${userId}`, {
+      method: "GET",
+      headers: {
+        Authorization: token,
+        "Content-Type": "application/json",
+      },
+    });
+    return handleResponse<GetAllAddressesResponse>(response);
+  },
+
+  /**
+   * Thêm địa chỉ mới cho người dùng hiện tại.
+   */
+  addAddress: async (payload: {
+    address: string;
+    receiverName: string;
+    receiverPhone: string;
+    userId: string | number;
+  }): Promise<AddressApiResponse> => {
+    const token = getToken();
+    if (!token) {
+      throw new Error("Token không tồn tại. Vui lòng đăng nhập lại.");
+    }
+    const response = await fetch(`${BASE_URL}/user/addnewaddress`, {
+      method: "POST",
+      headers: {
+        Authorization: token,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+    return handleResponse<AddressApiResponse>(response);
+  },
+
+  /**
+  * Cập nhật một địa chỉ đã có.
+  */
+  updateAddress: async (addressId: number, payload: Partial<Address>): Promise<AddressApiResponse> => {
+    const token = getToken();
+    if (!token) {
+      throw new Error("Token không tồn tại. Vui lòng đăng nhập lại.");
+    }
+    const response = await fetch(`${BASE_URL}/user/updateaddress/${addressId}`, {
+      method: "PUT",
+      headers: {
+        Authorization: token,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+    return handleResponse<AddressApiResponse>(response);
+  },
+
+  /**
+  * Xóa một địa chỉ.
+  */
+  deleteAddress: async (addressId: number): Promise<AddressApiResponse> => {
+    const token = getToken();
+    if (!token) {
+      throw new Error("Token không tồn tại. Vui lòng đăng nhập lại.");
+    }
+    const response = await fetch(`${BASE_URL}/user/deleteaddress/${addressId}`, {
+      method: "POST",
+      headers: {
+        Authorization: token,
+      },
+    });
+    return handleResponse<AddressApiResponse>(response);
+  },
+};
