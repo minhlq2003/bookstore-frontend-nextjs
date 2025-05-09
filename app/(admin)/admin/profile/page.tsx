@@ -61,6 +61,7 @@ const AdminProfilePage = () => {
             ...fetchedUser,
             firstName: (fetchedUser as any).firstName || firstName,
             lastName: (fetchedUser as any).lastName || lastName,
+            addresses: []
           };
 
           setUserProfile(profileData);
