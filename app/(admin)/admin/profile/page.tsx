@@ -17,16 +17,8 @@ import Title from "antd/es/typography/Title";
 import { RcFile, UploadChangeParam, UploadFile } from "antd/es/upload";
 import { getToken } from "@/lib/HttpClient";
 import { useRouter } from "next/navigation";
-
-interface UserProfile {
-  id: number | string;
-  username: string;
-  email: string;
-  name?: string;
-  firstName?: string;
-  lastName?: string;
-  avatar?: string;
-}
+import { UserProfile } from "@/constant/types";
+import { userServices } from "@/modules/services/userServices";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000";
 
@@ -42,35 +34,17 @@ const AdminProfilePage = () => {
   useEffect(() => {
     const fetchUserProfile = async () => {
       setLoading(true);
-      const token = getToken();
-      if (!token) {
+      if (!getToken()) {
         message.error("Vui lòng đăng nhập để xem thông tin cá nhân.");
-        router.push("/signin"); // Hoặc trang login của admin
+        router.push("/signin");
+        setLoading(false);
         return;
       }
 
       try {
-        const response = await fetch(`${API_BASE_URL}/user/profile`, {
-          headers: {
-            Authorization: token,
-          },
-        });
-
-        if (!response.ok) {
-          if (response.status === 401 || response.status === 403) {
-            message.error("Phiên đăng nhập hết hạn hoặc không hợp lệ. Vui lòng đăng nhập lại.");
-            localStorage.removeItem("accessToken");
-            localStorage.removeItem("user");
-            router.push("/signin");
-          } else {
-            throw new Error("Không thể tải thông tin người dùng.");
-          }
-          return;
-        }
-
-        const data = await response.json();
-        if (data.user) {
-          const fetchedUser = data.user;
+        const response = await userServices.getProfile();
+        if (response.user) {
+          const fetchedUser = response.user;
           let firstName = "";
           let lastName = "";
           if (fetchedUser.name) {
@@ -85,15 +59,14 @@ const AdminProfilePage = () => {
 
           const profileData: UserProfile = {
             ...fetchedUser,
-            firstName: fetchedUser.firstName || firstName,
-            lastName: fetchedUser.lastName || lastName,
+            firstName: (fetchedUser as any).firstName || firstName,
+            lastName: (fetchedUser as any).lastName || lastName,
           };
+
           setUserProfile(profileData);
           form.setFieldsValue({
             username: profileData.username,
             email: profileData.email,
-            firstName: profileData.firstName,
-            lastName: profileData.lastName,
           });
           if (profileData.avatar) {
             setAvatarPreview(profileData.avatar);
@@ -101,8 +74,15 @@ const AdminProfilePage = () => {
         } else {
           message.error("Không tìm thấy thông tin người dùng.");
         }
-      } catch (error) {
-        message.error("Có lỗi xảy ra khi tải thông tin người dùng.");
+      } catch (error: any) {
+        if (error.message.includes("Token không tồn tại") || error.message.includes("401") || error.message.includes("403")) {
+          message.error("Phiên đăng nhập hết hạn hoặc không hợp lệ. Vui lòng đăng nhập lại.");
+          localStorage.removeItem("accessToken");
+          localStorage.removeItem("user");
+          router.push("/signin");
+        } else {
+          message.error(error.message || "Có lỗi xảy ra khi tải thông tin người dùng.");
+        }
         console.error("Fetch profile error:", error);
       } finally {
         setLoading(false);
@@ -135,109 +115,62 @@ const AdminProfilePage = () => {
   const onFinish = async (values: any) => {
     if (!userProfile) return;
     setSaving(true);
-    const token = getToken();
+    let profileUpdatedSuccessfully = false;
 
     try {
-      // 1. Cập nhật thông tin tên, họ (Giả sử có API, nếu không có thì backend cần bổ sung)
-      //    Backend API có thể nhận { firstName, lastName } hoặc { name }
-      //    Hiện tại backend User Service của bạn không có API này, bạn cần trao đổi với team backend
-      //    để cung cấp.
-      //    Ví dụ (cần API thực tế):
-      /*
-      const nameUpdatePayload: any = {};
-      if (values.firstName || values.lastName) {
-        // Nếu backend nhận first & last name riêng:
-        nameUpdatePayload.firstName = values.firstName;
-        nameUpdatePayload.lastName = values.lastName;
-        // Hoặc nếu backend nhận gộp trường name:
-        // nameUpdatePayload.name = `${values.firstName || ''} ${values.lastName || ''}`.trim();
-      }
-
-      if (Object.keys(nameUpdatePayload).length > 0) {
-        const updateUserResponse = await fetch(`${API_BASE_URL}/user/update-profile/${userProfile.id}`, { // Endpoint ví dụ
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': token!,
-          },
-          body: JSON.stringify(nameUpdatePayload),
-        });
-        if (!updateUserResponse.ok) throw new Error('Cập nhật tên thất bại.');
-        const updatedUserData = await updateUserResponse.json();
-        // Cập nhật lại state userProfile nếu cần
-        if (updatedUserData.user) {
-          setUserProfile(prev => ({...prev, ...updatedUserData.user}));
-        }
-      }
-      */
-      message.info("Chức năng cập nhật Tên/Họ cần API từ backend.", 3);
-
-
-      // 2. Thay đổi mật khẩu (nếu có nhập)
       if (values.newPassword) {
         if (!values.currentPassword) {
           message.error("Vui lòng nhập mật khẩu hiện tại để thay đổi mật khẩu mới.");
           setSaving(false);
           return;
         }
-        const changePasswordResponse = await fetch(
-          `${API_BASE_URL}/user/change-password`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: token!,
-            },
-            body: JSON.stringify({
-              currentPassword: values.currentPassword,
-              newPassword: values.newPassword,
-            }),
-          }
-        );
-        if (!changePasswordResponse.ok) {
-          const errorData = await changePasswordResponse.json();
-          throw new Error(errorData.message || "Đổi mật khẩu thất bại.");
+        try {
+          await userServices.changePassword({
+            currentPassword: values.currentPassword,
+            newPassword: values.newPassword,
+          });
+          form.setFieldsValue({ currentPassword: "", newPassword: "", confirmNewPassword: "" });
+          message.success("Đổi mật khẩu thành công!");
+          profileUpdatedSuccessfully = true;
+        } catch (error: any) {
+          message.error(error.message || "Đổi mật khẩu thất bại.");
+          console.error("Change password error:", error);
         }
-        form.setFieldsValue({ currentPassword: "", newPassword: "" }); // Xóa trường mật khẩu
-        message.success("Đổi mật khẩu thành công!");
       }
 
-      // 3. Upload ảnh đại diện (nếu có chọn file mới)
       if (avatarFile) {
-        const formData = new FormData();
-        formData.append("file", avatarFile); // Backend `upload.ts` dùng key là "file"
-
-        const uploadResponse = await fetch(
-          `${API_BASE_URL}/user/upload/${userProfile.id}`,
-          {
-            method: "POST",
-            headers: {
-              Authorization: token!,
-            },
-            body: formData,
+        try {
+          const uploadResponse = await userServices.uploadAvatar(userProfile.id, avatarFile);
+          if (uploadResponse.attachment && uploadResponse.attachment.fileUrl) {
+            setAvatarPreview(uploadResponse.attachment.fileUrl);
+            setUserProfile(prev => ({ ...prev!, avatar: uploadResponse.attachment.fileUrl }));
+            setAvatarFile(null);
+            message.success("Cập nhật ảnh đại diện thành công!");
+            profileUpdatedSuccessfully = true;
+          } else if (uploadResponse.avatarUrl) {
+            setAvatarPreview(uploadResponse.avatarUrl);
+            setUserProfile(prev => ({ ...prev!, avatar: uploadResponse.avatarUrl }));
+            setAvatarFile(null);
+            message.success("Cập nhật ảnh đại diện thành công!");
+            profileUpdatedSuccessfully = true;
           }
-        );
-        if (!uploadResponse.ok) {
-          const errorData = await uploadResponse.json();
-          throw new Error(errorData.message || "Upload ảnh đại diện thất bại.");
+          else {
+            message.error(uploadResponse.message || "Upload ảnh đại diện thành công nhưng không nhận được URL mới.");
+          }
+        } catch (error: any) {
+          message.error(error.message || "Upload ảnh đại diện thất bại.");
+          console.error("Upload avatar error:", error);
         }
-        const uploadData = await uploadResponse.json();
-        if (uploadData.attachment && uploadData.attachment.fileUrl) {
-          setAvatarPreview(uploadData.attachment.fileUrl); // Cập nhật preview với URL từ S3
-          setUserProfile(prev => ({ ...prev!, avatar: uploadData.attachment.fileUrl }));
-        }
-        message.success("Cập nhật ảnh đại diện thành công!");
       }
 
-      if (!values.newPassword && !avatarFile) {
-        message.success("Hồ sơ đã được cập nhật (Không có thay đổi về mật khẩu hoặc ảnh đại diện)!");
-      } else {
-        // Không cần hiển thị gì thêm nếu các message trên đã success
+      if (profileUpdatedSuccessfully) {
+      } else if (!values.newPassword && !avatarFile) {
+        message.info("Không có thông tin nào được thay đổi.");
       }
 
     } catch (error: any) {
-      message.error(error.message || "Có lỗi xảy ra khi cập nhật hồ sơ.");
-      console.error("Update profile error:", error);
+      message.error(error.message || "Có lỗi không mong muốn xảy ra khi cập nhật hồ sơ.");
+      console.error("Update profile general error:", error);
     } finally {
       setSaving(false);
     }
@@ -253,15 +186,19 @@ const AdminProfilePage = () => {
 
   if (!userProfile) {
     return (
-      <div className="p-6 text-center">Không thể tải thông tin người dùng.</div>
+      <div className="container mx-auto px-4 py-8 text-center">
+        Không thể tải thông tin người dùng hoặc bạn chưa đăng nhập.
+        Vui lòng <a href="/signin" className="text-blue-600 hover:underline">đăng nhập</a> lại.
+      </div>
     );
   }
 
   const uploadProps = {
-    name: "avatar",
+    name: "avatarFile",
     showUploadList: false,
     beforeUpload: () => false,
     onChange: handleAvatarChange,
+    accept: "image/png, image/jpeg, image/gif",
   };
 
   return (
@@ -281,6 +218,14 @@ const AdminProfilePage = () => {
             <Button icon={<UploadOutlined />}>Chọn Ảnh Đại Diện</Button>
           </Upload>
           <p className="text-xs text-gray-500 mt-1">JPG/PNG, nhỏ hơn 2MB</p>
+
+          {(userProfile.firstName || userProfile.lastName) && (
+            <Title level={5} className="mt-4 mb-0">{`${userProfile.firstName || ''} ${userProfile.lastName || ''}`.trim()}</Title>
+          )}
+          {!userProfile.firstName && !userProfile.lastName && userProfile.name && (
+            <Title level={5} className="mt-4 mb-0">{userProfile.name}</Title>
+          )}
+          <p className="text-gray-600">{userProfile.email}</p>
         </Col>
         <Col xs={24} md={16}>
           <Form
@@ -294,6 +239,7 @@ const AdminProfilePage = () => {
               lastName: userProfile.lastName,
             }}
           >
+            <Title level={4} className="mb-4">Thông tin tài khoản</Title>
             <Form.Item label="Tên người dùng" name="username">
               <Input disabled />
             </Form.Item>
@@ -320,6 +266,7 @@ const AdminProfilePage = () => {
                 </Form.Item>
               </Col>
             </Row>
+            <Title level={4} className="mt-6 mb-4">Thay đổi mật khẩu</Title>
             <Form.Item
               label="Mật khẩu hiện tại"
               name="currentPassword"
@@ -362,7 +309,7 @@ const AdminProfilePage = () => {
             </Form.Item>
 
             <Form.Item>
-              <Button type="primary" htmlType="submit" loading={saving}>
+              <Button type="primary" htmlType="submit" loading={saving} size="large" block>
                 Cập nhật hồ sơ
               </Button>
             </Form.Item>
