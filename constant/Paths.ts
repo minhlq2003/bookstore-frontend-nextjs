@@ -80,11 +80,11 @@ export const CONTACTFORM: PathItem = {
 };
 export const CATEGORIES: PathItem = {
   LIST: {
-    PATH: "/category",
+    PATH: "/categories",
     LABEL: "Category",
     BREADCRUMB: ["All Categories"],
   },
-  EDIT: { PATH: `/category`, LABEL: "Edit Category", BREADCRUMB: ["Edit"] },
+  EDIT: { PATH: `/categories`, LABEL: "Edit Category", BREADCRUMB: ["Edit"] },
 };
 export const USERS: PathItem = {
   LIST: { PATH: "/users", LABEL: "All Users", BREADCRUMB: ["All Users"] },
@@ -93,9 +93,9 @@ export const USERS: PathItem = {
     LABEL: "Create User",
     BREADCRUMB: ["Create New User"],
   },
-  EDIT: { PATH: "/users/:idUser", LABEL: "", BREADCRUMB: ["Users Edit"] },
+  EDIT: { PATH: "/:idUser", LABEL: "", BREADCRUMB: ["Users Edit"] },
   PROFILE: {
-    PATH: "/users/profile",
+    PATH: "/profile",
     LABEL: "Profile",
     BREADCRUMB: ["Profile"],
   },

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Category } from "@/constant/types";;
+import { Category } from "@/constant/types";
 import { Button, Modal } from "antd";
 import Table, { ColumnsType } from "antd/es/table";
 import { getCategories } from '@/modules/services/categoryService'

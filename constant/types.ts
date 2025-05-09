@@ -279,6 +279,47 @@ export interface MediaResponse {
   pagination: Pagination;
 }
 
+export interface UserProfile {
+  id: number | string;
+  username: string;
+  email: string;
+  name?: string;
+  avatar?: string;
+  firstName?: string;
+  lastName?: string;
+  addresses: Address[];
+}
+
+export interface UserProfileResponse {
+  user: {
+    id: number | string;
+    username: string;
+    email: string;
+    name?: string;
+    avatar?: string;
+  };
+}
+
+export interface ChangePasswordResponse {
+  code: number;
+  message?: string;
+  data: User;
+}
+
+export interface Address {
+  id: number;
+  address: string;
+  receiver_name: string;
+  receiver_phone: string;
+}
+
+export interface AddressResponse {
+  success?: boolean;
+  data?: { address: Address | Address[] } | Address | Address[];
+  newAddress?: Address;
+  message?: string;
+}
+
 export interface CartResponse {
   id: number;
   user_id: number;
@@ -304,25 +345,25 @@ export interface CartListResponse {
 }
 
 export interface GetAddressResponse {
-  success:boolean;
+  success: boolean;
   data: {
     address: Address[]
   }
 }
 
 export interface AddNewAddressResponse {
-  success:boolean;
+  success: boolean;
   data: {
     newAddress: Address
   }
 }
 
 export interface CheckoutResponse {
-  success:boolean;
+  success: boolean;
   data: {
-    orderId:number,
-    address:String,
-    payment_method:String,
+    orderId: number,
+    address: String,
+    payment_method: String,
     total: number,
     message: String
   }
