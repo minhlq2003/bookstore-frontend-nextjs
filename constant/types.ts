@@ -308,3 +308,24 @@ export interface ApiErrorResponse {
   code: number;
   message: string;
 }
+
+export interface Address {
+  id: number;
+  address: string;
+  receiver_name: string;
+  receiver_phone: string;
+}
+
+export interface AddressApiResponse {
+  success?: boolean;
+  data?: { address: Address | Address[] } | Address | Address[];
+  newAddress?: Address;
+  message?: string;
+}
+
+export interface GetAllAddressesResponse {
+  success: boolean;
+  data: {
+    address: Address[];
+  };
+}
