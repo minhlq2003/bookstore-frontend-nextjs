@@ -144,10 +144,9 @@ const AddressFormModal: React.FC<AddressFormModalProps> = ({
 };
 
 const UserProfilePage: React.FC<{
-  onFinish: (values: User) => void;
   uploadedImage: string;
   setUploadedImage: React.Dispatch<React.SetStateAction<string>>;
-}> = ({ onFinish, uploadedImage, setUploadedImage }) => {
+}> = ({ uploadedImage, setUploadedImage }) => {
   const [ profileForm ] = Form.useForm();
   const { t } = useTranslation("common");
   const router = useRouter();
@@ -182,14 +181,6 @@ const UserProfilePage: React.FC<{
     setNewSelectedAvatarUrl(mediaUrl);
     setAvatarPreview(mediaUrl);
     setIsModalOpen(false);
-  };
-
-  const handleSubmit = () => {
-    onFinish(profileForm.getFieldsValue());
-  };
-
-  const handleRemoveImage = (index: number) => {
-    setUploadedImage("");
   };
 
   const fetchUserProfileAndAddresses = useCallback(async () => {
