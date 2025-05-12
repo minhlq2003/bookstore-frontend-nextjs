@@ -1,6 +1,6 @@
 import {
   User,
-  UserProfileResponse,
+  UserResponse,
   ChangePasswordResponse,
   GetAddressResponse,
   Address,
@@ -22,8 +22,8 @@ export const getUserById = (id: string) =>
 export const getAllAddressByUserId = (userId: number) =>
   http.get<GetAddressResponse>(`${API_PREFIX_PATH}/alladdress/${userId}`)
 
-export const getProfile = async (): Promise<UserProfileResponse> => {
-  const response = await http.get<UserProfileResponse | null>(`${API_PREFIX_PATH}/profile`);
+export const getProfile = async (): Promise<UserResponse> => {
+  const response = await http.get<UserResponse | null>(`${API_PREFIX_PATH}/profile`);
   if (!response) {
     throw new Error("Failed to fetch user profile");
   }
