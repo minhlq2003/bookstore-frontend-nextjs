@@ -42,7 +42,7 @@ export type ApiBook = {
 };
 
 export interface PathItem {
-  [k: string]: {
+  [ k: string ]: {
     PATH: string;
     LABEL: string;
     BREADCRUMB: Array<string>;
@@ -206,6 +206,13 @@ export interface Address {
   receiver_phone: string;
 }
 
+export interface AddressResponse {
+  code: number;
+  data?: { address: Address | Address[] } | Address | Address[];
+  newAddress?: Address;
+  message?: string;
+}
+
 export interface User {
   id: number;
   username: string;
@@ -215,6 +222,12 @@ export interface User {
   status: number;
   role: string;
   addresses: Address[];
+}
+
+export interface UserResponse {
+  code: number;
+  message?: string;
+  data: User;
 }
 
 export interface MediaData {
@@ -279,45 +292,10 @@ export interface MediaResponse {
   pagination: Pagination;
 }
 
-export interface UserProfile {
-  id: number | string;
-  username: string;
-  email: string;
-  name?: string;
-  avatar?: string;
-  firstName?: string;
-  lastName?: string;
-  addresses: Address[];
-}
-
-export interface UserProfileResponse {
-  user: {
-    id: number | string;
-    username: string;
-    email: string;
-    name?: string;
-    avatar?: string;
-  };
-}
-
 export interface ChangePasswordResponse {
   code: number;
   message?: string;
   data: User;
-}
-
-export interface Address {
-  id: number;
-  address: string;
-  receiver_name: string;
-  receiver_phone: string;
-}
-
-export interface AddressResponse {
-  success?: boolean;
-  data?: { address: Address | Address[] } | Address | Address[];
-  newAddress?: Address;
-  message?: string;
 }
 
 export interface CartResponse {
@@ -347,24 +325,24 @@ export interface CartListResponse {
 export interface GetAddressResponse {
   success: boolean;
   data: {
-    address: Address[]
-  }
+    address: Address[];
+  };
 }
 
 export interface AddNewAddressResponse {
   success: boolean;
   data: {
-    newAddress: Address
-  }
+    newAddress: Address;
+  };
 }
 
 export interface CheckoutResponse {
   success: boolean;
   data: {
-    orderId: number,
-    address: String,
-    payment_method: String,
-    total: number,
-    message: String
-  }
+    orderId: number;
+    address: String;
+    payment_method: String;
+    total: number;
+    message: String;
+  };
 }
