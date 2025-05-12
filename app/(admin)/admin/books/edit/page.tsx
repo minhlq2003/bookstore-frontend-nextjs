@@ -4,12 +4,13 @@ import { Button, Form, message, Space, Spin } from "antd";
 import Title from "antd/es/typography/Title";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useCallback } from "react";
-import BookForm from "../BookForm";
 import { useSearchParams } from "next/navigation";
 import { CheckCircleIcon } from "lucide-react";
 import { Book } from "@/constant/types";
 import { getBookById, updateBook } from "@/modules/services/bookService";
 import { useTranslation } from "react-i18next";
+import { image } from "@heroui/theme";
+import BookForm from "@/modules/book/BookForm";
 
 const EditBook = () => {
   const { t } = useTranslation("common");
@@ -36,7 +37,7 @@ const EditBook = () => {
       author: values.author,
       price: Number(values.price),
       pages: values.pages,
-      //publishedDate: values.publishedDate,
+      publishedDate: values.publishedDate,
       categoryId: values.category,
       publisherId: values.publisher,
       discountCode: values.discount,
@@ -44,6 +45,7 @@ const EditBook = () => {
       description: values.description,
       size: values.size,
       weight: Number(values.weight),
+
       //slug: slug,
     };
 
@@ -69,7 +71,8 @@ const EditBook = () => {
 
   useEffect(() => {
     form.setFieldsValue(book);
-    console.log("book", book);
+    const images = book?.book_images.map((values) => values.url) || [];
+    setUploadedImages(images);
   }, [book, form]);
 
   return (
@@ -79,10 +82,10 @@ const EditBook = () => {
           <Spin size="large" />
         </div>
       ) : (
-        <div className="p-4 w-full">
-          <Space>
-            <Title level={2}> {t("Edit Book")} </Title>
-          </Space>
+        <div className="w-full">
+          <h1 className="ml-[10px] text-3xl font-bold pb-6">
+            {t("Edit Book")}
+          </h1>
           <div className="flex justify-between">
             <BookForm
               form={form}

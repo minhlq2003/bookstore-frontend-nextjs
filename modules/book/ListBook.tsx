@@ -40,6 +40,7 @@ export default function ListBook({ searchTerm }: ListBookProps) {
       limit: pageSize,
       sortBy,
       sortOrder,
+      search: searchTerm,
     });
 
     setData(response?.data ?? []);

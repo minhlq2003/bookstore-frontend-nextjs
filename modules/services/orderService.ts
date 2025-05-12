@@ -13,6 +13,7 @@ export const getOrders = async (params?: {
   limit?: number;
   sortBy?: string;
   sortOrder?: string;
+  search?: string;
 }) => {
   const response = await http.get<ListOrdersResponse>(
     `${API_PREFIX_PATH}/orders`,
