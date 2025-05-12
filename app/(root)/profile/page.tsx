@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useCallback, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Form,
   Input,
@@ -17,6 +18,7 @@ import {
   Popconfirm,
   Card,
   Divider,
+  FormInstance,
 } from "antd";
 import {
   UserOutlined,
@@ -27,6 +29,7 @@ import {
   HomeOutlined,
   SaveOutlined,
 } from "@ant-design/icons";
+import { TrashIcon } from "lucide-react";
 import { getToken } from "@/lib/HttpClient";
 import { RcFile, UploadChangeParam, UploadFile } from "antd/es/upload";
 import { useRouter } from "next/navigation";
@@ -76,18 +79,6 @@ const AddressFormModal: React.FC<AddressFormModalProps> = ({
 
   const handleFormFinish = (values: Omit<Address, "id" | "user_id">) => {
     onFinish(values);
-  };
-
-  const [ isModalOpen, setIsModalOpen ] = useState(false);
-  const [ isChooseMedia, setIsChooseMedia ] = useState(true);
-  const [ selectedMedia, setSelectedMedia ] = useState<string>("");
-
-  const handleOpenModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
   };
 
   return (
@@ -151,9 +142,14 @@ const AddressFormModal: React.FC<AddressFormModalProps> = ({
   );
 };
 
-
-const UserProfilePage = () => {
-  const [ profileForm ] = Form.useForm();
+const UserProfilePage: React.FC<{
+  profileForm: FormInstance;
+  onFinish: (values: User) => void;
+  uploadedImages: string;
+  setUploadedImage: React.Dispatch<React.SetStateAction<string>>;
+}> = ({ profileForm, onFinish, uploadedImages, setUploadedImage }) => {
+  // const [ profileForm ] = Form.useForm();
+  const { t } = useTranslation("common");
   const router = useRouter();
   const [ loading, setLoading ] = useState(true);
   const [ saving, setSaving ] = useState(false);
@@ -166,6 +162,34 @@ const UserProfilePage = () => {
   const [ isAddressModalVisible, setIsAddressModalVisible ] = useState(false);
   const [ editingAddress, setEditingAddress ] = useState<Address | null>(null);
   const [ addressLoading, setAddressLoading ] = useState(false);
+
+  const [ isModalOpen, setIsModalOpen ] = useState(false);
+  const [ isChooseMedia, setIsChooseMedia ] = useState(true);
+  const [ selectedMedia, setSelectedMedia ] = useState<string>("");
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleSelectMedia = (media: string) => {
+    setSelectedMedia(media);
+    setIsModalOpen(false);
+    setUploadedImage("");
+    console.log("add", media);
+    console.log("upload images: ", uploadedImages);
+  };
+
+  const handleSubmit = () => {
+    onFinish(profileForm.getFieldsValue());
+  };
+
+  const handleRemoveImage = (index: number) => {
+    setUploadedImage("");
+  };
 
   const fetchUserProfileAndAddresses = useCallback(async () => {
     setLoading(true);
@@ -443,9 +467,19 @@ const UserProfilePage = () => {
               icon={ !(avatarPreview || userProfile.avatar) && <UserOutlined /> }
               className="mb-4 border-2 border-gray-200 shadow-sm"
             />
-            <Upload { ...uploadProps }>
-              <Button icon={ <UploadOutlined /> }>Chọn Ảnh Đại Diện</Button>
-            </Upload>
+            <div className="flex flex-col items-center text-center mb-6 md:mb-0">
+              <Form.Item style={ { width: "100%" } }>
+                <div className="w-full">
+                  <Button
+                    type="primary"
+                    onClick={ handleOpenModal }
+                    className="w-full"
+                  >
+                    { t("Select Media") }
+                  </Button>
+                </div>
+              </Form.Item>
+            </div>
             <p className="text-xs text-gray-500 mt-1">
               JPG/PNG/GIF, nhỏ hơn 2MB
             </p>
@@ -647,6 +681,44 @@ const UserProfilePage = () => {
         } : undefined }
         loading={ addressLoading }
       />
+
+      <Modal
+        open={ isModalOpen }
+        title={ <span className="ml-4">{ t("Select Media") }</span> }
+        onCancel={ handleCloseModal }
+        style={ { top: 20 } }
+        width="90%"
+        footer={ null }
+      >
+        <div className="ml-4 mt-5">
+          <Button
+            onClick={ () => setIsChooseMedia(true) }
+            className="mr-2"
+            style={ {
+              backgroundColor: isChooseMedia ? "blue" : "initial",
+              color: isChooseMedia ? "white" : "initial",
+            } }
+          >
+            { t("Select Media") }
+          </Button>
+          <Button
+            onClick={ () => setIsChooseMedia(false) }
+            style={ {
+              backgroundColor: !isChooseMedia ? "blue" : "initial",
+              color: !isChooseMedia ? "white" : "initial",
+            } }
+          >
+            { t("Upload Media") }
+          </Button>
+        </div>
+        <div>
+          { isChooseMedia ? (
+            <Media isOpenModal={ true } onSelectMedia={ handleSelectMedia } />
+          ) : (
+            <MediaUpload isOpenModal={ true } setChooseMedia={ setIsChooseMedia } />
+          ) }
+        </div>
+      </Modal>
     </div >
   );
 };
