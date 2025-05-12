@@ -13,6 +13,7 @@ export const getBooks = async (params?: {
   limit?: number;
   sortBy?: string;
   sortOrder?: string;
+  is_featured?: boolean;
 }) => {
   const response = await http.get<BookListResponse>(
     `${API_PREFIX_BOOK_PATH}/all`,
@@ -43,20 +44,3 @@ export const updateBook = (id: string, data: Partial<Book>) =>
 
 export const deleteBook = (id: string) =>
   http.post<BookResponse>(`${API_PREFIX_BOOK_PATH}/deletebook/${id}`);
-
-export const searchBooks = async (params?: {
-  page?: number;
-  limit?: number;
-  sortBy?: string;
-  sortOrder?: string;
-  query?: string;
-  category?: string;
-  publisher?: string;
-  minPrice?: number;
-  maxPrice?: number;
-  author?: string;
-  featured?: boolean;
-  isNew?: boolean;
-}): Promise<BookListResponse | null> => {
-  return http.get<BookListResponse>(`${API_PREFIX_BOOK_PATH}/search`, { params });
-};
