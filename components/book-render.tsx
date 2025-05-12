@@ -1,13 +1,10 @@
 "use client";
+
 import { Book, User } from "@/constant/types";
+import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar, faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
 import { BreadcrumbItem, Breadcrumbs } from "@heroui/breadcrumbs";
-import Image from "next/image";
-import { useParams } from "next/navigation";
-import { useTranslation } from "next-i18next";
-
-import React, { useState, useEffect } from "react";
 import {
   Table,
   TableBody,
@@ -18,105 +15,37 @@ import {
 } from "@heroui/table";
 import BookItem from "@/components/book-item";
 import { addToCart } from "@/modules/services/cartService";
-import { toast } from "sonner";
-const Page = () => {
+import Image from "next/image";
+import { useTranslation } from "next-i18next";
+
+interface Props {
+  book: Book | undefined;
+  relatedBooks: Book[];
+  user: User | null;
+}
+
+const BookDetailClient = ({ book, relatedBooks, user }: Props) => {
   const { t } = useTranslation("common");
   const [quantity, setQuantity] = useState(1);
-  const [book, setBook] = useState<Book | null>(null);
-  const [relatedBooks, setRelatedBooks] = useState<Book[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [user, setUser] = useState<User | null>(null);
-  const { id } = useParams();
 
-  useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      try {
-        const parsedUser = JSON.parse(storedUser);
-        setUser(parsedUser);
-      } catch (e) {
-        toast.error('Failed to parse user from localStorage');
-      }
-    }
-  }, []);
+  const increaseQuantity = () => setQuantity((prev) => prev + 1);
+  const decreaseQuantity = () =>
+    setQuantity((prev) => (prev <= 1 ? 1 : prev - 1));
 
-  useEffect(() => {
-    const fetchBookDetails = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-        const response = await fetch(`${apiBaseUrl}/book/details/${id}`);
-
-        if (!response.ok) {
-          throw new Error(`Failed to fetch book details: ${response.status}`);
-        }
-        const data = await response.json();
-        setBook(data.data);
-        setRelatedBooks(Array(4).fill(data.data));
-      } catch (err) {
-        toast.error("Error fetching book details");
-        setError("Failed to load book details. Please try again later.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (id) {
-      fetchBookDetails();
-    }
-  }, [id]);
-
-  const increaseQuantity = () => {
-    setQuantity((prev) => prev + 1);
-  };
-
-  const decreaseQuantity = () => {
-    if (quantity <= 1) {
-      setQuantity(1);
-    } else {
-      setQuantity((prev) => prev - 1);
-    }
-  };
-  
-  const handleAddToCart = async() => {
+  const handleAddToCart = async () => {
     if (!book || !user) return;
-    try {  
-      const response = await addToCart(user.id, book.id, quantity);
+    try {
+      const response = await addToCart(user.id, book?.id, quantity);
       if (response?.success) {
-        toast.success("Book added to cart successfully");
+        alert("Book added to cart successfully");
       } else {
-        toast.error("Failed to add book to cart:");
+        console.error("Failed to add book to cart");
       }
-    } catch (error) {
-      toast.error("Error while adding to cart");
+    } catch (err) {
+      console.error("Error adding book to cart:", err);
     }
   };
 
-  if (loading) {
-    return (
-      <div className="max-w-[1200px] mx-auto bg-[#ECECEC] font-merriweather p-10 text-center">
-        Loading...
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="max-w-[1200px] mx-auto bg-[#ECECEC] font-merriweather p-10 text-center text-red-500">
-        {error}
-      </div>
-    );
-  }
-
-  if (!book) {
-    return (
-      <div className="max-w-[1200px] mx-auto bg-[#ECECEC] font-merriweather p-10 text-center">
-        Book not found
-      </div>
-    );
-  }
   return (
     <div className="max-w-[1200px] mx-auto bg-[#ECECEC] font-merriweather">
       <div className="hidden md:block text-black px-7 pt-5">
@@ -206,7 +135,7 @@ const Page = () => {
             <TableColumn>{t("Info")}</TableColumn>
           </TableHeader>
           <TableBody>
-            <TableRow key={book.id} className="bg-gray-200 rounded-xl">
+            <TableRow key={book?.id} className="bg-gray-200 rounded-xl">
               <TableCell className="text-black/60 md:text-base">
                 {t("Genre")}
               </TableCell>
@@ -275,4 +204,4 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default BookDetailClient;

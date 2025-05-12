@@ -38,6 +38,7 @@ export default function ListOrder({ searchTerm }: ListOrderProps) {
       limit: pageSize,
       sortBy,
       sortOrder,
+      search: searchTerm,
     });
     if (response?.data) {
       const ordersWithUsers = await Promise.all(

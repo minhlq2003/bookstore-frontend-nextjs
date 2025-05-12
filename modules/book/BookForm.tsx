@@ -14,6 +14,7 @@ import { Book, Category, Discount, Publisher } from "@/constant/types";
 import Media from "@/modules/media/pages/Media";
 import MediaUpload from "@/modules/media/pages/AddNewMedia";
 import { useTranslation } from "react-i18next";
+import ModalSelectMedia from "@/modules/media/pages/ModalSelectMedia";
 
 const { TextArea } = Input;
 
@@ -134,7 +135,7 @@ const BookForm: React.FC<{
                 </Form.Item>
 
                 <Form.Item
-                  name="publishYear"
+                  name="publishedDate"
                   label="Năm xuất bản"
                   style={{ width: "45%" }}
                 >
@@ -235,43 +236,11 @@ const BookForm: React.FC<{
 
         <Form.Item></Form.Item>
       </Form>
-      <Modal
-        open={isModalOpen}
-        title={<span className="ml-4">{t("Select Media")}</span>}
-        onCancel={handleCloseModal}
-        style={{ top: 20 }}
-        width="90%"
-        footer={null}
-      >
-        <div className="ml-4 mt-5">
-          <Button
-            onClick={() => setIsChooseMedia(true)}
-            className="mr-2"
-            style={{
-              backgroundColor: isChooseMedia ? "blue" : "initial",
-              color: isChooseMedia ? "white" : "initial",
-            }}
-          >
-            {t("Select Media")}
-          </Button>
-          <Button
-            onClick={() => setIsChooseMedia(false)}
-            style={{
-              backgroundColor: !isChooseMedia ? "blue" : "initial",
-              color: !isChooseMedia ? "white" : "initial",
-            }}
-          >
-            {t("Upload Media")}
-          </Button>
-        </div>
-        <div>
-          {isChooseMedia ? (
-            <Media isOpenModal={true} onSelectMedia={handleSelectMedia} />
-          ) : (
-            <MediaUpload isOpenModal={true} setChooseMedia={setIsChooseMedia} />
-          )}
-        </div>
-      </Modal>
+      <ModalSelectMedia
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onSelectMedia={handleSelectMedia}
+      />
     </div>
   );
 };

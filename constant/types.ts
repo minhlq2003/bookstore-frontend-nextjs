@@ -304,26 +304,55 @@ export interface CartListResponse {
 }
 
 export interface GetAddressResponse {
-  success:boolean;
+  success: boolean;
   data: {
-    address: Address[]
-  }
+    address: Address[];
+  };
 }
 
 export interface AddNewAddressResponse {
-  success:boolean;
+  success: boolean;
   data: {
-    newAddress: Address
-  }
+    newAddress: Address;
+  };
 }
 
 export interface CheckoutResponse {
-  success:boolean;
+  success: boolean;
   data: {
-    orderId:number,
-    address:String,
-    payment_method:String,
-    total: number,
-    message: String
-  }
+    orderId: number;
+    address: String;
+    payment_method: String;
+    total: number;
+    message: String;
+  };
+}
+
+export interface PostListResponse {
+  code: number;
+  message?: string;
+  data: Post[];
+  page: number;
+  total: number;
+  totalPages: number;
+}
+
+export interface PostResponse {
+  code: number;
+  message?: string;
+  data: Post;
+}
+
+export interface Post {
+  id?: number;
+  title?: string;
+  slug?: string;
+  content?: string;
+  category?: string;
+  created_at?: string;
+  updated_at?: string;
+  status?: boolean;
+  user_id?: number;
+  image?: string;
+  excerpt?: string;
 }
