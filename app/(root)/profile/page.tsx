@@ -143,10 +143,7 @@ const AddressFormModal: React.FC<AddressFormModalProps> = ({
   );
 };
 
-const UserProfilePage: React.FC<{
-  uploadedImage: string;
-  setUploadedImage: React.Dispatch<React.SetStateAction<string>>;
-}> = ({ uploadedImage, setUploadedImage }) => {
+const UserProfilePage = () => {
   const [ profileForm ] = Form.useForm();
   const { t } = useTranslation("common");
   const router = useRouter();
