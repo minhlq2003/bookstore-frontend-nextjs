@@ -11,15 +11,6 @@ import scienceIcon from "../public/images/icon-science-genre.png";
 import educationIcon from "../public/images/icon-education-genre.png";
 import profileAvatar from "../public/images/profileAvatar.png";
 import bgProfile from "../public/images/bg-profile.png";
-import Face1 from "../public/images/face-1.png";
-import Face2 from "../public/images/face-2.png";
-import Face3 from "../public/images/face-3.png";
-import Face4 from "../public/images/face-4.png";
-import Face5 from "../public/images/face-5.png";
-import Face6 from "../public/images/face-6.png";
-import HomeDecor1 from "../public/images/home-decor-1.png";
-import HomeDecor2 from "../public/images/home-decor-2.png";
-import HomeDecor3 from "../public/images/home-decor-3.png";
 
 export const Images = {
   googleIcon: GoogleIcon,
@@ -35,13 +26,4 @@ export const Images = {
   educationIcon: educationIcon,
   profileAvatar: profileAvatar,
   bgProfile: bgProfile,
-  Face1: Face1,
-  Face2: Face2,
-  Face3: Face3,
-  Face4: Face4,
-  Face5: Face5,
-  Face6: Face6,
-  HomeDecor1: HomeDecor1,
-  HomeDecor2: HomeDecor2,
-  HomeDecor3: HomeDecor3,
 };
