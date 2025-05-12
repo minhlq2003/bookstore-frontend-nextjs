@@ -7,6 +7,45 @@ import Image, { StaticImageData } from "next/image";
 import { Images } from "@/constant/images";
 import { Book, ApiBook } from "@/constant/types";
 import BookItem from "@/components/book-item";
+import { getBooks } from "@/modules/services/bookService";
+import { message, Spin, Button as AntButton } from "antd";
+
+interface HeroBookDisplay {
+  id: number;
+  title: string;
+  author: string;
+  description: string;
+  price: number;
+  imageUrl: string;
+}
+
+const mapApiBookToDisplayBook = (apiBook: any): HeroBookDisplay => {
+  return {
+    id: apiBook.id,
+    title: apiBook.title || "Không có tiêu đề",
+    author: apiBook.author || "Không rõ tác giả",
+    description: apiBook.description || "Không có mô tả.",
+    price: parseFloat(apiBook.price) || 0.0,
+    imageUrl: apiBook.book_images?.[ 0 ]?.url || Images.bookImg?.src || "/default-book-cover.jpg",
+  };
+};
+
+const mapApiBookToBookItemType = (apiBook: any): Book => {
+  return {
+    id: apiBook.id,
+    title: apiBook.title,
+    author: apiBook.author,
+    price: parseFloat(apiBook.price),
+    import_price: apiBook.import_price ? String(apiBook.import_price) : "0",
+    book_images: apiBook.book_images?.map((img: { url: string }) => ({ url: img.url })) || [],
+    imageUrl: apiBook.book_images?.[ 0 ]?.url || Images.bookImg?.src || "/default-book-cover.jpg",
+    description: apiBook.description,
+    sold: apiBook.sold,
+    publish_year: apiBook.publish_year,
+    is_featured: apiBook.is_featured,
+  };
+};
+
 
 function Home() {
   const { t } = useTranslation("common");
