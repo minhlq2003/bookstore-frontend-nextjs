@@ -53,13 +53,18 @@ export const updateUser = (
   userId: number,
   username: string,
   name: string,
-  email: string
-) => {
-  return http.put<UserResponse>(`${API_PREFIX_PATH}/updateuser/${userId}`, {
+  email: string,
+  avatar?: string | null
+): Promise<UserResponse | null> => {
+  const payload: any = {
     username,
     name,
     email,
-  });
+  };
+  if (avatar !== undefined && avatar !== null) {
+    payload.avatar = avatar;
+  }
+  return http.put<UserResponse>(`${API_PREFIX_PATH}/updateuser/${userId}`, payload);
 };
 
 export const getUserAddresses = (userId: string | number) => {

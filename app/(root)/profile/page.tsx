@@ -28,6 +28,7 @@ import {
   DeleteOutlined,
   HomeOutlined,
   SaveOutlined,
+  SelectOutlined,
 } from "@ant-design/icons";
 import { TrashIcon } from "lucide-react";
 import { getToken } from "@/lib/HttpClient";
@@ -143,12 +144,11 @@ const AddressFormModal: React.FC<AddressFormModalProps> = ({
 };
 
 const UserProfilePage: React.FC<{
-  profileForm: FormInstance;
   onFinish: (values: User) => void;
-  uploadedImages: string;
+  uploadedImage: string;
   setUploadedImage: React.Dispatch<React.SetStateAction<string>>;
-}> = ({ profileForm, onFinish, uploadedImages, setUploadedImage }) => {
-  // const [ profileForm ] = Form.useForm();
+}> = ({ onFinish, uploadedImage, setUploadedImage }) => {
+  const [ profileForm ] = Form.useForm();
   const { t } = useTranslation("common");
   const router = useRouter();
   const [ loading, setLoading ] = useState(true);
@@ -166,6 +166,7 @@ const UserProfilePage: React.FC<{
   const [ isModalOpen, setIsModalOpen ] = useState(false);
   const [ isChooseMedia, setIsChooseMedia ] = useState(true);
   const [ selectedMedia, setSelectedMedia ] = useState<string>("");
+  const [ selectedMediaUrl, setSelectedMediaUrl ] = useState<string | null>(null);
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -175,12 +176,10 @@ const UserProfilePage: React.FC<{
     setIsModalOpen(false);
   };
 
-  const handleSelectMedia = (media: string) => {
-    setSelectedMedia(media);
+  const handleSelectMedia = (mediaUrl: string) => {
+    setSelectedMediaUrl(mediaUrl);
+    setAvatarPreview(mediaUrl);
     setIsModalOpen(false);
-    setUploadedImage("");
-    console.log("add", media);
-    console.log("upload images: ", uploadedImages);
   };
 
   const handleSubmit = () => {
@@ -283,11 +282,41 @@ const UserProfilePage: React.FC<{
 
     const original = originalProfileRef.current;
 
-    // 1. Cập nhật thông tin cơ bản (name, username, email)
     const profileChanged =
       values.name !== original.name ||
       values.username !== original.username ||
       values.email !== original.email;
+
+    // 1. Kiểm tra thay đổi thông tin cơ bản và Avatar URL
+    const avatarChanged = selectedMediaUrl !== null && selectedMediaUrl !== original.avatar;
+    if (profileChanged || avatarChanged) {
+      try {
+        const avatarToSend = avatarChanged ? selectedMediaUrl : undefined;
+
+        const updateResponse = await updateUser(
+          Number(userProfile.id),
+          values.username,
+          values.name,
+          values.email,
+          avatarToSend
+        );
+
+        if (updateResponse && updateResponse.user) {
+          messages.push("Cập nhật thông tin cá nhân thành công!");
+          if (avatarChanged) messages.push("Cập nhật ảnh đại diện thành công!");
+          hasChanges = true;
+          const updatedUser = updateResponse.user as User;
+          setUserProfile(updatedUser);
+          originalProfileRef.current = { ...updatedUser };
+          setAvatarPreview(updatedUser.avatar);
+          setSelectedMediaUrl(null);
+        } else {
+          throw new Error(updateResponse?.message || "Cập nhật thông tin thất bại.");
+        }
+      } catch (error: any) {
+        message.error(error.message || "Lỗi khi cập nhật thông tin.");
+      }
+    }
 
     if (profileChanged) {
       try {
@@ -295,7 +324,8 @@ const UserProfilePage: React.FC<{
           Number(userProfile.id),
           values.username,
           values.name,
-          values.email
+          values.email,
+          values.avatar
         );
         if (updateResponse && updateResponse.user) {
           messages.push("Cập nhật thông tin cá nhân thành công!");
@@ -310,7 +340,7 @@ const UserProfilePage: React.FC<{
       }
     }
 
-    // 2. Thay đổi mật khẩu
+    // 3. Thay đổi mật khẩu
     if (values.newPassword) {
       if (!values.currentPassword) {
         message.error("Vui lòng nhập mật khẩu hiện tại để đổi mật khẩu.");
@@ -336,27 +366,7 @@ const UserProfilePage: React.FC<{
       }
     }
 
-    // 3. Cập nhật avatar
-    if (avatarFile) {
-      try {
-        const uploadResponse = await uploadAvatar(Number(userProfile.id), avatarFile);
-        const newAvatarUrl = uploadResponse?.attachment?.fileUrl || uploadResponse?.avatarUrl;
-        if (newAvatarUrl) {
-          setAvatarPreview(newAvatarUrl);
-          setUserProfile((prev) => ({ ...prev!, avatar: newAvatarUrl }));
-          originalProfileRef.current = { ...originalProfileRef.current!, avatar: newAvatarUrl };
-          setAvatarFile(null);
-          messages.push("Cập nhật ảnh đại diện thành công!");
-          hasChanges = true;
-        } else {
-          message.error(uploadResponse?.message || "Upload ảnh thành công nhưng không nhận được URL.");
-        }
-      } catch (error: any) {
-        message.error(error.message || "Upload ảnh đại diện thất bại.");
-        console.error("Upload avatar error:", error);
-      }
-    }
-
+    // Hiển thị thông báo
     if (messages.length > 0) {
       message.success(messages.join(" "));
     } else if (!hasChanges) {
@@ -365,7 +375,6 @@ const UserProfilePage: React.FC<{
 
     setSaving(false);
   };
-
 
   const handleShowAddAddressModal = () => {
     setEditingAddress(null);
@@ -408,7 +417,6 @@ const UserProfilePage: React.FC<{
     }
   };
 
-
   const handleDeleteAddress = async (addressId: number) => {
     setAddressLoading(true);
     try {
@@ -441,16 +449,9 @@ const UserProfilePage: React.FC<{
     );
   }
 
-  const uploadProps = {
-    name: "avatarFile",
-    showUploadList: false,
-    beforeUpload: () => false,
-    onChange: handleAvatarChange,
-    accept: "image/png, image/jpeg, image/gif",
-  };
-
   return (
     <div className="container mx-auto px-4 py-8">
+      {/* Profile Info Section */ }
       <div className="bg-white p-6 md:p-8 rounded-lg shadow-md max-w-4xl mx-auto mb-8">
         <Title level={ 3 } style={ { marginBottom: "24px", textAlign: "center" } }>
           Thông Tin Cá Nhân
@@ -467,22 +468,29 @@ const UserProfilePage: React.FC<{
               icon={ !(avatarPreview || userProfile.avatar) && <UserOutlined /> }
               className="mb-4 border-2 border-gray-200 shadow-sm"
             />
-            <div className="flex flex-col items-center text-center mb-6 md:mb-0">
-              <Form.Item style={ { width: "100%" } }>
-                <div className="w-full">
-                  <Button
-                    type="primary"
-                    onClick={ handleOpenModal }
-                    className="w-full"
-                  >
-                    { t("Select Media") }
-                  </Button>
-                </div>
-              </Form.Item>
-            </div>
+            <Button icon={ <SelectOutlined /> } onClick={ handleOpenModal } className="mb-2">
+              Chọn ảnh đại diện
+            </Button>
             <p className="text-xs text-gray-500 mt-1">
-              JPG/PNG/GIF, nhỏ hơn 2MB
+              Chọn từ thư viện hoặc tải lên file JPG/PNG/GIF, phải nhỏ hơn 2MB
             </p>
+
+            { selectedMediaUrl && (
+              <Button
+                type="dashed"
+                danger
+                size="small"
+                onClick={ () => {
+                  setSelectedMediaUrl(null);
+                  setAvatarPreview(originalProfileRef.current?.avatar || null);
+                } }
+                icon={ <TrashIcon size={ 14 } /> }
+                className="mt-1"
+                style={ { fontSize: '12px', padding: '0 8px' } }
+              >
+                Hủy chọn
+              </Button>
+            ) }
 
             { userProfile.name && (
               <Title level={ 5 } className="mt-4 mb-0">{ userProfile.name }</Title>
@@ -493,8 +501,11 @@ const UserProfilePage: React.FC<{
           <Col xs={ 24 } md={ 16 }>
             <Form
               form={ profileForm }
+              name="profileForm"
               layout="vertical"
               onFinish={ onProfileFinish }
+              autoComplete="off"
+              className="w-full"
             >
               <Title level={ 4 } className="mb-4">
                 Thông tin tài khoản
@@ -625,7 +636,8 @@ const UserProfilePage: React.FC<{
             <List.Item>
               <Card
                 size="small"
-                bordered={ false }
+                // bordered={ false }
+                variant="outlined"
                 className="shadow-sm hover:shadow-md transition-shadow border rounded-md"
                 actions={ [
                   < Button
