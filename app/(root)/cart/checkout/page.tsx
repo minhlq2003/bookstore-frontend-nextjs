@@ -7,6 +7,7 @@ import {
 } from "@/modules/services/userServices";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 const page = () => {
   const [orderItems, setOrderItems] = useState<CartResponse[]>([]);
@@ -26,7 +27,7 @@ const page = () => {
         const parsedUser = JSON.parse(storedUser);
         setUser(parsedUser);
       } catch (e) {
-        console.error("Failed to parse user from localStorage", e);
+        toast.error("Failed to parse user from localStorage");
       }
     }
   }, []);
@@ -38,10 +39,10 @@ const page = () => {
         const parsedOrder: CartResponse[] = JSON.parse(tempOrder);
         setOrderItems(parsedOrder);
       } catch (error) {
-        console.error("Failed to parse tempOrder from localStorage", error);
+        toast.error("Failed to parse tempOrder from localStorage");
       }
     } else {
-      console.warn("No tempOrder found in localStorage");
+      toast.error("No tempOrder found in localStorage");
     }
   }, []);
 
@@ -52,7 +53,7 @@ const page = () => {
         setAddresses(response.data.address);
       }
     } catch (error) {
-      console.error("Failed to get data", error);
+      toast.error("Failed to get data");
     }
   };
 
@@ -74,7 +75,7 @@ const page = () => {
     receiverPhone: String
   ) => {
     if (!address || !receiverName || !receiverPhone) {
-      alert("Please fill all fields.");
+      toast.error("Please fill all fields.");
       return;
     }
     try {
@@ -85,29 +86,29 @@ const page = () => {
         receiverPhone
       );
       if (response?.success) {
-        alert("Success");
+        toast.success("New address added successfully");
         setIsModalOpen(false);
         getUserAddress(userId);
       }
     } catch (error) {
-      console.error("Error when add new address", error);
+      toast.error("Error when add new address");
     }
   };
 
   const handleConfirm = async(userId: number, address:String, paymentMethod:string) => {
     if (!address || !paymentMethod) {
-        alert("Please choose address and payment method");
+        toast.error("Please choose address and payment method");
         return;
       }
     try {
         const response = await checkout(userId,address,paymentMethod)
         if(response?.success){
-            alert("Checkout success")
+            toast.success("Checkout successful")
             localStorage.removeItem("tempOrder")
             router.push("/")
         }
     } catch (error) {
-        console.error("Error when confirm checkout", error);
+        toast.error("Error when confirm checkout");
     }
   }
 

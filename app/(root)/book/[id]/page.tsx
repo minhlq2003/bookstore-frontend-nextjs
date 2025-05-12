@@ -18,7 +18,7 @@ import {
 } from "@heroui/table";
 import BookItem from "@/components/book-item";
 import { addToCart } from "@/modules/services/cartService";
-
+import { toast } from "sonner";
 const Page = () => {
   const { t } = useTranslation("common");
   const [quantity, setQuantity] = useState(1);
@@ -36,7 +36,7 @@ const Page = () => {
         const parsedUser = JSON.parse(storedUser);
         setUser(parsedUser);
       } catch (e) {
-        console.error('Failed to parse user from localStorage', e);
+        toast.error('Failed to parse user from localStorage');
       }
     }
   }, []);
@@ -45,7 +45,6 @@ const Page = () => {
     const fetchBookDetails = async () => {
       setLoading(true);
       setError(null);
-
       try {
         const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
         const response = await fetch(`${apiBaseUrl}/book/details/${id}`);
@@ -53,15 +52,11 @@ const Page = () => {
         if (!response.ok) {
           throw new Error(`Failed to fetch book details: ${response.status}`);
         }
-
         const data = await response.json();
         setBook(data.data);
-
-        // Fetch related books (this could be a separate API call or part of the same response)
-        // For now, we'll just use the same book as a placeholder for related books
         setRelatedBooks(Array(4).fill(data.data));
       } catch (err) {
-        console.error("Error fetching book details:", err);
+        toast.error("Error fetching book details");
         setError("Failed to load book details. Please try again later.");
       } finally {
         setLoading(false);
@@ -87,18 +82,15 @@ const Page = () => {
   
   const handleAddToCart = async() => {
     if (!book || !user) return;
-    try {
-      console.log("Adding to cart:", user.id, book.id, quantity);
-      
+    try {  
       const response = await addToCart(user.id, book.id, quantity);
       if (response?.success) {
-        alert("Book added to cart successfully");
-        console.log("Book added to cart successfully");
+        toast.success("Book added to cart successfully");
       } else {
-        console.error("Failed to add book to cart:");
+        toast.error("Failed to add book to cart:");
       }
     } catch (error) {
-      console.error("Error while adding to cart:", error);
+      toast.error("Error while adding to cart");
     }
   };
 
