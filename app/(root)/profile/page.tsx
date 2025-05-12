@@ -68,7 +68,7 @@ const AddressFormModal: React.FC<AddressFormModalProps> = ({
   initialValues,
   loading,
 }) => {
-  const [ form ] = Form.useForm();
+  const [ form ] = Form.useForm<Omit<Address, "id" | "user_id">>();
 
   useEffect(() => {
     if (initialValues && visible) {
@@ -167,6 +167,7 @@ const UserProfilePage: React.FC<{
   const [ isChooseMedia, setIsChooseMedia ] = useState(true);
   const [ selectedMedia, setSelectedMedia ] = useState<string>("");
   const [ selectedMediaUrl, setSelectedMediaUrl ] = useState<string | null>(null);
+  const [ newSelectedAvatarUrl, setNewSelectedAvatarUrl ] = useState<string | null>(null);
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -177,7 +178,8 @@ const UserProfilePage: React.FC<{
   };
 
   const handleSelectMedia = (mediaUrl: string) => {
-    setSelectedMediaUrl(mediaUrl);
+    console.log("Modal selected media:", mediaUrl);
+    setNewSelectedAvatarUrl(mediaUrl);
     setAvatarPreview(mediaUrl);
     setIsModalOpen(false);
   };
@@ -205,7 +207,7 @@ const UserProfilePage: React.FC<{
         const fetchedUser = response.user as User;
 
         setUserProfile(fetchedUser);
-        originalProfileRef.current = fetchedUser;
+        originalProfileRef.current = { ...fetchedUser };
         setAddresses(fetchedUser.addresses || []);
 
         profileForm.setFieldsValue({
@@ -213,10 +215,8 @@ const UserProfilePage: React.FC<{
           email: fetchedUser.email,
           name: fetchedUser.name,
         });
-
-        if (fetchedUser.avatar) {
-          setAvatarPreview(fetchedUser.avatar);
-        }
+        setAvatarPreview(fetchedUser.avatar);
+        setNewSelectedAvatarUrl(null);
       } else {
         message.error("Không tìm thấy thông tin người dùng hoặc dữ liệu không hợp lệ.");
         localStorage.removeItem("accessToken");
@@ -250,29 +250,6 @@ const UserProfilePage: React.FC<{
     fetchUserProfileAndAddresses();
   }, [ fetchUserProfileAndAddresses ]);
 
-  const handleAvatarChange = (info: UploadChangeParam<UploadFile>) => {
-    if (info.file.originFileObj) {
-      const file = info.file.originFileObj as RcFile;
-      const isJpgOrPngOrGif = file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/gif';
-      if (!isJpgOrPngOrGif) {
-        message.error('Bạn chỉ có thể tải lên file JPG/PNG/GIF!');
-        return;
-      }
-      const isLt2M = file.size / 1024 / 1024 < 2;
-      if (!isLt2M) {
-        message.error('Hình ảnh phải nhỏ hơn 2MB!');
-        return;
-      }
-
-      const reader = new FileReader();
-      reader.onload = (e) => setAvatarPreview(e.target?.result as string);
-      reader.readAsDataURL(file);
-
-      setAvatarFile(file);
-    }
-  };
-
-
   const onProfileFinish = async (values: any) => {
     if (!userProfile || !originalProfileRef.current) return;
 
@@ -282,14 +259,14 @@ const UserProfilePage: React.FC<{
 
     const original = originalProfileRef.current;
 
-    const profileChanged =
+    const profileInfoChanged =
       values.name !== original.name ||
       values.username !== original.username ||
       values.email !== original.email;
 
     // 1. Kiểm tra thay đổi thông tin cơ bản và Avatar URL
     const avatarChanged = selectedMediaUrl !== null && selectedMediaUrl !== original.avatar;
-    if (profileChanged || avatarChanged) {
+    if (profileInfoChanged || avatarChanged) {
       try {
         const avatarToSend = avatarChanged ? selectedMediaUrl : undefined;
 
@@ -303,13 +280,15 @@ const UserProfilePage: React.FC<{
 
         if (updateResponse && updateResponse.user) {
           messages.push("Cập nhật thông tin cá nhân thành công!");
+          if (profileInfoChanged) messages.push("Cập nhật thông tin thành công!");
           if (avatarChanged) messages.push("Cập nhật ảnh đại diện thành công!");
           hasChanges = true;
           const updatedUser = updateResponse.user as User;
           setUserProfile(updatedUser);
           originalProfileRef.current = { ...updatedUser };
           setAvatarPreview(updatedUser.avatar);
-          setSelectedMediaUrl(null);
+          setNewSelectedAvatarUrl(null);
+          profileForm.setFieldsValue(updatedUser);
         } else {
           throw new Error(updateResponse?.message || "Cập nhật thông tin thất bại.");
         }
@@ -318,7 +297,7 @@ const UserProfilePage: React.FC<{
       }
     }
 
-    if (profileChanged) {
+    if (profileInfoChanged) {
       try {
         const updateResponse = await updateUser(
           Number(userProfile.id),
@@ -369,11 +348,17 @@ const UserProfilePage: React.FC<{
     // Hiển thị thông báo
     if (messages.length > 0) {
       message.success(messages.join(" "));
-    } else if (!hasChanges) {
+    } else if (!hasChanges && !profileInfoChanged && !avatarChanged && !values.newPassword) {
       message.info("Không có thông tin nào được thay đổi.");
     }
 
     setSaving(false);
+  };
+
+  const handleCancelAvatarSelection = () => {
+    console.log("Cancelling avatar selection. Reverting to:", originalProfileRef.current?.avatar);
+    setNewSelectedAvatarUrl(null);
+    setAvatarPreview(originalProfileRef.current?.avatar || null);
   };
 
   const handleShowAddAddressModal = () => {
@@ -468,9 +453,22 @@ const UserProfilePage: React.FC<{
               icon={ !(avatarPreview || userProfile.avatar) && <UserOutlined /> }
               className="mb-4 border-2 border-gray-200 shadow-sm"
             />
-            <Button icon={ <SelectOutlined /> } onClick={ handleOpenModal } className="mb-2">
-              Chọn ảnh đại diện
+            <Button icon={ <SelectOutlined /> } onClick={ handleOpenModal } className="mb-1">
+              { avatarPreview ? "Thay đổi ảnh" : "Chọn ảnh đại diện" }
             </Button>
+            { newSelectedAvatarUrl && newSelectedAvatarUrl !== originalProfileRef.current?.avatar && (
+              <Button
+                type="link"
+                danger
+                size="small"
+                onClick={ handleCancelAvatarSelection }
+                icon={ <TrashIcon size={ 14 } className="mr-1" /> }
+                style={ { fontSize: '12px', padding: '0 8px' } }
+                className="mt-1"
+              >
+                Hủy chọn
+              </Button>
+            ) }
             <p className="text-xs text-gray-500 mt-1">
               Chọn từ thư viện hoặc tải lên file JPG/PNG/GIF, phải nhỏ hơn 2MB
             </p>
