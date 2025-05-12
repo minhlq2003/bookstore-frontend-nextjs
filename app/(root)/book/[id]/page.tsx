@@ -1,5 +1,5 @@
 "use client";
-import { Book } from "@/constant/types";
+import { Book, User } from "@/constant/types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar, faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
 import { BreadcrumbItem, Breadcrumbs } from "@heroui/breadcrumbs";
@@ -17,7 +17,8 @@ import {
   TableRow,
 } from "@heroui/table";
 import BookItem from "@/components/book-item";
-
+import { addToCart } from "@/modules/services/cartService";
+import { toast } from "sonner";
 const Page = () => {
   const { t } = useTranslation("common");
   const [quantity, setQuantity] = useState(1);
@@ -25,14 +26,25 @@ const Page = () => {
   const [relatedBooks, setRelatedBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
+  const [user, setUser] = useState<User | null>(null);
   const { id } = useParams();
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      try {
+        const parsedUser = JSON.parse(storedUser);
+        setUser(parsedUser);
+      } catch (e) {
+        toast.error("Failed to parse user from localStorage");
+      }
+    }
+  }, []);
 
   useEffect(() => {
     const fetchBookDetails = async () => {
       setLoading(true);
       setError(null);
-
       try {
         const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
         const response = await fetch(`${apiBaseUrl}/book/details/${id}`);
@@ -40,15 +52,11 @@ const Page = () => {
         if (!response.ok) {
           throw new Error(`Failed to fetch book details: ${response.status}`);
         }
-
         const data = await response.json();
         setBook(data.data);
-
-        // Fetch related books (this could be a separate API call or part of the same response)
-        // For now, we'll just use the same book as a placeholder for related books
         setRelatedBooks(Array(4).fill(data.data));
       } catch (err) {
-        console.error("Error fetching book details:", err);
+        toast.error("Error fetching book details");
         setError("Failed to load book details. Please try again later.");
       } finally {
         setLoading(false);
@@ -72,18 +80,17 @@ const Page = () => {
     }
   };
 
-  const handleAddToCart = () => {
-    if (book) {
-      let cartItems = localStorage.getItem("cart");
-      let cart = cartItems ? JSON.parse(cartItems) : [];
-      const existingItem = cart.find((item: Book) => item.id === book.id);
-      if (existingItem) {
-        existingItem.quantity = (existingItem.quantity || 1) + quantity;
+  const handleAddToCart = async () => {
+    if (!book || !user) return;
+    try {
+      const response = await addToCart(user.id, book.id, quantity);
+      if (response?.success) {
+        toast.success("Book added to cart successfully");
       } else {
-        cart.push({ ...book, quantity });
+        toast.error("Failed to add book to cart:");
       }
-      localStorage.setItem("cart", JSON.stringify(cart));
-      alert(`Added ${quantity} ${book.title} to cart`);
+    } catch (error) {
+      toast.error("Error while adding to cart");
     }
   };
 
