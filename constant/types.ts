@@ -219,12 +219,13 @@ export interface User {
   name: string;
   email: string;
   avatar: string;
-  status: number;
-  role: string;
+  status?: number;
+  role?: string;
   addresses: Address[];
 }
 
 export interface UserResponse {
+  user: any;
   code: number;
   message?: string;
   data: User;
