@@ -30,7 +30,11 @@ export const getProfile = async (): Promise<UserResponse> => {
   return response;
 };
 
-export const changePassword = (userId: number, currentPassword: string, newPassword: string) => {
+export const changePassword = (
+  userId: number,
+  currentPassword: string,
+  newPassword: string
+) => {
   return http.post<ChangePasswordResponse>(`${API_PREFIX_PATH}/change-password`, {
     userId,
     currentPassword,
@@ -43,6 +47,19 @@ export const uploadAvatar = (userId: number, file: File): Promise<any> => {
   formData.append("file", file);
 
   return http.post<any>(`${API_PREFIX_PATH}/upload/${userId}`, formData);
+};
+
+export const updateUser = (
+  userId: number,
+  username: string,
+  name: string,
+  email: string
+) => {
+  return http.put<UserResponse>(`${API_PREFIX_PATH}/updateuser/${userId}`, {
+    username,
+    name,
+    email,
+  });
 };
 
 export const getUserAddresses = (userId: string | number) => {
