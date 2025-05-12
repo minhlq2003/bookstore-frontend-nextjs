@@ -29,7 +29,7 @@ import {
 import { RcFile, UploadChangeParam, UploadFile } from "antd/es/upload";
 import { getToken } from "@/lib/HttpClient";
 import { useRouter } from "next/navigation";
-import { Address, UserProfile } from "@/constant/types";
+import { Address, User } from "@/constant/types";
 import {
   getUserById,
   changePassword,
@@ -57,7 +57,7 @@ const AddressFormModal: React.FC<AddressFormModalProps> = ({
   initialValues,
   loading,
 }) => {
-  const [form] = Form.useForm();
+  const [ form ] = Form.useForm();
 
   useEffect(() => {
     if (initialValues && visible) {
@@ -65,7 +65,7 @@ const AddressFormModal: React.FC<AddressFormModalProps> = ({
     } else {
       form.resetFields();
     }
-  }, [initialValues, visible, form]);
+  }, [ initialValues, visible, form ]);
 
   const handleFormFinish = (values: Omit<Address, "id" | "user_id">) => {
     onFinish(values);
@@ -74,57 +74,57 @@ const AddressFormModal: React.FC<AddressFormModalProps> = ({
 
   return (
     <Modal
-      title={initialValues ? "Cập nhật địa chỉ" : "Thêm địa chỉ mới"}
-      open={visible}
-      onCancel={onCancel}
-      footer={[
-        <Button key="back" onClick={onCancel} disabled={loading}>
+      title={ initialValues ? "Cập nhật địa chỉ" : "Thêm địa chỉ mới" }
+      open={ visible }
+      onCancel={ onCancel }
+      footer={ [
+        <Button key="back" onClick={ onCancel } disabled={ loading }>
           Hủy
         </Button>,
         <Button
           key="submit"
           type="primary"
-          loading={loading}
-          onClick={() => form.submit()}
+          loading={ loading }
+          onClick={ () => form.submit() }
         >
-          {initialValues ? "Cập nhật" : "Thêm mới"}
+          { initialValues ? "Cập nhật" : "Thêm mới" }
         </Button>,
-      ]}
+      ] }
       destroyOnClose
     >
       <Form
-        form={form}
+        form={ form }
         layout="vertical"
-        onFinish={handleFormFinish}
-        initialValues={initialValues || {}}
+        onFinish={ handleFormFinish }
+        initialValues={ initialValues || {} }
       >
         <Form.Item
           name="receiver_name"
           label="Tên người nhận"
-          rules={[{ required: true, message: "Vui lòng nhập tên người nhận!" }]}
+          rules={ [ { required: true, message: "Vui lòng nhập tên người nhận!" } ] }
         >
           <Input placeholder="Nguyễn Văn A" />
         </Form.Item>
         <Form.Item
           name="receiver_phone"
           label="Số điện thoại"
-          rules={[
+          rules={ [
             { required: true, message: "Vui lòng nhập số điện thoại!" },
             {
               pattern: /^[0-9]{10,11}$/,
               message: "Số điện thoại không hợp lệ!",
             },
-          ]}
+          ] }
         >
           <Input placeholder="09xxxxxxxx" />
         </Form.Item>
         <Form.Item
           name="address"
           label="Địa chỉ chi tiết"
-          rules={[{ required: true, message: "Vui lòng nhập địa chỉ!" }]}
+          rules={ [ { required: true, message: "Vui lòng nhập địa chỉ!" } ] }
         >
           <Input.TextArea
-            rows={3}
+            rows={ 3 }
             placeholder="Số nhà, tên đường, phường/xã, quận/huyện, tỉnh/thành phố"
           />
         </Form.Item>
@@ -134,18 +134,18 @@ const AddressFormModal: React.FC<AddressFormModalProps> = ({
 };
 
 const UserProfilePage = () => {
-  const [profileForm] = Form.useForm();
+  const [ profileForm ] = Form.useForm();
   const router = useRouter();
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-  const [avatarFile, setAvatarFile] = useState<RcFile | null>(null);
-  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  const [ loading, setLoading ] = useState(true);
+  const [ saving, setSaving ] = useState(false);
+  const [ userProfile, setUserProfile ] = useState<User | null>(null);
+  const [ avatarFile, setAvatarFile ] = useState<RcFile | null>(null);
+  const [ avatarPreview, setAvatarPreview ] = useState<string | null>(null);
 
-  const [addresses, setAddresses] = useState<Address[]>([]);
-  const [isAddressModalVisible, setIsAddressModalVisible] = useState(false);
-  const [editingAddress, setEditingAddress] = useState<Address | null>(null);
-  const [addressLoading, setAddressLoading] = useState(false);
+  const [ addresses, setAddresses ] = useState<Address[]>([]);
+  const [ isAddressModalVisible, setIsAddressModalVisible ] = useState(false);
+  const [ editingAddress, setEditingAddress ] = useState<Address | null>(null);
+  const [ addressLoading, setAddressLoading ] = useState(false);
 
   const fetchUserProfileAndAddresses = useCallback(async () => {
     setLoading(true);
@@ -172,14 +172,12 @@ const UserProfilePage = () => {
           }
         }
 
-        const profileData: UserProfile = {
+        const profileData: User = {
           id: fetchedUser.id,
           username: fetchedUser.username,
           email: fetchedUser.email,
           name: fetchedUser.name,
           avatar: fetchedUser.avatar,
-          firstName: (fetchedUser as any).firstName || firstName,
-          lastName: (fetchedUser as any).lastName || lastName,
           addresses: fetchedUser.addresses || [],
         };
 
@@ -215,11 +213,11 @@ const UserProfilePage = () => {
     } finally {
       setLoading(false);
     }
-  }, [profileForm, router]);
+  }, [ profileForm, router ]);
 
   useEffect(() => {
     fetchUserProfileAndAddresses();
-  }, [fetchUserProfileAndAddresses]);
+  }, [ fetchUserProfileAndAddresses ]);
 
   const handleAvatarChange = (info: UploadChangeParam<UploadFile>) => {
     if (info.file.originFileObj) {
@@ -388,7 +386,7 @@ const UserProfilePage = () => {
   if (!userProfile) {
     return (
       <div className="container mx-auto px-4 py-8 text-center">
-        Không thể tải thông tin. Vui lòng{" "}
+        Không thể tải thông tin. Vui lòng{ " " }
         <a href="/signin" className="text-blue-600 hover:underline">
           đăng nhập
         </a>
@@ -408,54 +406,46 @@ const UserProfilePage = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="bg-white p-6 md:p-8 rounded-lg shadow-md max-w-4xl mx-auto mb-8">
-        <Title level={3} style={{ marginBottom: "24px", textAlign: "center" }}>
+        <Title level={ 3 } style={ { marginBottom: "24px", textAlign: "center" } }>
           Thông Tin Cá Nhân
         </Title>
-        <Row gutter={[24, 24]}>
+        <Row gutter={ [ 24, 24 ] }>
           <Col
-            xs={24}
-            md={8}
+            xs={ 24 }
+            md={ 8 }
             className="flex flex-col items-center text-center mb-6 md:mb-0"
           >
             <Avatar
-              size={150}
-              src={avatarPreview || undefined}
-              icon={!avatarPreview && <UserOutlined />}
+              size={ 150 }
+              src={ avatarPreview || undefined }
+              icon={ !avatarPreview && <UserOutlined /> }
               className="mb-4 border-2 border-gray-200 shadow-sm"
             />
-            <Upload {...uploadProps}>
-              <Button icon={<UploadOutlined />}>Chọn Ảnh Đại Diện</Button>
+            <Upload { ...uploadProps }>
+              <Button icon={ <UploadOutlined /> }>Chọn Ảnh Đại Diện</Button>
             </Upload>
             <p className="text-xs text-gray-500 mt-1">
               JPG/PNG/GIF, <br className="md:hidden" /> nhỏ hơn 2MB
             </p>
 
-            {(userProfile.firstName || userProfile.lastName) && (
-              <Title level={5} className="mt-4 mb-0">
-                {`${userProfile.firstName || ""} ${userProfile.lastName || ""
-                  }`.trim()}
+            { userProfile.name && (
+              <Title level={ 5 } className="mt-4 mb-0">
+                { userProfile.name }
               </Title>
-            )}
-            {!userProfile.firstName &&
-              !userProfile.lastName &&
-              userProfile.name && (
-                <Title level={5} className="mt-4 mb-0">
-                  {userProfile.name}
-                </Title>
-              )}
-            <p className="text-gray-600">{userProfile.email}</p>
+            ) }
+            <p className="text-gray-600">{ userProfile.email }</p>
           </Col>
-          <Col xs={24} md={16}>
+          <Col xs={ 24 } md={ 16 }>
             <Form
-              form={profileForm}
+              form={ profileForm }
               layout="vertical"
-              onFinish={onProfileFinish}
-              initialValues={{
+              onFinish={ onProfileFinish }
+              initialValues={ {
                 username: userProfile.username,
                 email: userProfile.email,
-              }}
+              } }
             >
-              <Title level={4} className="mb-4">
+              <Title level={ 4 } className="mb-4">
                 Thông tin tài khoản
               </Title>
               <Form.Item label="Tên người dùng" name="username">
@@ -465,7 +455,7 @@ const UserProfilePage = () => {
                 <Input readOnly className="bg-gray-100" />
               </Form.Item>
 
-              <Title level={4} className="mt-6 mb-4">
+              <Title level={ 4 } className="mt-6 mb-4">
                 Thay đổi mật khẩu
               </Title>
               <Form.Item
@@ -478,9 +468,9 @@ const UserProfilePage = () => {
               <Form.Item
                 label="Mật khẩu mới"
                 name="newPassword"
-                rules={[
+                rules={ [
                   { min: 6, message: "Mật khẩu mới phải có ít nhất 6 ký tự." },
-                ]}
+                ] }
                 tooltip="Bỏ trống nếu không muốn thay đổi mật khẩu."
               >
                 <Input.Password placeholder="Mật khẩu mới (ít nhất 6 ký tự)" />
@@ -488,9 +478,9 @@ const UserProfilePage = () => {
               <Form.Item
                 name="confirmNewPassword"
                 label="Xác nhận mật khẩu mới"
-                dependencies={["newPassword"]}
+                dependencies={ [ "newPassword" ] }
                 hasFeedback
-                rules={[
+                rules={ [
                   ({ getFieldValue }) => ({
                     validator(_, value) {
                       if (
@@ -505,7 +495,7 @@ const UserProfilePage = () => {
                       );
                     },
                   }),
-                ]}
+                ] }
               >
                 <Input.Password placeholder="Xác nhận mật khẩu mới" />
               </Form.Item>
@@ -514,7 +504,7 @@ const UserProfilePage = () => {
                 <Button
                   type="primary"
                   htmlType="submit"
-                  loading={saving}
+                  loading={ saving }
                   size="large"
                   block
                 >
@@ -528,53 +518,53 @@ const UserProfilePage = () => {
 
       <div className="bg-white p-6 md:p-8 rounded-lg shadow-md max-w-4xl mx-auto">
         <div className="flex justify-between items-center mb-6">
-          <Title level={3} className="!mb-0">
+          <Title level={ 3 } className="!mb-0">
             Sổ Địa Chỉ
           </Title>
           <Button
             type="primary"
-            icon={<PlusOutlined />}
-            onClick={handleShowAddAddressModal}
+            icon={ <PlusOutlined /> }
+            onClick={ handleShowAddAddressModal }
           >
             Thêm địa chỉ mới
           </Button>
         </div>
-        {addressLoading && addresses.length === 0 && (
+        { addressLoading && addresses.length === 0 && (
           <div className="text-center py-4">
             <Spin />
           </div>
-        )}
-        {!addressLoading && addresses.length === 0 && (
+        ) }
+        { !addressLoading && addresses.length === 0 && (
           <Text className="block text-center text-gray-500">
             Bạn chưa có địa chỉ nào. Hãy thêm địa chỉ mới!
           </Text>
-        )}
+        ) }
         <List
-          grid={{ gutter: 16, xs: 1, sm: 1, md: 2 }}
-          dataSource={addresses}
-          renderItem={(item) => (
+          grid={ { gutter: 16, xs: 1, sm: 1, md: 2 } }
+          dataSource={ addresses }
+          renderItem={ (item) => (
             <List.Item>
               <Card
                 title={
                   <>
-                    <HomeOutlined className="mr-2" /> {item.receiver_name}
+                    <HomeOutlined className="mr-2" /> { item.receiver_name }
                   </>
                 }
                 bordered
                 className="shadow-sm hover:shadow-md transition-shadow"
-                actions={[
+                actions={ [
                   <Button
                     type="link"
-                    icon={<EditOutlined />}
+                    icon={ <EditOutlined /> }
                     key="edit"
-                    onClick={() => handleShowEditAddressModal(item)}
+                    onClick={ () => handleShowEditAddressModal(item) }
                   >
                     Sửa
                   </Button>,
                   <Popconfirm
                     title="Xóa địa chỉ này?"
                     description="Bạn có chắc muốn xóa địa chỉ này không?"
-                    onConfirm={() => handleDeleteAddress(item.id)}
+                    onConfirm={ () => handleDeleteAddress(item.id) }
                     okText="Xóa"
                     cancelText="Hủy"
                     placement="topRight"
@@ -582,35 +572,35 @@ const UserProfilePage = () => {
                     <Button
                       type="link"
                       danger
-                      icon={<DeleteOutlined />}
+                      icon={ <DeleteOutlined /> }
                       key="delete"
                     >
                       Xóa
                     </Button>
                   </Popconfirm>,
-                ]}
+                ] }
               >
                 <p>
-                  <strong>Người nhận:</strong> {item.receiver_name}
+                  <strong>Người nhận:</strong> { item.receiver_name }
                 </p>
                 <p>
-                  <strong>Điện thoại:</strong> {item.receiver_phone}
+                  <strong>Điện thoại:</strong> { item.receiver_phone }
                 </p>
                 <p>
-                  <strong>Địa chỉ:</strong> {item.address}
+                  <strong>Địa chỉ:</strong> { item.address }
                 </p>
               </Card>
             </List.Item>
-          )}
+          ) }
         />
       </div>
 
       <AddressFormModal
-        visible={isAddressModalVisible}
-        onCancel={handleAddressModalCancel}
-        onFinish={handleAddressFormFinish}
-        initialValues={editingAddress || undefined}
-        loading={addressLoading}
+        visible={ isAddressModalVisible }
+        onCancel={ handleAddressModalCancel }
+        onFinish={ handleAddressFormFinish }
+        initialValues={ editingAddress || undefined }
+        loading={ addressLoading }
       />
     </div>
   );
