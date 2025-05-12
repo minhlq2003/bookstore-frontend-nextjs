@@ -24,12 +24,12 @@ const BookForm: React.FC<{
   setUploadedImages: React.Dispatch<React.SetStateAction<string[]>>;
 }> = ({ form, onFinish, uploadedImages, setUploadedImages }) => {
   const { t } = useTranslation("common");
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [publishers, setPublishers] = useState<Publisher[]>([]);
-  const [discounts, setDiscounts] = useState<Discount[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isChooseMedia, setIsChooseMedia] = useState(true);
-  const [selectedMedia, setSelectedMedia] = useState<string>("");
+  const [ categories, setCategories ] = useState<Category[]>([]);
+  const [ publishers, setPublishers ] = useState<Publisher[]>([]);
+  const [ discounts, setDiscounts ] = useState<Discount[]>([]);
+  const [ isModalOpen, setIsModalOpen ] = useState(false);
+  const [ isChooseMedia, setIsChooseMedia ] = useState(true);
+  const [ selectedMedia, setSelectedMedia ] = useState<string>("");
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -42,7 +42,7 @@ const BookForm: React.FC<{
   const handleSelectMedia = (media: string) => {
     setSelectedMedia(media);
     setIsModalOpen(false);
-    setUploadedImages([...uploadedImages, media]);
+    setUploadedImages([ ...uploadedImages, media ]);
     console.log("add", media);
     console.log("upload images: ", uploadedImages);
   };
@@ -63,9 +63,9 @@ const BookForm: React.FC<{
   return (
     <div className="w-full">
       <Form
-        form={form}
+        form={ form }
         name="bookForm"
-        onFinish={handleSubmit}
+        onFinish={ handleSubmit }
         autoComplete="off"
         layout="vertical"
         className="w-full"
@@ -75,8 +75,8 @@ const BookForm: React.FC<{
             <Form.Item
               name="title"
               label="Tên sách"
-              rules={[{ required: true, message: "Vui lòng nhập tên sách!" }]}
-              style={{ width: "60%" }}
+              rules={ [ { required: true, message: "Vui lòng nhập tên sách!" } ] }
+              style={ { width: "60%" } }
             >
               <Input placeholder="Nhập tên sách" className="custom-input" />
             </Form.Item>
@@ -84,10 +84,10 @@ const BookForm: React.FC<{
             <Form.Item
               name="author"
               label="Tác giả"
-              rules={[
+              rules={ [
                 { required: true, message: "Vui lòng nhập tên tác giả!" },
-              ]}
-              style={{ width: "35%" }}
+              ] }
+              style={ { width: "35%" } }
             >
               <Input placeholder="Nhập tên tác giả" className="custom-input" />
             </Form.Item>
@@ -97,24 +97,24 @@ const BookForm: React.FC<{
             <Form.Item
               name="description"
               label="Mô tả"
-              style={{ width: "60%" }}
+              style={ { width: "60%" } }
             >
               <TextArea
-                rows={5}
+                rows={ 5 }
                 placeholder="Nhập mô tả sách"
                 className="custom-textarea"
               />
             </Form.Item>
 
-            <div className="flex flex-col" style={{ width: "35%" }}>
+            <div className="flex flex-col" style={ { width: "35%" } }>
               <Form.Item
                 name="price"
                 label="Giá"
-                rules={[{ required: true, message: "Vui lòng nhập giá sách!" }]}
+                rules={ [ { required: true, message: "Vui lòng nhập giá sách!" } ] }
                 className="w-full"
               >
                 <InputNumber
-                  min={1}
+                  min={ 1 }
                   placeholder="Nhập giá sách"
                   className="custom-input w-full"
                 />
@@ -124,10 +124,10 @@ const BookForm: React.FC<{
                 <Form.Item
                   name="pages"
                   label="Số trang"
-                  style={{ width: "45%" }}
+                  style={ { width: "45%" } }
                 >
                   <InputNumber
-                    min={1}
+                    min={ 1 }
                     placeholder="Nhập số trang"
                     className="custom-input w-full"
                   />
@@ -136,11 +136,11 @@ const BookForm: React.FC<{
                 <Form.Item
                   name="publishYear"
                   label="Năm xuất bản"
-                  style={{ width: "45%" }}
+                  style={ { width: "45%" } }
                 >
                   <InputNumber
-                    min={1900}
-                    max={new Date().getFullYear()}
+                    min={ 1900 }
+                    max={ new Date().getFullYear() }
                     placeholder="Nhập năm xuất bản"
                     className="custom-input w-full"
                   />
@@ -155,14 +155,14 @@ const BookForm: React.FC<{
             name="category"
             label="Danh mục"
             // rules={[{ required: true, message: "Vui lòng chọn danh mục!" }]}
-            style={{ width: "30%" }}
+            style={ { width: "30%" } }
           >
             <Select placeholder="Chọn danh mục">
-              {categories.map((category) => (
-                <Select.Option key={category.id} value={category.id}>
-                  {category.name}
+              { categories.map((category) => (
+                <Select.Option key={ category.id } value={ category.id }>
+                  { category.name }
                 </Select.Option>
-              ))}
+              )) }
             </Select>
           </Form.Item>
 
@@ -170,62 +170,62 @@ const BookForm: React.FC<{
             name="publisher"
             label="Nhà xuất bản"
             // rules={[{ required: true, message: "Vui lòng chọn nhà xuất bản!" }]}
-            style={{ width: "30%" }}
+            style={ { width: "30%" } }
           >
             <Select placeholder="Chọn nhà xuất bản">
-              {publishers.map((publisher) => (
-                <Select.Option key={publisher.id} value={publisher.id}>
-                  {publisher.name}
+              { publishers.map((publisher) => (
+                <Select.Option key={ publisher.id } value={ publisher.id }>
+                  { publisher.name }
                 </Select.Option>
-              ))}
+              )) }
             </Select>
           </Form.Item>
 
-          <Form.Item name="discount" label="Giảm giá" style={{ width: "30%" }}>
+          <Form.Item name="discount" label="Giảm giá" style={ { width: "30%" } }>
             <Select placeholder="Chọn mức giảm giá">
-              {discounts.map((discount) => (
-                <Select.Option key={discount.id} value={discount.code}>
-                  {discount.code}
+              { discounts.map((discount) => (
+                <Select.Option key={ discount.id } value={ discount.code }>
+                  { discount.code }
                 </Select.Option>
-              ))}
+              )) }
             </Select>
           </Form.Item>
         </div>
 
         <div className="flex flex-row justify-between border border-[#d9d9d9] p-4 rounded-md my-4 ">
-          <Form.Item label="Ảnh bìa" style={{ width: "30%" }}>
+          <Form.Item label="Ảnh bìa" style={ { width: "30%" } }>
             <div className="flex flex-col gap-2">
               <Button
                 type="primary"
-                onClick={handleOpenModal}
+                onClick={ handleOpenModal }
                 className="w-full"
               >
-                {t("Select Media")}
+                { t("Select Media") }
               </Button>
-              {uploadedImages.map((url, index) => (
-                <div key={index} className="flex items-center justify-between">
+              { uploadedImages.map((url, index) => (
+                <div key={ index } className="flex items-center justify-between">
                   <img
-                    src={url}
-                    alt={`Uploaded ${index}`}
+                    src={ url }
+                    alt={ `Uploaded ${index}` }
                     className="w-16 h-16 object-cover"
                   />
                   <TrashIcon
-                    onClick={() => handleRemoveImage(index)}
+                    onClick={ () => handleRemoveImage(index) }
                     className="cursor-pointer text-red-500"
                   />
                 </div>
-              ))}
+              )) }
             </div>
           </Form.Item>
 
-          <Form.Item name="size" label="Kích thước" style={{ width: "30%" }}>
+          <Form.Item name="size" label="Kích thước" style={ { width: "30%" } }>
             <Input
               placeholder="Nhập kích thước (ví dụ: 20x30cm)"
               className="custom-input"
             />
           </Form.Item>
 
-          <Form.Item name="weight" label="Khối lượng" style={{ width: "30%" }}>
+          <Form.Item name="weight" label="Khối lượng" style={ { width: "30%" } }>
             <Input
               placeholder="Nhập khối lượng (ví dụ: 500g)"
               className="custom-input"
@@ -236,40 +236,40 @@ const BookForm: React.FC<{
         <Form.Item></Form.Item>
       </Form>
       <Modal
-        open={isModalOpen}
-        title={<span className="ml-4">{t("Select Media")}</span>}
-        onCancel={handleCloseModal}
-        style={{ top: 20 }}
+        open={ isModalOpen }
+        title={ <span className="ml-4">{ t("Select Media") }</span> }
+        onCancel={ handleCloseModal }
+        style={ { top: 20 } }
         width="90%"
-        footer={null}
+        footer={ null }
       >
         <div className="ml-4 mt-5">
           <Button
-            onClick={() => setIsChooseMedia(true)}
+            onClick={ () => setIsChooseMedia(true) }
             className="mr-2"
-            style={{
+            style={ {
               backgroundColor: isChooseMedia ? "blue" : "initial",
               color: isChooseMedia ? "white" : "initial",
-            }}
+            } }
           >
-            {t("Select Media")}
+            { t("Select Media") }
           </Button>
           <Button
-            onClick={() => setIsChooseMedia(false)}
-            style={{
+            onClick={ () => setIsChooseMedia(false) }
+            style={ {
               backgroundColor: !isChooseMedia ? "blue" : "initial",
               color: !isChooseMedia ? "white" : "initial",
-            }}
+            } }
           >
-            {t("Upload Media")}
+            { t("Upload Media") }
           </Button>
         </div>
         <div>
-          {isChooseMedia ? (
-            <Media isOpenModal={true} onSelectMedia={handleSelectMedia} />
+          { isChooseMedia ? (
+            <Media isOpenModal={ true } onSelectMedia={ handleSelectMedia } />
           ) : (
-            <MediaUpload isOpenModal={true} setChooseMedia={setIsChooseMedia} />
-          )}
+            <MediaUpload isOpenModal={ true } setChooseMedia={ setIsChooseMedia } />
+          ) }
         </div>
       </Modal>
     </div>
