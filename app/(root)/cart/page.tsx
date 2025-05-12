@@ -11,13 +11,16 @@ import {
   updateCartItemQuantity,
 } from "@/modules/services/cartService";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const CartPage = () => {
   const [cartItems, setCartItems] = useState<CartResponse[]>([]);
   const { t } = useTranslation("common");
   const [user, setUser] = useState<User | null>(null);
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
-  const router = useRouter()
+  const [isEmpty, setIsEmpty] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
@@ -41,7 +44,6 @@ const CartPage = () => {
         item.id === itemId ? { ...item, quantity: finalQuantity } : item
       )
     );
-
     try {
       const response = await updateCartItemQuantity(
         itemId,
@@ -49,14 +51,12 @@ const CartPage = () => {
         finalQuantity
       );
       if (!response?.success) {
-        console.error("Failed to update cart item quantity:", response);
+        toast.error("Failed to update cart item quantity");
       }
     } catch (error) {
-      console.error("Failed to update cart item quantity:", error);
+      toast.error("Failed to update cart item quantity");
     }
   };
-
-  const [loading, setLoading] = useState(false);
 
   const getAllCartItems = async (userId: number) => {
     setLoading(true);
@@ -64,11 +64,16 @@ const CartPage = () => {
       const response = await getCartItems(userId);
       if (response?.success) {
         setCartItems(response?.data);
+        if (response.data.length === 0) {
+          setIsEmpty(true);
+        } else {
+          setIsEmpty(false);
+        }
       } else {
-        console.error("Failed to fetch cart items:", response);
+        toast.error("Failed to fetch cart items");
       }
     } catch (error) {
-      console.error("Failed to fetch cart items:", error);
+      toast.error("Failed to fetch cart items");
     } finally {
       setLoading(false);
     }
@@ -79,22 +84,30 @@ const CartPage = () => {
     getAllCartItems(user.id as number);
   }, [user]);
 
+  useEffect(()=>{
+    if(cartItems.length === 0){
+      setIsEmpty(true)
+    } else {
+      setIsEmpty(false)
+    }
+  },[cartItems])
+
   const subtotal = cartItems
-  .filter((item) => selectedItems.includes(item.id))
-  .reduce((acc, item) => {
-    const price = parseFloat(item.book.price);
-    return acc + item.quantity * (isNaN(price) ? 0 : price);
-  }, 0);
+    .filter((item) => selectedItems.includes(item.id))
+    .reduce((acc, item) => {
+      const price = parseFloat(item.book.price);
+      return acc + item.quantity * (isNaN(price) ? 0 : price);
+    }, 0);
 
   const handleRemoveItem = async (itemId: number) => {
     try {
       const response = await deleteCartItem(itemId);
       if (response?.success) {
-        alert("Item removed from cart successfully");
+        toast.success("Item removed from cart successfully");
         setCartItems((prev) => prev.filter((item) => item.id !== itemId));
       }
     } catch (error) {
-      console.error("Failed to remove cart item:", error);
+      toast.error("Failed to remove cart item");
     }
   };
 
@@ -119,8 +132,9 @@ const CartPage = () => {
       selectedItems.includes(item.id)
     );
     localStorage.setItem("tempOrder", JSON.stringify(tempOrder));
-    router.push('/cart/checkout')
+    router.push("/cart/checkout");
   };
+
   return (
     <div className="max-w-[1200px] mx-auto h-screen py-10 md:py-20 lg:py-24 bg-white">
       <h1 className=" text-center text-base md:text-xl lg:text-3xl py-3 text-darkblue font-bold uppercase">
@@ -149,68 +163,79 @@ const CartPage = () => {
             <p className="text-base">Loading cart...</p>
           ) : (
             <>
-              {cartItems.map((item: CartResponse) => (
-                <div key={item.id} className="flex flex-col gap-2">
-                  <div className="flex items-center justify-between py-4">
-                    <div className="flex items-center gap-4 text-xs lg:text-base">
-                      <input
-                        type="checkbox"
-                        checked={selectedItems.includes(item.id)}
-                        onChange={() => handleSelectItem(item.id)}
-                      />
-                      <Image
-                        src={item.book.image}
-                        alt="Book"
-                        width={100}
-                        height={100}
-                        className="w-12 h-16 object-cover"
-                      />
-                      <div className="w-[40px] lg:w-[140px]">
-                        <p className="font-medium">{item.book.title}</p>
-                        <p className="text-customblue">${item.book.price}</p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() =>
-                          updateItemQuantity(
-                            item.id,
-                            item.book_id,
-                            item.quantity - 1
-                          )
-                        }
-                        className="px-1 md:px-2 md:py-1 border rounded"
-                      >
-                        −
-                      </button>
-                      <span>{item.quantity}</span>
-                      <button
-                        onClick={() =>
-                          updateItemQuantity(
-                            item.id,
-                            item.book_id,
-                            item.quantity + 1
-                          )
-                        }
-                        className="px-1 md:px-2 md:py-1 border rounded"
-                      >
-                        +
-                      </button>
-                    </div>
-
-                    <p className="text-blue-600">
-                      ${(item.quantity * Number(item.book.price)).toFixed(2)}
-                    </p>
-                    <FontAwesomeIcon
-                      onClick={() => handleRemoveItem(item.id)}
-                      icon={faRemove}
-                      className="size-5 cursor-pointer"
-                    />
-                  </div>
-                  <hr className="my-3 border border-black w-full" />
+              {cartItems.length === 0 ? (
+                <div className="py-2">
+                  <p className="text-xl font-bold w-full text-center">Cart is empty.</p>
                 </div>
-              ))}
+              ) : (
+                <>
+                  {cartItems.map((item: CartResponse) => (
+                    <div key={item.id} className="flex flex-col gap-2">
+                      <div className="flex items-center justify-between py-4">
+                        <div className="flex items-center gap-4 text-xs lg:text-base">
+                          <input
+                            type="checkbox"
+                            checked={selectedItems.includes(item.id)}
+                            onChange={() => handleSelectItem(item.id)}
+                          />
+                          <Image
+                            src={item.book.image}
+                            alt="Book"
+                            width={100}
+                            height={100}
+                            className="w-12 h-16 object-cover"
+                          />
+                          <div className="w-[40px] lg:w-[140px]">
+                            <p className="font-medium">{item.book.title}</p>
+                            <p className="text-customblue">
+                              ${item.book.price}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() =>
+                              updateItemQuantity(
+                                item.id,
+                                item.book_id,
+                                item.quantity - 1
+                              )
+                            }
+                            className="px-1 md:px-2 md:py-1 border rounded"
+                          >
+                            −
+                          </button>
+                          <span>{item.quantity}</span>
+                          <button
+                            onClick={() =>
+                              updateItemQuantity(
+                                item.id,
+                                item.book_id,
+                                item.quantity + 1
+                              )
+                            }
+                            className="px-1 md:px-2 md:py-1 border rounded"
+                          >
+                            +
+                          </button>
+                        </div>
+
+                        <p className="text-blue-600">
+                          $
+                          {(item.quantity * Number(item.book.price)).toFixed(2)}
+                        </p>
+                        <FontAwesomeIcon
+                          onClick={() => handleRemoveItem(item.id)}
+                          icon={faRemove}
+                          className="size-5 cursor-pointer"
+                        />
+                      </div>
+                      <hr className="my-3 border border-black w-full" />
+                    </div>
+                  ))}
+                </>
+              )}
             </>
           )}
         </div>
@@ -231,7 +256,8 @@ const CartPage = () => {
           </div>
           <button
             onClick={handleCheckout}
-            className="bg-blue text-white w-full h-7 md:h-9 lg:h-12 rounded-lg"
+            disabled={isEmpty}
+            className={`text-white w-full h-7 md:h-9 lg:h-12 rounded-lg ${isEmpty ? "bg-gray-400" : "bg-blue"}`}
           >
             Checkout
           </button>

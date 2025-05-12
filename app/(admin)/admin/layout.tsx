@@ -11,6 +11,7 @@ import LocaleProvider from "@/components/locale-provider";
 import { i18nInstance } from "@/language/i18n";
 import HeaderCMS from "@/components/header-cms";
 import "../../../globals.css";
+import { Toaster } from "sonner";
 
 export default function RootLayout({
   children,
@@ -66,6 +67,7 @@ export default function RootLayout({
                             borderRadius: "8px",
                           }}
                         >
+                          <Toaster richColors position="top-center" duration={2} />
                           {children}
                         </Content>
                       </Layout>
