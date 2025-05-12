@@ -17,7 +17,7 @@ import Title from "antd/es/typography/Title";
 import { RcFile, UploadChangeParam, UploadFile } from "antd/es/upload";
 import { getToken } from "@/lib/HttpClient";
 import { useRouter } from "next/navigation";
-import { UserProfile } from "@/constant/types";
+import { User, UserResponse } from "@/constant/types";
 import {
   getUserById,
   changePassword,
@@ -28,13 +28,13 @@ import {
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000";
 
 const AdminProfilePage = () => {
-  const [form] = Form.useForm();
+  const [ form ] = Form.useForm();
   const router = useRouter();
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-  const [avatarFile, setAvatarFile] = useState<RcFile | null>(null);
-  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  const [ loading, setLoading ] = useState(true);
+  const [ saving, setSaving ] = useState(false);
+  const [ userProfile, setUserProfile ] = useState<User | null>(null);
+  const [ avatarFile, setAvatarFile ] = useState<RcFile | null>(null);
+  const [ avatarPreview, setAvatarPreview ] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -62,7 +62,7 @@ const AdminProfilePage = () => {
             }
           }
 
-          const profileData: UserProfile = {
+          const profileData: User = {
             ...fetchedUser,
             firstName: (fetchedUser as any).firstName || firstName,
             lastName: (fetchedUser as any).lastName || lastName,
@@ -96,7 +96,7 @@ const AdminProfilePage = () => {
     };
 
     fetchUserProfile();
-  }, [form, router]);
+  }, [ form, router ]);
 
   const handleAvatarChange = (info: UploadChangeParam<UploadFile>) => {
     if (info.file.originFileObj) {
@@ -145,30 +145,30 @@ const AdminProfilePage = () => {
         }
       }
 
-      if (avatarFile) {
-        try {
-          const uploadResponse = await uploadAvatar(Number(userProfile.id), avatarFile);
-          if (uploadResponse.attachment && uploadResponse.attachment.fileUrl) {
-            setAvatarPreview(uploadResponse.attachment.fileUrl);
-            setUserProfile(prev => ({ ...prev!, avatar: uploadResponse.attachment.fileUrl }));
-            setAvatarFile(null);
-            message.success("Cập nhật ảnh đại diện thành công!");
-            profileUpdatedSuccessfully = true;
-          } else if (uploadResponse.avatarUrl) {
-            setAvatarPreview(uploadResponse.avatarUrl);
-            setUserProfile(prev => ({ ...prev!, avatar: uploadResponse.avatarUrl }));
-            setAvatarFile(null);
-            message.success("Cập nhật ảnh đại diện thành công!");
-            profileUpdatedSuccessfully = true;
-          }
-          else {
-            message.error(uploadResponse.message || "Upload ảnh đại diện thành công nhưng không nhận được URL mới.");
-          }
-        } catch (error: any) {
-          message.error(error.message || "Upload ảnh đại diện thất bại.");
-          console.error("Upload avatar error:", error);
-        }
-      }
+      // if (avatarFile) {
+      //   try {
+      //     const uploadResponse = await uploadAvatar(Number(userProfile.id), avatarFile);
+      //     if (uploadResponse.attachment && uploadResponse.attachment.fileUrl) {
+      //       setAvatarPreview(uploadResponse.attachment.fileUrl);
+      //       setUserProfile(prev => ({ ...prev!, avatar: uploadResponse.attachment.fileUrl }));
+      //       setAvatarFile(null);
+      //       message.success("Cập nhật ảnh đại diện thành công!");
+      //       profileUpdatedSuccessfully = true;
+      //     } else if (uploadResponse.avatarUrl) {
+      //       setAvatarPreview(uploadResponse.avatarUrl);
+      //       setUserProfile(prev => ({ ...prev!, avatar: uploadResponse.avatarUrl }));
+      //       setAvatarFile(null);
+      //       message.success("Cập nhật ảnh đại diện thành công!");
+      //       profileUpdatedSuccessfully = true;
+      //     }
+      //     else {
+      //       message.error(uploadResponse.message || "Upload ảnh đại diện thành công nhưng không nhận được URL mới.");
+      //     }
+      //   } catch (error: any) {
+      //     message.error(error.message || "Upload ảnh đại diện thất bại.");
+      //     console.error("Upload avatar error:", error);
+      //   }
+      // }
 
       if (profileUpdatedSuccessfully) {
       } else if (!values.newPassword && !avatarFile) {
@@ -210,70 +210,69 @@ const AdminProfilePage = () => {
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
-      <Title level={3} style={{ marginBottom: "24px" }}>
+      <Title level={ 3 } style={ { marginBottom: "24px" } }>
         Hồ Sơ Của Tôi
       </Title>
-      <Row gutter={24}>
-        <Col xs={24} md={8} className="flex flex-col items-center mb-6 md:mb-0">
+      <Row gutter={ 24 }>
+        <Col xs={ 24 } md={ 8 } className="flex flex-col items-center mb-6 md:mb-0">
           <Avatar
-            size={150}
-            src={avatarPreview}
-            icon={!avatarPreview && <UserOutlined />}
+            size={ 150 }
+            src={ avatarPreview }
+            icon={ !avatarPreview && <UserOutlined /> }
             className="mb-4 border"
           />
-          <Upload {...uploadProps}>
-            <Button icon={<UploadOutlined />}>Chọn Ảnh Đại Diện</Button>
+          <Upload { ...uploadProps }>
+            <Button icon={ <UploadOutlined /> }>Chọn Ảnh Đại Diện</Button>
           </Upload>
           <p className="text-xs text-gray-500 mt-1">JPG/PNG, nhỏ hơn 2MB</p>
 
-          {(userProfile.firstName || userProfile.lastName) && (
-            <Title level={5} className="mt-4 mb-0">{`${userProfile.firstName || ''} ${userProfile.lastName || ''}`.trim()}</Title>
-          )}
-          {!userProfile.firstName && !userProfile.lastName && userProfile.name && (
-            <Title level={5} className="mt-4 mb-0">{userProfile.name}</Title>
-          )}
-          <p className="text-gray-600">{userProfile.email}</p>
+          { (userProfile.name) && (
+            <Title level={ 5 } className="mt-4 mb-0">{ `${userProfile.name || ''}`.trim() }</Title>
+          ) }
+          { !userProfile.name && (
+            <Title level={ 5 } className="mt-4 mb-0">{ userProfile.name }</Title>
+          ) }
+          <p className="text-gray-600">{ userProfile.email }</p>
         </Col>
-        <Col xs={24} md={16}>
+        <Col xs={ 24 } md={ 16 }>
           <Form
-            form={form}
+            form={ form }
             layout="vertical"
-            onFinish={onFinish}
-            initialValues={{
+            onFinish={ onFinish }
+            initialValues={ {
               username: userProfile.username,
               email: userProfile.email,
-              firstName: userProfile.firstName,
-              lastName: userProfile.lastName,
-            }}
+              name: userProfile.name
+            } }
           >
-            <Title level={4} className="mb-4">Thông tin tài khoản</Title>
+            <Title level={ 4 } className="mb-4">Thông tin tài khoản</Title>
             <Form.Item label="Tên người dùng" name="username">
               <Input disabled />
             </Form.Item>
             <Form.Item label="Email" name="email">
               <Input disabled />
             </Form.Item>
-            <Row gutter={16}>
-              <Col xs={24} sm={12}>
+            <Row gutter={ 16 }>
+              <Col xs={ 24 } sm={ 12 }>
                 <Form.Item
                   label="Tên"
                   name="firstName"
-                  rules={[{ message: "Vui lòng nhập tên của bạn!" }]}
+                  rules={ [ { message: "Vui lòng nhập tên của bạn!" } ] }
                 >
                   <Input placeholder="Tên" />
                 </Form.Item>
               </Col>
-              <Col xs={24} sm={12}>
+              <Col xs={ 24 } sm={ 12 }>
                 <Form.Item
                   label="Họ"
                   name="lastName"
-                  rules={[{ message: "Vui lòng nhập họ của bạn!" }]}
+                  rules={ [ { message: "Vui lòng nhập họ của bạn!" } ] }
                 >
                   <Input placeholder="Họ" />
                 </Form.Item>
               </Col>
             </Row>
-            <Title level={4} className="mt-6 mb-4">Thay đổi mật khẩu</Title>
+            <Title level={ 4 } className="mt-6 mb-4">Thay đổi mật khẩu</Title>
             <Form.Item
               label="Mật khẩu hiện tại"
               name="currentPassword"
@@ -284,12 +283,12 @@ const AdminProfilePage = () => {
             <Form.Item
               label="Mật khẩu mới"
               name="newPassword"
-              rules={[
+              rules={ [
                 {
                   min: 6,
                   message: "Mật khẩu mới phải có ít nhất 6 ký tự.",
                 },
-              ]}
+              ] }
               tooltip="Bỏ trống nếu không muốn thay đổi mật khẩu."
             >
               <Input.Password placeholder="Mật khẩu mới (ít nhất 6 ký tự)" />
@@ -297,9 +296,9 @@ const AdminProfilePage = () => {
             <Form.Item
               name="confirmNewPassword"
               label="Xác nhận mật khẩu mới"
-              dependencies={["newPassword"]}
+              dependencies={ [ "newPassword" ] }
               hasFeedback
-              rules={[
+              rules={ [
                 ({ getFieldValue }) => ({
                   validator(_, value) {
                     if (!value || getFieldValue("newPassword") === value) {
@@ -310,13 +309,13 @@ const AdminProfilePage = () => {
                     );
                   },
                 }),
-              ]}
+              ] }
             >
               <Input.Password placeholder="Xác nhận mật khẩu mới" />
             </Form.Item>
 
             <Form.Item>
-              <Button type="primary" htmlType="submit" loading={saving} size="large" block>
+              <Button type="primary" htmlType="submit" loading={ saving } size="large" block>
                 Cập nhật hồ sơ
               </Button>
             </Form.Item>
