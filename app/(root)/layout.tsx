@@ -8,7 +8,7 @@ import Footer from "@/components/footer";
 import LocaleProvider from "@/components/locale-provider";
 import { i18nInstance } from "../../language/i18n";
 import { HeroUIProvider } from "@heroui/react";
-
+import { Toaster } from "sonner";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -40,7 +40,8 @@ export default function RootLayout({
             {() => (
               <I18nextProvider i18n={i18nInstance}>
                 <Header />
-                <HeroUIProvider>{children}</HeroUIProvider>
+                <HeroUIProvider>
+                  <Toaster richColors position="top-center" duration={2} />{children}</HeroUIProvider>
                 <Footer />
               </I18nextProvider>
             )}

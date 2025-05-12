@@ -278,3 +278,52 @@ export interface MediaResponse {
   data: MediaData[];
   pagination: Pagination;
 }
+
+export interface CartResponse {
+  id: number;
+  user_id: number;
+  book_id: number;
+  quantity: number;
+  created_at: string;
+  updated_at: string;
+  book: {
+    title: string;
+    price: string;
+    image: string;
+  };
+}
+
+export interface AddToCartResponse {
+  success: boolean;
+  data: CartResponse;
+}
+
+export interface CartListResponse {
+  success: boolean;
+  data: CartResponse[];
+}
+
+export interface GetAddressResponse {
+  success:boolean;
+  data: {
+    address: Address[]
+  }
+}
+
+export interface AddNewAddressResponse {
+  success:boolean;
+  data: {
+    newAddress: Address
+  }
+}
+
+export interface CheckoutResponse {
+  success:boolean;
+  data: {
+    orderId:number,
+    address:String,
+    payment_method:String,
+    total: number,
+    message: String
+  }
+}

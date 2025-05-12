@@ -7,7 +7,6 @@ import Image, { StaticImageData } from "next/image";
 import { Images } from "@/constant/images";
 import { ApiBook, Book } from "@/constant/types";
 import BookItem from "@/components/book-item";
-
 function Home() {
   const { t } = useTranslation("common");
   const [newArrivals, setNewArrivals] = useState<Book[]>([]);
