@@ -236,51 +236,11 @@ const BookForm: React.FC<{
 
         <Form.Item></Form.Item>
       </Form>
-<<<<<<< HEAD:app/(admin)/admin/books/BookForm.tsx
-      <Modal
-        open={ isModalOpen }
-        title={ <span className="ml-4">{ t("Select Media") }</span> }
-        onCancel={ handleCloseModal }
-        style={ { top: 20 } }
-        width="90%"
-        footer={ null }
-      >
-        <div className="ml-4 mt-5">
-          <Button
-            onClick={ () => setIsChooseMedia(true) }
-            className="mr-2"
-            style={ {
-              backgroundColor: isChooseMedia ? "blue" : "initial",
-              color: isChooseMedia ? "white" : "initial",
-            } }
-          >
-            { t("Select Media") }
-          </Button>
-          <Button
-            onClick={ () => setIsChooseMedia(false) }
-            style={ {
-              backgroundColor: !isChooseMedia ? "blue" : "initial",
-              color: !isChooseMedia ? "white" : "initial",
-            } }
-          >
-            { t("Upload Media") }
-          </Button>
-        </div>
-        <div>
-          { isChooseMedia ? (
-            <Media isOpenModal={ true } onSelectMedia={ handleSelectMedia } />
-          ) : (
-            <MediaUpload isOpenModal={ true } setChooseMedia={ setIsChooseMedia } />
-          ) }
-        </div>
-      </Modal>
-=======
       <ModalSelectMedia
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-        onSelectMedia={handleSelectMedia}
+        isOpen={ isModalOpen }
+        onClose={ handleCloseModal }
+        onSelectMedia={ handleSelectMedia }
       />
->>>>>>> 8881151b2de1b0c34c7a9c5e439382732a12b91c:modules/book/BookForm.tsx
     </div>
   );
 };

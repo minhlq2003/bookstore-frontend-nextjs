@@ -46,8 +46,8 @@ const PostForm: React.FC<PostFormProps> = ({
   setUploadedImages,
 }) => {
   const { t } = useTranslation("common");
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isEditableSlug, setIsEditableSlug] = useState(true);
+  const [ isModalOpen, setIsModalOpen ] = useState(false);
+  const [ isEditableSlug, setIsEditableSlug ] = useState(true);
 
   const handleSubmit = () => {
     const formData = form.getFieldsValue();
@@ -72,92 +72,92 @@ const PostForm: React.FC<PostFormProps> = ({
   const handleNameBlur = async (e: React.FocusEvent<HTMLInputElement>) => {
     const nameValue = e.target.value.trim();
     if (!nameValue) {
-      form.setFields([{ name: "slug", errors: [] }]);
+      form.setFields([ { name: "slug", errors: [] } ]);
       return;
     }
 
     const slugValue = removeAccents(nameValue);
 
     form.setFieldsValue({ slug: slugValue });
-    form.setFields([{ name: "slug", errors: [] }]);
+    form.setFields([ { name: "slug", errors: [] } ]);
   };
 
   return (
     <Form
-      form={form}
+      form={ form }
       className="flex flex-col w-[77%]"
       name="basic"
-      initialValues={{ remember: true }}
-      onFinish={handleSubmit}
+      initialValues={ { remember: true } }
+      onFinish={ handleSubmit }
       autoComplete="off"
       layout="vertical"
     >
       <div className="border border-[#d9d9d9] p-4 rounded-md mb-4">
         <Form.Item
           name="title"
-          label={t("Title")}
-          rules={[{ required: true, message: t("Please enter article name!") }]}
+          label={ t("Title") }
+          rules={ [ { required: true, message: t("Please enter article name!") } ] }
           className="mt-4"
         >
           <Input
-            placeholder={t("Title")}
+            placeholder={ t("Title") }
             className="custom-input"
-            onBlur={handleNameBlur}
+            onBlur={ handleNameBlur }
           />
         </Form.Item>
         <div className="flex w-full">
           <Form.Item
             className="w-1/2 mr-4"
             name="slug"
-            label={t("Slug")}
+            label={ t("Slug") }
             extra={
               <span className="text-sm">
-                {t("May not need to be entered (automatically render by name)")}
+                { t("May not need to be entered (automatically render by name)") }
               </span>
             }
           >
             <Input
-              disabled={isEditableSlug}
-              placeholder={t("slug")}
+              disabled={ isEditableSlug }
+              placeholder={ t("slug") }
               className="custom-input"
             />
           </Form.Item>
           <Button
             className="self-center mb-2"
-            icon={<EditOutlined />}
-            color={!isEditableSlug ? "primary" : "default"}
+            icon={ <EditOutlined /> }
+            color={ !isEditableSlug ? "primary" : "default" }
             variant="outlined"
-            onClick={() => setIsEditableSlug(!isEditableSlug)}
+            onClick={ () => setIsEditableSlug(!isEditableSlug) }
           >
-            {t("Edit")}
+            { t("Edit") }
           </Button>
         </div>
         <Form.Item>
           <Button
-            icon={<CameraOutlined />}
-            onClick={() => handleOpenModal(false)}
+            icon={ <CameraOutlined /> }
+            onClick={ () => handleOpenModal(false) }
           >
-            {t("Add media to content")}
+            { t("Add media to content") }
           </Button>
         </Form.Item>
 
         <Form.Item name="content">
           <div className="">
             <CKEditorComponent
-              value={form.getFieldValue("content")}
-              onChange={(data: string) => {
+              value={ form.getFieldValue("content") }
+              onChange={ (data: string) => {
                 form.setFieldsValue({ content: data });
-              }}
+              } }
             />
           </div>
         </Form.Item>
 
-        <Form.Item name="excerpt" label={t("Excerpt")}>
+        <Form.Item name="excerpt" label={ t("Excerpt") }>
           <Input className="custom-input" />
         </Form.Item>
       </div>
 
-      {/* <span className="text-base font-medium pt-2 pb-2">{t("SEO")}</span> */}
+      {/* <span className="text-base font-medium pt-2 pb-2">{t("SEO")}</span> */ }
 
       {/* <div className="grid grid-cols-2 gap-x-5 gap-y-2 p-5 border rounded-[10px]">
         <Form.Item
@@ -234,9 +234,9 @@ const PostForm: React.FC<PostFormProps> = ({
       </div> */}
 
       <ModalSelectMedia
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-        onSelectMedia={handleSelectMedia}
+        isOpen={ isModalOpen }
+        onClose={ handleCloseModal }
+        onSelectMedia={ handleSelectMedia }
       />
     </Form>
   );
