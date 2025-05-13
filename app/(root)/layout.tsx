@@ -41,7 +41,9 @@ export default function RootLayout({
               <I18nextProvider i18n={i18nInstance}>
                 <Header />
                 <HeroUIProvider>
-                  <Toaster richColors position="top-center" duration={2} />{children}</HeroUIProvider>
+                  <Toaster richColors position="top-center" duration={2000} />
+                  {children}
+                </HeroUIProvider>
                 <Footer />
               </I18nextProvider>
             )}

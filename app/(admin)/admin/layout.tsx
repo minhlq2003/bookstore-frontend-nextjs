@@ -67,7 +67,7 @@ export default function RootLayout({
                             borderRadius: "8px",
                           }}
                         >
-                          <Toaster richColors position="top-center" duration={2} />
+                          <Toaster richColors position="top-center" duration={2000} />
                           {children}
                         </Content>
                       </Layout>
