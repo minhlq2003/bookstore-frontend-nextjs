@@ -84,12 +84,12 @@ const AddressFormModal: React.FC<AddressFormModalProps> = ({
 
   return (
     <Modal
-      title={ initialValues ? "Cập nhật địa chỉ" : "Thêm địa chỉ mới" }
+      title={ initialValues ? "Edit an existing address" : "Add a new address" }
       open={ visible }
       onCancel={ onCancel }
       footer={ [
         <Button key="back" onClick={ onCancel } disabled={ loading }>
-          Hủy
+          Cancel
         </Button>,
         <Button
           key="submit"
@@ -97,7 +97,7 @@ const AddressFormModal: React.FC<AddressFormModalProps> = ({
           loading={ loading }
           onClick={ () => form.submit() }
         >
-          { initialValues ? "Cập nhật" : "Thêm mới" }
+          { initialValues ? "Edit" : "Add" }
         </Button>,
       ] }
       destroyOnClose
@@ -110,19 +110,19 @@ const AddressFormModal: React.FC<AddressFormModalProps> = ({
       >
         <Form.Item
           name="receiver_name"
-          label="Tên người nhận"
-          rules={ [ { required: true, message: "Vui lòng nhập tên người nhận!" } ] }
+          label="Recipient's name"
+          rules={ [ { required: true, message: "Please enter recipient name!" } ] }
         >
           <Input placeholder="Nguyễn Văn A" />
         </Form.Item>
         <Form.Item
           name="receiver_phone"
-          label="Số điện thoại"
+          label="Recipient's phone number"
           rules={ [
-            { required: true, message: "Vui lòng nhập số điện thoại!" },
+            { required: true, message: "Please enter recipient's phone number!" },
             {
               pattern: /^[0-9]{10,11}$/,
-              message: "Số điện thoại không hợp lệ!",
+              message: "Invalid phone number!",
             },
           ] }
         >
@@ -130,12 +130,12 @@ const AddressFormModal: React.FC<AddressFormModalProps> = ({
         </Form.Item>
         <Form.Item
           name="address"
-          label="Địa chỉ chi tiết"
-          rules={ [ { required: true, message: "Vui lòng nhập địa chỉ!" } ] }
+          label="Recipient's detailed address"
+          rules={ [ { required: true, message: "Please enter address!" } ] }
         >
           <Input.TextArea
             rows={ 3 }
-            placeholder="Số nhà, tên đường, phường/xã, quận/huyện, tỉnh/thành phố"
+            placeholder="House number, street name, ward, district, province/city"
           />
         </Form.Item>
       </Form>
@@ -184,7 +184,7 @@ const UserProfilePage = () => {
     setLoading(true);
     const token = getToken();
     if (!token) {
-      message.error("Vui lòng đăng nhập để xem thông tin.");
+      message.error("Please login to view information.");
       router.push("/signin");
       return;
     }
@@ -206,7 +206,7 @@ const UserProfilePage = () => {
         setAvatarPreview(fetchedUser.avatar);
         setNewSelectedAvatarUrl(null);
       } else {
-        message.error("Không tìm thấy thông tin người dùng hoặc dữ liệu không hợp lệ.");
+        message.error("No user information found or invalid data.");
         localStorage.removeItem("accessToken");
         localStorage.removeItem("user");
         router.push("/signin");
@@ -219,14 +219,14 @@ const UserProfilePage = () => {
         error.message?.toLowerCase().includes("token")
       ) {
         message.error(
-          "Phiên đăng nhập hết hạn hoặc không hợp lệ. Vui lòng đăng nhập lại."
+          "Your session has expired or is invalid. Please log in again."
         );
         localStorage.removeItem("accessToken");
         localStorage.removeItem("user");
         router.push("/signin");
       } else {
         message.error(
-          error.message || "Có lỗi xảy ra khi tải thông tin người dùng."
+          error.message || "An error occurred while loading user information."
         );
       }
     } finally {
@@ -267,9 +267,9 @@ const UserProfilePage = () => {
         );
 
         if (updateResponse && updateResponse.user) {
-          messages.push("Cập nhật thông tin cá nhân thành công!");
-          if (profileInfoChanged) messages.push("Cập nhật thông tin thành công!");
-          if (avatarChanged) messages.push("Cập nhật ảnh đại diện thành công!");
+          messages.push("Profile information updated successfully!");
+          if (profileInfoChanged) messages.push("Profile information updated successfully!");
+          if (avatarChanged) messages.push("Profile image updated successfully!");
           hasChanges = true;
           const updatedUser = updateResponse.user as User;
           setUserProfile(updatedUser);
@@ -278,10 +278,10 @@ const UserProfilePage = () => {
           setNewSelectedAvatarUrl(null);
           profileForm.setFieldsValue(updatedUser);
         } else {
-          throw new Error(updateResponse?.message || "Cập nhật thông tin thất bại.");
+          throw new Error(updateResponse?.message || "Failed to update profile information.");
         }
       } catch (error: any) {
-        message.error(error.message || "Lỗi khi cập nhật thông tin.");
+        message.error(error.message || "An error occurred while updating profile information.");
       }
     }
 
@@ -295,22 +295,22 @@ const UserProfilePage = () => {
           values.avatar
         );
         if (updateResponse && updateResponse.user) {
-          messages.push("Cập nhật thông tin cá nhân thành công!");
+          messages.push("Profile information updated successfully!");
           hasChanges = true;
           setUserProfile(updateResponse.user as User);
           originalProfileRef.current = updateResponse.user as User;
         } else {
-          throw new Error(updateResponse?.message || "Cập nhật thông tin thất bại.");
+          throw new Error(updateResponse?.message || "Failed to update profile information.");
         }
       } catch (error: any) {
-        message.error(error.message || "Lỗi khi cập nhật thông tin cá nhân.");
+        message.error(error.message || "An error occurred while loading profile information.");
       }
     }
 
     // 3. Thay đổi mật khẩu
     if (values.newPassword) {
       if (!values.currentPassword) {
-        message.error("Vui lòng nhập mật khẩu hiện tại để đổi mật khẩu.");
+        message.error("Please enter your current password to change your password.");
         setSaving(false);
         return;
       }
@@ -325,10 +325,10 @@ const UserProfilePage = () => {
           newPassword: "",
           confirmNewPassword: "",
         });
-        messages.push("Đổi mật khẩu thành công!");
+        messages.push("Password changed successfully!");
         hasChanges = true;
       } catch (error: any) {
-        message.error(error.message || "Đổi mật khẩu thất bại.");
+        message.error(error.message || "Failed to change password.");
         console.error("Change password error:", error);
       }
     }
@@ -337,7 +337,7 @@ const UserProfilePage = () => {
     if (messages.length > 0) {
       message.success(messages.join(" "));
     } else if (!hasChanges && !profileInfoChanged && !avatarChanged && !values.newPassword) {
-      message.info("Không có thông tin nào được thay đổi.");
+      message.info("No information has been changed.");
     }
 
     setSaving(false);
@@ -370,7 +370,7 @@ const UserProfilePage = () => {
     try {
       if (editingAddress) {
         await updateAddress(editingAddress.id, values);
-        message.success("Cập nhật địa chỉ thành công!");
+        message.success("Address updated successfully!");
       } else {
         await addNewAddress(
           Number(userProfile.id),
@@ -378,13 +378,13 @@ const UserProfilePage = () => {
           values.receiver_name,
           values.receiver_phone
         );
-        message.success("Thêm địa chỉ mới thành công!");
+        message.success("New address added successfully!");
       }
       setIsAddressModalVisible(false);
       setEditingAddress(null);
       await fetchUserProfileAndAddresses();
     } catch (error: any) {
-      message.error(error.message || "Có lỗi xảy ra khi lưu thông tin địa chỉ.");
+      message.error(error.message || "An error occurred while saving address information.");
     } finally {
       setAddressLoading(false);
     }
@@ -394,10 +394,10 @@ const UserProfilePage = () => {
     setAddressLoading(true);
     try {
       await deleteAddress(addressId);
-      message.success("Xóa địa chỉ thành công!");
+      message.success("Address deleted successfully!");
       await fetchUserProfileAndAddresses();
     } catch (error: any) {
-      message.error(error.message || "Lỗi khi xóa địa chỉ.");
+      message.error(error.message || "An error occurred while deleting the address.");
     } finally {
       setAddressLoading(false);
     }
@@ -414,9 +414,9 @@ const UserProfilePage = () => {
   if (!userProfile) {
     return (
       <div className="container mx-auto px-4 py-8 text-center">
-        <p>Không thể tải thông tin người dùng.</p>
+        <p>Unable to load user information.</p>
         <Button type="link" onClick={ () => router.push('/signin') }>
-          Vui lòng đăng nhập lại
+          Please log in again
         </Button>
       </div>
     );
@@ -427,7 +427,7 @@ const UserProfilePage = () => {
       {/* Profile Info Section */ }
       <div className="bg-white p-6 md:p-8 rounded-lg shadow-md max-w-4xl mx-auto mb-8">
         <Title level={ 3 } style={ { marginBottom: "24px", textAlign: "center" } }>
-          Thông Tin Cá Nhân
+          User Personal Information
         </Title>
         <Row gutter={ [ 24, 24 ] } align="top">
           <Col
@@ -442,7 +442,7 @@ const UserProfilePage = () => {
               className="mb-4 border-2 border-gray-200 shadow-sm"
             />
             <Button icon={ <SelectOutlined /> } onClick={ handleOpenModal } className="mb-1">
-              { avatarPreview ? "Thay đổi ảnh" : "Chọn ảnh đại diện" }
+              { avatarPreview ? "Change your avatar" : "Select avatar" }
             </Button>
             { newSelectedAvatarUrl && newSelectedAvatarUrl !== originalProfileRef.current?.avatar && (
               <Button
@@ -454,11 +454,11 @@ const UserProfilePage = () => {
                 style={ { fontSize: '12px', padding: '0 8px' } }
                 className="mt-1"
               >
-                Hủy chọn
+                Cancel
               </Button>
             ) }
             <p className="text-xs text-gray-500 mt-1">
-              Chọn từ thư viện hoặc tải lên file JPG/PNG/GIF, phải nhỏ hơn 2MB
+              Choose from library or upload JPG/PNG/GIF file, must be less than 2MB
             </p>
 
             { selectedMediaUrl && (
@@ -474,7 +474,7 @@ const UserProfilePage = () => {
                 className="mt-1"
                 style={ { fontSize: '12px', padding: '0 8px' } }
               >
-                Hủy chọn
+                Cancel
               </Button>
             ) }
 
@@ -494,65 +494,65 @@ const UserProfilePage = () => {
               className="w-full"
             >
               <Title level={ 4 } className="mb-4">
-                Thông tin tài khoản
+                Account Information
               </Title>
               <Form.Item
-                label="Tên hiển thị"
+                label="Display Name"
                 name="name"
-                rules={ [ { required: true, message: "Vui lòng nhập tên hiển thị!" } ] }
+                rules={ [ { required: true, message: "Please enter display name!" } ] }
               >
-                <Input placeholder="Nhập tên bạn muốn hiển thị" />
+                <Input placeholder="Enter the name you want to display" />
               </Form.Item>
               <Form.Item
-                label="Tên tài khoản (Username)"
+                label="Username"
                 name="username"
-                rules={ [ { required: true, message: "Vui lòng nhập tên tài khoản!" } ] }
+                rules={ [ { required: true, message: "Please enter username!" } ] }
               >
-                <Input placeholder="Nhập tên tài khoản" />
+                <Input placeholder="Enter your username" />
               </Form.Item>
               <Form.Item
                 label="Email"
                 name="email"
                 rules={ [
-                  { required: true, message: "Vui lòng nhập email!" },
-                  { type: 'email', message: 'Email không hợp lệ!' }
+                  { required: true, message: "Please enter your email!" },
+                  { type: 'email', message: 'Invalid email!' }
                 ] }
               >
-                <Input placeholder="Nhập địa chỉ email" />
+                <Input placeholder="Enter email address" />
               </Form.Item>
 
               <Divider />
 
               <Title level={ 4 } className="mt-6 mb-4">
-                Thay đổi mật khẩu (Tùy chọn)
+                Change Password (Optional)
               </Title>
               <Form.Item
-                label="Mật khẩu hiện tại"
+                label="Current Password"
                 name="currentPassword"
-                tooltip="Nhập mật khẩu hiện tại nếu bạn muốn đặt mật khẩu mới."
+                tooltip="Enter your current password if you want to set a new password."
               >
-                <Input.Password placeholder="Để trống nếu không đổi" />
+                <Input.Password placeholder="Leave blank if you do not want to change your password." />
               </Form.Item>
               <Form.Item
-                label="Mật khẩu mới"
+                label="New Password"
                 name="newPassword"
                 rules={ [
                   ({ getFieldValue }) => ({
                     validator(_, value) {
                       if (value && value.length < 6) {
-                        return Promise.reject(new Error('Mật khẩu mới phải có ít nhất 6 ký tự.'));
+                        return Promise.reject(new Error('New password must be at least 6 characters.'));
                       }
                       return Promise.resolve();
                     },
                   })
                 ] }
-                tooltip="Ít nhất 6 ký tự. Để trống nếu không muốn thay đổi."
+                tooltip="New password must be at least 6 characters. You can leave it blank if you do not want to change your password."
               >
-                <Input.Password placeholder="Để trống nếu không đổi" />
+                <Input.Password placeholder="Leave blank if you do not want to change your password." />
               </Form.Item>
               <Form.Item
                 name="confirmNewPassword"
-                label="Xác nhận mật khẩu mới"
+                label="Confirm new password"
                 dependencies={ [ 'newPassword' ] }
                 hasFeedback
                 rules={ [
@@ -563,17 +563,17 @@ const UserProfilePage = () => {
                         return Promise.resolve();
                       }
                       if (!value) {
-                        return Promise.reject(new Error('Vui lòng xác nhận mật khẩu mới!'));
+                        return Promise.reject(new Error('Please confirm new password!'));
                       }
                       if (newPassword === value) {
                         return Promise.resolve();
                       }
-                      return Promise.reject(new Error('Mật khẩu xác nhận không khớp!'));
+                      return Promise.reject(new Error('Confirmation password does not match!'));
                     },
                   }),
                 ] }
               >
-                <Input.Password placeholder="Nhập lại mật khẩu mới" />
+                <Input.Password placeholder="Re-enter new password" />
               </Form.Item>
 
               <Form.Item className="mt-6">
@@ -585,7 +585,7 @@ const UserProfilePage = () => {
                   icon={ <SaveOutlined /> }
                   block
                 >
-                  Lưu Thay Đổi
+                  Save Changes
                 </Button>
               </Form.Item>
             </Form>
@@ -596,14 +596,14 @@ const UserProfilePage = () => {
       <div className="bg-white p-6 md:p-8 rounded-lg shadow-md max-w-4xl mx-auto">
         <div className="flex justify-between items-center mb-6">
           <Title level={ 3 } className="!mb-0">
-            Sổ Địa Chỉ
+            User's Address Book
           </Title>
           <Button
             type="primary"
             icon={ <PlusOutlined /> }
             onClick={ handleShowAddAddressModal }
           >
-            Thêm địa chỉ mới
+            Add a new address
           </Button>
         </div>
         { addressLoading && addresses.length === 0 && (
@@ -611,7 +611,7 @@ const UserProfilePage = () => {
         ) }
         { !addressLoading && addresses.length === 0 && (
           <Text className="block text-center text-gray-500 py-4">
-            Bạn chưa có địa chỉ nào. Hãy thêm địa chỉ mới!
+            You don't have any addresses yet. Add a new one!
           </Text>
         ) }
         <List
@@ -632,14 +632,14 @@ const UserProfilePage = () => {
                     icon={ < EditOutlined /> }
                     onClick={ () => handleShowEditAddressModal(item) }
                   >
-                    Sửa
+                    Edit
                   </Button>,
                   <Popconfirm
-                    title="Xóa địa chỉ này?"
-                    description="Hành động này không thể hoàn tác."
+                    title="Delete this address?"
+                    description="This action cannot be undone."
                     onConfirm={ () => handleDeleteAddress(item.id) }
-                    okText="Xóa"
-                    cancelText="Hủy"
+                    okText="Delete"
+                    cancelText="Cancel"
                     placement="topRight"
                   >
                     <Button
@@ -648,7 +648,7 @@ const UserProfilePage = () => {
                       icon={ <DeleteOutlined /> }
                       key="delete"
                     >
-                      Xóa
+                      Delete
                     </Button>
                   </Popconfirm>,
                 ] }
@@ -657,10 +657,10 @@ const UserProfilePage = () => {
                   <HomeOutlined className="mr-2 text-gray-600" /> { item.receiver_name }
                 </div>
                 <p className="text-sm text-gray-700 mb-1 pl-5">
-                  <span className="font-medium">Điện thoại:</span> { item.receiver_phone }
+                  <span className="font-medium">Telephone number</span> { item.receiver_phone }
                 </p>
                 <p className="text-sm text-gray-700 pl-5">
-                  <span className="font-medium">Địa chỉ:</span> { item.address }
+                  <span className="font-medium">Address</span> { item.address }
                 </p>
               </Card>
             </List.Item>
