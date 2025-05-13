@@ -227,7 +227,7 @@ const page = () => {
           {paymentMethod === "CARD" && (
             <div className="border rounded-lg p-4 shadow-md w-full bg-white mt-4">
               <p className="uppercase text-red-600 underline font-bold text-6xl">
-                Day la cho de gan strapi, Ban se thay no neu Card duoc checked
+                Day la cho de gan stripe, Ban se thay no neu Card duoc checked
               </p>
             </div>
           )}
