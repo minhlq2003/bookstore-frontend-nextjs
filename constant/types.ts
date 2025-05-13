@@ -342,10 +342,10 @@ export interface AddNewAddressResponse {
 export interface CheckoutResponse {
   success: boolean;
   data: {
-    orderId: number;
-    address: String;
-    payment_method: String;
-    total: number;
-    message: String;
-  };
+    orderId:number,
+    address:String,
+    payment_method:String,
+    total: number,
+    message: String
+  }
 }

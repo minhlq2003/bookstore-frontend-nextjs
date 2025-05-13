@@ -13,7 +13,6 @@ export const getBooks = async (params?: {
   limit?: number;
   sortBy?: string;
   sortOrder?: string;
-  is_featured?: boolean;
 }) => {
   const response = await http.get<BookListResponse>(
     `${API_PREFIX_BOOK_PATH}/all`,

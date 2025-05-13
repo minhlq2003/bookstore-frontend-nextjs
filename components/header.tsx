@@ -71,12 +71,12 @@ const Header = () => {
     }
     checkLoginStatus();
   }, []);
-  function handleLogOut() {
-    localStorage.removeItem("user");
-    localStorage.removeItem("accessToken");
-    logout()
+function handleLogOut() {
+  localStorage.removeItem("user");
+  localStorage.removeItem("accessToken");
+  logout()
 
-  }
+}
   return (
     <div>
       <div className="h-[75px] bg-[#ececec]">
@@ -108,11 +108,6 @@ const Header = () => {
                   </Link>
                 </li>
               </ul>
-              <Link href="/">
-                <h1 className="font-serif sm:ml-20 ml-0 text-white sm:text-3xl text-[20px]">
-                  GreatBook
-                </h1>
-              </Link>
             </nav>
 
             <div className="flex items-end sm:items-center gap-2 sm:gap-4 flex-col-reverse sm:flex-row ">
@@ -129,6 +124,13 @@ const Header = () => {
                   <Image src={Images.vietnamFlag} alt="" /> VI
                 </option>
               </select> */}
+              <Link href="/">
+                <Image
+                  src={Images.logo}
+                  alt=""
+                  className="rounded-full w-[50px] mr-10"
+                />
+              </Link>
               <Select
                 onValueChange={changeLanguage}
                 value={currentLang}

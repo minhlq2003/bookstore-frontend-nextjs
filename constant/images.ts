@@ -11,6 +11,7 @@ import scienceIcon from "../public/images/icon-science-genre.png";
 import educationIcon from "../public/images/icon-education-genre.png";
 import profileAvatar from "../public/images/profileAvatar.png";
 import bgProfile from "../public/images/bg-profile.png";
+import logo from "../public/images/logo_greatbook.webp";
 
 export const Images = {
   googleIcon: GoogleIcon,
@@ -26,4 +27,5 @@ export const Images = {
   educationIcon: educationIcon,
   profileAvatar: profileAvatar,
   bgProfile: bgProfile,
+  logo: logo,
 };

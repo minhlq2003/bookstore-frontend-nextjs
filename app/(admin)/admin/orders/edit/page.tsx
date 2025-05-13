@@ -6,11 +6,13 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState, useCallback } from "react";
 import { CheckCircleIcon } from "lucide-react";
 
-import OrderForm from "../OrderForm";
 import { Order } from "@/constant/types";
 import { getOrderById } from "@/modules/services/orderService";
+import OrderForm from "@/modules/order/OrderForm";
+import { useTranslation } from "react-i18next";
 
 const EditOrder = () => {
+  const { t } = useTranslation("common");
   const [loading, setLoading] = useState(false);
   const [order, setOrder] = useState<Order | null>(null);
   const [form] = Form.useForm();
@@ -76,10 +78,10 @@ const EditOrder = () => {
           <Spin size="large" />
         </div>
       ) : (
-        <div className="p-4 w-full">
-          <Space>
-            <Title level={2}>Chỉnh sửa đơn hàng</Title>
-          </Space>
+        <div className="w-full">
+          <h1 className="ml-[10px] text-3xl font-bold pb-6">
+            {t("Order Detail")}
+          </h1>
           <div className="flex justify-between">
             <OrderForm form={form} onFinish={onFinish} />
           </div>
@@ -89,7 +91,7 @@ const EditOrder = () => {
             onClick={() => onFinish(form.getFieldsValue())}
             icon={<CheckCircleIcon />}
           >
-            Lưu thay đổi
+            {t("Save change")}
           </Button>
         </div>
       )}

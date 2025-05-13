@@ -123,3 +123,22 @@
     @apply bg-[#0B3D91] text-white
   }
 }
+
+.ck-content .image-align-left {
+  float: left;
+  margin-right: 1rem; 
+}
+
+.ck-content .image-align-center {
+  display: block;
+  margin: 0 auto;
+}
+
+.ck-content .image-align-right {
+  float: right;
+  margin-left: 1rem; 
+}
+
+.ck-editor__editable_inline {
+  min-height: 460px;
+}

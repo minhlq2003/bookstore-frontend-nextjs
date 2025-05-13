@@ -305,9 +305,9 @@ const MediaList = ({
               <Col span={3} key={index} className="py-2">
                 <Image
                   src={`${media.file_url}`}
-                  height={100}
+                  height={150}
                   width="100%"
-                  className="object-contain cursor-pointer"
+                  className="object-cover cursor-pointer"
                   preview={false}
                   onClick={() => {
                     if (isOpenModal) {

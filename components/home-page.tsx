@@ -1,4 +1,4 @@
-"use server";
+"use client";
 
 import { useTranslation } from "next-i18next";
 import { Suspense, useEffect, useState } from "react";
@@ -7,6 +7,7 @@ import Image, { StaticImageData } from "next/image";
 import { Images } from "@/constant/images";
 import { ApiBook, Book } from "@/constant/types";
 import BookItem from "@/components/book-item";
+
 function Home() {
   const { t } = useTranslation("common");
   const [newArrivals, setNewArrivals] = useState<Book[]>([]);
@@ -30,7 +31,6 @@ function Home() {
         const data = await response.json();
 
         if (data.success && Array.isArray(data.data)) {
-          // Transform the API response to match the Book type
           const transformedBooks = data.data.map((book: ApiBook) => ({
             id: book.id,
             title: book.title,
@@ -41,8 +41,8 @@ function Home() {
             book_images: [
               {
                 url: book.book_images?.[0]?.url || "/default-image.jpg",
-              }
-            ]
+              },
+            ],
           }));
 
           setNewArrivals(transformedBooks);
@@ -64,10 +64,14 @@ function Home() {
     const fetchRecommendedBooks = async () => {
       try {
         const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-        const response = await fetch(`${apiBaseUrl}/book/recommendations/fiction`);
+        const response = await fetch(
+          `${apiBaseUrl}/book/recommendations/fiction`
+        );
 
         if (!response.ok) {
-          throw new Error(`Failed to fetch recommendations: ${response.status}`);
+          throw new Error(
+            `Failed to fetch recommendations: ${response.status}`
+          );
         }
 
         const data = await response.json();
@@ -82,8 +86,10 @@ function Home() {
             rating: book.rating || 4.0,
             import_price: Number(book.import_price) || 0,
             book_images: book.book_images?.length
-              ? book.book_images.map((img: { url: string }) => ({ url: img.url }))
-              : [{ url: "/default-image.jpg" }]
+              ? book.book_images.map((img: { url: string }) => ({
+                  url: img.url,
+                }))
+              : [{ url: "/default-image.jpg" }],
           }));
 
           setRecommendedBooks(transformedBooks);
@@ -115,11 +121,13 @@ function Home() {
           <div className="bg-[#0B3D9180] text-white py-20 sm:py-32 px-7">
             <div className="max-w-[1440px] mx-auto text-center">
               <h1 className="text-4xl sm:text-5xl font-bold mb-4">
-                Unlock a World of <span className="text-[#0B3D91] px-2">Creativity</span>
+                Unlock a World of{" "}
+                <span className="text-[#0B3D91] px-2">Creativity</span>
               </h1>
               <p className="text-lg sm:text-xl mb-8">
-                Discover a creative world through books! We offer a vast collection to suit every taste,
-                along with special offers just for you.
+                Discover a creative world through books! We offer a vast
+                collection to suit every taste, along with special offers just
+                for you.
               </p>
             </div>
           </div>
@@ -198,7 +206,6 @@ function Home() {
           </div>
         </div>
 
-        {/* New Arrival Section */}
         <div className="max-w-[1440px] mx-auto px-7 py-10">
           <h2 className="text-2xl font-bold text-[#0b3d91] mb-5">
             {t("New Arrival")}
@@ -244,7 +251,10 @@ function Home() {
   );
 }
 
-const CategoryItem: React.FC<{ iconSrc: string | StaticImageData; label: string }> = ({ iconSrc, label }) => {
+const CategoryItem: React.FC<{
+  iconSrc: string | StaticImageData;
+  label: string;
+}> = ({ iconSrc, label }) => {
   return (
     <Link href={`/category/${label.toLowerCase()}`}>
       <div className="flex flex-row items-center justify-center min-w-[150px] max-w-[150px] h-[60px] bg-white rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300 px-3 gap-2">

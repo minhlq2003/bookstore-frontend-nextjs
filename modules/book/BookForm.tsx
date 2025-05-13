@@ -14,6 +14,7 @@ import { Book, Category, Discount, Publisher } from "@/constant/types";
 import Media from "@/modules/media/pages/Media";
 import MediaUpload from "@/modules/media/pages/AddNewMedia";
 import { useTranslation } from "react-i18next";
+import ModalSelectMedia from "@/modules/media/pages/ModalSelectMedia";
 
 const { TextArea } = Input;
 
@@ -134,7 +135,7 @@ const BookForm: React.FC<{
                 </Form.Item>
 
                 <Form.Item
-                  name="publishYear"
+                  name="publishedDate"
                   label="Năm xuất bản"
                   style={ { width: "45%" } }
                 >
@@ -235,6 +236,7 @@ const BookForm: React.FC<{
 
         <Form.Item></Form.Item>
       </Form>
+<<<<<<< HEAD:app/(admin)/admin/books/BookForm.tsx
       <Modal
         open={ isModalOpen }
         title={ <span className="ml-4">{ t("Select Media") }</span> }
@@ -272,6 +274,13 @@ const BookForm: React.FC<{
           ) }
         </div>
       </Modal>
+=======
+      <ModalSelectMedia
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onSelectMedia={handleSelectMedia}
+      />
+>>>>>>> 8881151b2de1b0c34c7a9c5e439382732a12b91c:modules/book/BookForm.tsx
     </div>
   );
 };

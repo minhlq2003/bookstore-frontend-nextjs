@@ -60,10 +60,6 @@ export const postItems: CustomMenuItem[] = [
     key: POSTS.CREATE.PATH,
     label: POSTS.CREATE.LABEL,
   },
-  {
-    key: CATEGORIES.LIST.PATH,
-    label: CATEGORIES.LIST.LABEL,
-  },
 ];
 
 export const mediaItems: CustomMenuItem[] = [
@@ -180,7 +176,6 @@ export const menuItems: Array<CustomMenuItem> = [
     label: "Orders",
     key: "orders",
     icon: <OrderedListOutlined />,
-    children: orderItems,
   },
   {
     label: "Categories",
