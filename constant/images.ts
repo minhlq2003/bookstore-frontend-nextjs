@@ -13,6 +13,9 @@ import profileAvatar from "../public/images/profileAvatar.png";
 import bgProfile from "../public/images/bg-profile.png";
 import logo from "../public/images/logo_greatbook.webp";
 
+import aboutusImg01 from '@/public/images/aboutus01.jpg'
+import aboutusImg02 from '@/public/images/aboutus02.jpg'
+
 export const Images = {
   googleIcon: GoogleIcon,
   bookImg: BookImg,
@@ -28,4 +31,6 @@ export const Images = {
   profileAvatar: profileAvatar,
   bgProfile: bgProfile,
   logo: logo,
+  aboutusImg01: aboutusImg01,
+  aboutusImg02: aboutusImg02
 };
