@@ -14,7 +14,7 @@ export async function generateMetadata(): Promise<Metadata> {
       title: `Greate Book | Nhà Sách Trực Tuyến`,
       description:
         "Great Book - Hệ thống nhà sách chuyên nghiệp. Đáp ứng tất cả các yêu cầu về sách, nhiều ưu đãi hấp dẫn, voucher miễn phí vận chuyển. Đặt mua ngay!",
-      images: [{ url: Images.logo.src }],
+      images: [ { url: Images.logo.src } ],
     },
   };
 }

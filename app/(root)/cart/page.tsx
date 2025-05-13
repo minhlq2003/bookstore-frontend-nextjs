@@ -50,7 +50,9 @@ const CartPage = () => {
         bookId,
         finalQuantity
       );
-      if (!response?.success) {
+      if (response?.success) {
+        toast.success("Cart updated successfully");
+      } else {
         toast.error("Failed to update cart item quantity");
       }
     } catch (error) {
@@ -128,6 +130,10 @@ const CartPage = () => {
   };
 
   const handleCheckout = () => {
+    if(selectedItems.length === 0){
+      toast.error("Please select at least one item")
+      return;
+    }
     const tempOrder = cartItems.filter((item) =>
       selectedItems.includes(item.id)
     );

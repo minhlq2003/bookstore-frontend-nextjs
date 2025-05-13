@@ -14,6 +14,8 @@ import {
   faSearch,
   faTableCellsLarge,
   faUser,
+  faSignIn,
+  faSignOut,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
@@ -69,18 +71,18 @@ const Header = () => {
     }
     checkLoginStatus();
   }, []);
-  function handleLogOut() {
-    localStorage.removeItem("user");
-    localStorage.removeItem("accessToken");
-    logout();
-  }
+function handleLogOut() {
+  localStorage.removeItem("user");
+  localStorage.removeItem("accessToken");
+  logout()
+
+}
   return (
     <div>
       <div className="h-[75px] bg-[#ececec]">
         <header
-          className={`bg-[#0B3D9180] p-4 w-full fixed left-0 right-0 z-50 transition-all duration-300 ${
-            !scrollingUp ? "top-[-100px]" : "top-0"
-          }`}
+          className={`bg-[#0B3D9180] p-4 w-full fixed left-0 right-0 z-50 transition-all duration-300 ${!scrollingUp ? "top-[-100px]" : "top-0"
+            }`}
         >
           <div className="sm:max-w-[1440px] max-w-full mx-auto flex justify-between items-start sm:items-center">
             <nav className="flex items-center">
@@ -182,13 +184,23 @@ const Header = () => {
                 />
               </Link>
 
+              <Link
+                href="/profile"
+                className="mr-4 hover:text-blue-500 sm:block hidden"
+              >
+                <FontAwesomeIcon
+                  icon={faUser}
+                  className="text-white text-3xl"
+                />
+              </Link>
+
               {isLoggedIn ? (
                 <button
                   onClick={() => (setIsLoggedIn(false), handleLogOut())}
                   className="bg-[#0B3D91] text-white p-2 rounded-md hover:bg-blue-700 sm:flex hidden items-center"
                 >
                   {t("Logout")}
-                  <FontAwesomeIcon icon={faUser} className="pl-3" />
+                  <FontAwesomeIcon icon={faSignOut} className="pl-3" />
                 </button>
               ) : (
                 <Link
@@ -196,7 +208,7 @@ const Header = () => {
                   className="bg-[#0B3D91] text-white p-2 rounded-md hover:bg-blue-700 sm:flex hidden items-center"
                 >
                   {t("Login")}
-                  <FontAwesomeIcon icon={faUser} className="pl-3" />
+                  <FontAwesomeIcon icon={faSignIn} className="pl-3" />
                 </Link>
               )}
             </div>
