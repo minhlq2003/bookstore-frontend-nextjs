@@ -8,7 +8,11 @@ const Page = async (props: {
   params: Promise<{ slugs: string[]; locale: string }>;
 }) => {
   const params = await props.params;
+  console.log("slug", params);
+
   const res = await getBookById(last(params.slugs) || "");
+
+  console.log("res", res);
 
   const book = res?.data;
   const relatedBooks = Array(4).fill(book);
