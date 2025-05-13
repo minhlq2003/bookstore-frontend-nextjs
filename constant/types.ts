@@ -28,6 +28,7 @@ export interface Book {
   quantity?: number;
   stock?: number;
   publish_year: number;
+  is_featured: boolean;
 }
 
 export type ApiBook = {
@@ -39,10 +40,11 @@ export type ApiBook = {
   rating?: number;
   book_images?: { url: string }[];
   import_price?: number;
+  is_featured: boolean;
 };
 
 export interface PathItem {
-  [k: string]: {
+  [ k: string ]: {
     PATH: string;
     LABEL: string;
     BREADCRUMB: Array<string>;
@@ -206,15 +208,29 @@ export interface Address {
   receiver_phone: string;
 }
 
+export interface AddressResponse {
+  code: number;
+  data?: { address: Address | Address[] } | Address | Address[];
+  newAddress?: Address;
+  message?: string;
+}
+
 export interface User {
   id: number;
   username: string;
   name: string;
   email: string;
   avatar: string;
-  status: number;
-  role: string;
+  status?: number;
+  role?: string;
   addresses: Address[];
+}
+
+export interface UserResponse {
+  user: any;
+  code: number;
+  message?: string;
+  data: User;
 }
 
 export interface MediaData {
@@ -277,6 +293,12 @@ export interface InputSearchProps {
 export interface MediaResponse {
   data: MediaData[];
   pagination: Pagination;
+}
+
+export interface ChangePasswordResponse {
+  code: number;
+  message?: string;
+  data: User;
 }
 
 export interface CartResponse {
