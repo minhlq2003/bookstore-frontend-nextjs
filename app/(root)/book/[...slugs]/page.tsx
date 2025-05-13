@@ -4,7 +4,9 @@ import BookDetailClient from "@/components/book-render";
 import { getBookById } from "@/modules/services/bookService";
 import { last } from "lodash";
 
-const Page = async (props: { params: { slugs: string[]; locale: string } }) => {
+const Page = async (props: {
+  params: Promise<{ slugs: string[]; locale: string }>;
+}) => {
   const params = await props.params;
   console.log("slug", params);
 
@@ -23,7 +25,7 @@ const Page = async (props: { params: { slugs: string[]; locale: string } }) => {
 };
 
 export async function generateMetadata(context: {
-  params: { slugs?: string[] };
+  params: Promise<{ slugs?: string[] }>;
 }): Promise<Metadata> {
   const resolvedParams = await context.params;
   const { slugs = [] } = resolvedParams;
