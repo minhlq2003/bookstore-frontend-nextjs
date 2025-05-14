@@ -44,7 +44,7 @@ export type ApiBook = {
 };
 
 export interface PathItem {
-  [ k: string ]: {
+  [k: string]: {
     PATH: string;
     LABEL: string;
     BREADCRUMB: Array<string>;
@@ -373,8 +373,15 @@ export interface Post {
   category?: string;
   created_at?: string;
   updated_at?: string;
-  status?: boolean;
+  status?: string;
   user_id?: number;
   image?: string;
   excerpt?: string;
+}
+
+export interface CategoryOption {
+  id: string;
+  label: string | undefined;
+  value: string;
+  disabled: boolean;
 }
