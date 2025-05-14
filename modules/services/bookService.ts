@@ -22,6 +22,21 @@ export const getBooks = async (params?: {
   return response;
 };
 
+export const getBestSellingBooks = async (limit: number = 5) => {
+  const response = await http.get<BookListResponse>(
+    `${API_PREFIX_BOOK_PATH}/all`,
+    {
+      params: {
+        sortBy: 'sold',
+        sortOrder: 'desc',
+        limit: limit,
+        page: 1
+      }
+    }
+  );
+  return response;
+};
+
 export const getBooksByCategory = async (
   categorySlug?: string,
   params?: { page?: number; limit?: number }
