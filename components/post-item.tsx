@@ -9,7 +9,7 @@ interface PostItemProps {
 
 const PostItem: React.FC<PostItemProps> = ({ post }) => {
   return (
-    <Link href={`/post/${post.slug || post.id}`} className="block">
+    <Link href={`/blog/${post.slug || post.id}`} className="block">
       <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden">
         <div className="relative w-full h-48">
           <Image

@@ -30,7 +30,7 @@
     "My Account": "Tài khoản của tôi",
     "My Cart": "Giỏ hàng",
     "Contact":"Liên hệ",
-    "FAQ": "Câu hỏi thường gặp",
+    "FAQ": "Câu hỏi",
     "SIGN UP": "ĐĂNG KÝ",
     "LOG IN": "ĐĂNG NHẬP",
     "Email": "Email",
@@ -102,5 +102,9 @@
     "6. Can I return or exchange a book?": "6. Tôi có thể trả hoặc trao đổi sách không?",
     "Yes, you can return or exchange a book, but only if it is damaged or incorrect. For more details, please refer to our Policy.": "Có, bạn có thể trả lại hoặc đổi sách, nhưng chỉ khi sách bị hỏng hoặc không đúng. Để biết thêm chi tiết, vui lòng tham khảo Chính sách của chúng tôi.",
     "7. How do I contact customer support?": "7. Làm sao để tôi được hỗ trợ?",
-    "You can reach out to us through our Contact Us page or email us directly at support@minhlyquoc.com. We usually reply within 24 hours or 1-2 days in case of holidays.": "Bạn có thể liên hệ với chúng tôi qua trang Liên hệ hoặc gửi email trực tiếp tới support@minhlyquoc.com. Chúng tôi thường trả lời trong vòng 24 giờ hoặc 1-2 ngày trong trường hợp ngày lễ."
+    "You can reach out to us through our Contact Us page or email us directly at support@minhlyquoc.com. We usually reply within 24 hours or 1-2 days in case of holidays.": "Bạn có thể liên hệ với chúng tôi qua trang Liên hệ hoặc gửi email trực tiếp tới support@minhlyquoc.com. Chúng tôi thường trả lời trong vòng 24 giờ hoặc 1-2 ngày trong trường hợp ngày lễ.",
+    "Logout": "Đăng xuất",
+    "Lastest Posts": "Bài viết mới nhất",
+    "Lastest Books": "Sách mới nhất",
+    "Best Sellers": "Bán chạy"
 }
