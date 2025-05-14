@@ -3,25 +3,21 @@ import { Book, User } from "@/constant/types";
 import BookDetailClient from "@/components/book-render";
 import { getBookById } from "@/modules/services/bookService";
 import { last } from "lodash";
+import { getPostBySlug } from "@/modules/services/postService";
+import PostRender from "@/components/post-render";
 
 const Page = async (props: {
   params: Promise<{ slugs: string[]; locale: string }>;
 }) => {
   const params = await props.params;
-  console.log("slug", params);
 
-  const res = await getBookById(last(params.slugs) || "");
+  const res = await getPostBySlug(last(params.slugs) || "");
 
-  console.log("res", res);
-
-  const book = res?.data;
-  const relatedBooks = Array(4).fill(book);
+  const post = res?.data;
 
   const user: User | null = null;
 
-  return (
-    <BookDetailClient book={book} relatedBooks={relatedBooks} user={user} />
-  );
+  return <PostRender pageData={post} />;
 };
 
 export async function generateMetadata(context: {
@@ -29,16 +25,16 @@ export async function generateMetadata(context: {
 }): Promise<Metadata> {
   const resolvedParams = await context.params;
   const { slugs = [] } = resolvedParams;
-  const res = await getBookById(last(slugs) || "");
-  const book = res?.data;
+  const res = await getPostBySlug(last(slugs) || "");
+  const post = res?.data;
 
   return {
-    title: `${book?.title} | Great Book`,
-    description: book?.description?.slice(0, 150),
+    title: `${post?.title}`,
+    description: post?.excerpt?.slice(0, 150),
     openGraph: {
-      title: `${book?.title} | Great Book`,
-      description: book?.description?.slice(0, 150),
-      images: [{ url: book?.book_images[0]?.url || "/default-image.jpg" }],
+      title: `${post?.title}`,
+      description: post?.excerpt?.slice(0, 150),
+      images: [{ url: post?.image || "/default-image.jpg" }],
     },
   };
 }

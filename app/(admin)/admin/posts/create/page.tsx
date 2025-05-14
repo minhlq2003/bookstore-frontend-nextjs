@@ -8,21 +8,28 @@ import { Post } from "@/constant/types";
 import { createPost } from "@/modules/services/postService";
 import { useTranslation } from "react-i18next";
 import PostForm from "@/modules/post/PostForm";
+import Publish from "@/modules/post/Publish";
+import FeaturedImage from "@/modules/post/FeaturedImage";
+import Categories from "@/modules/post/Categories";
 
 export default function AddPost() {
   const { t } = useTranslation("common");
   const [form] = Form.useForm();
   const [uploadedImage, setUploadedImage] = useState<string>("");
+  const [categories, setCategories] = useState<string[]>([]);
+  const [status, setStatus] = useState<string>("draft");
 
   const onFinish = async (values: Post) => {
     const slug = values.title?.trim().replace(/\s+/g, "-").toLowerCase() || "";
-
+    const categoryString = Array.isArray(categories)
+      ? categories.join(",")
+      : "";
     const dataPayload: Post = {
       title: values.title,
       slug,
       content: values.content,
-      category: values.category,
-      status: values.status ?? false,
+      category: categoryString,
+      status: status,
       image: uploadedImage,
     };
 
@@ -43,21 +50,30 @@ export default function AddPost() {
           {t("Create Post")}
         </h1>
 
-        <PostForm
-          form={form}
-          onFinish={onFinish}
-          uploadedImages={uploadedImage}
-          setUploadedImages={setUploadedImage}
-        />
+        <div className="flex justify-between w-full">
+          <PostForm
+            form={form}
+            onFinish={onFinish}
+            uploadedImages={uploadedImage}
+            setUploadedImages={setUploadedImage}
+          />
 
-        <Button
-          type="primary"
-          htmlType="submit"
-          onClick={() => onFinish(form.getFieldsValue())}
-          icon={<PlusCircleIcon />}
-        >
-          {t("Add Post")}
-        </Button>
+          <div className="w-[22%] pl-5">
+            <Publish
+              onSubmit={() => onFinish(form.getFieldsValue())}
+              setStatus={setStatus}
+              status={status}
+            />
+            <FeaturedImage
+              selectedMedia={uploadedImage}
+              setSelectedMedia={setUploadedImage}
+            />
+            <Categories
+              onChangeCategories={setCategories}
+              selectedCategories={categories}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );

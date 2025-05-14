@@ -71,40 +71,47 @@ const Header = () => {
     }
     checkLoginStatus();
   }, []);
-function handleLogOut() {
-  localStorage.removeItem("user");
-  localStorage.removeItem("accessToken");
-  logout()
-
-}
+  function handleLogOut() {
+    localStorage.removeItem("user");
+    localStorage.removeItem("accessToken");
+    logout();
+  }
   return (
     <div>
-      <div className="h-[75px] bg-[#ececec]">
+      <div className="h-[95px] sm:h-[75px] bg-[#ececec]">
         <header
-          className={`bg-[#0B3D9180] p-4 w-full fixed left-0 right-0 z-50 transition-all duration-300 ${!scrollingUp ? "top-[-100px]" : "top-0"
-            }`}
+          className={`bg-[#0B3D9180] p-4 w-full fixed left-0 right-0 z-50 transition-all duration-300 ${
+            !scrollingUp ? "top-[-100px]" : "top-0"
+          }`}
         >
           <div className="sm:max-w-[1440px] max-w-full mx-auto flex justify-between items-start sm:items-center">
             <nav className="flex items-center">
-              <ul className="sm:flex hidden gap-8  text-white text-2xl">
+              <Link href="/">
+                <Image
+                  src={Images.logo}
+                  alt=""
+                  className="rounded-full w-[50px] mr-20"
+                />
+              </Link>
+              <ul className="sm:flex hidden gap-8  text-white text-xl">
                 <li>
-                  <Link className="hover:text-blue-500" href="/">
-                    {t("Home")}
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/category" className="hover:text-blue-500">
+                  <Link href="/category" className="hover:text-[#0B3D91]">
                     {t("Category")}
                   </Link>
                 </li>
                 <li>
-                  <Link href="/faq" className="hover:text-blue-500">
+                  <Link href="/faq" className="hover:text-[#0B3D91]">
                     {t("FAQ")}
                   </Link>
                 </li>
                 <li>
-                  <Link href="/about" className="hover:text-blue-500">
+                  <Link href="/about" className="hover:text-[#0B3D91]">
                     {t("About Us")}
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/blog" className="hover:text-[#0B3D91]">
+                    {t("Blog")}
                   </Link>
                 </li>
               </ul>
@@ -124,30 +131,23 @@ function handleLogOut() {
                   <Image src={Images.vietnamFlag} alt="" /> VI
                 </option>
               </select> */}
-              <Link href="/">
-                <Image
-                  src={Images.logo}
-                  alt=""
-                  className="rounded-full w-[50px] mr-10"
-                />
-              </Link>
+
               <Select
                 onValueChange={changeLanguage}
                 value={currentLang}
                 defaultValue="en"
               >
-                <SelectTrigger className="">
+                <SelectTrigger className="w-[120px] py-1 h-6 sm:h-10">
                   <SelectValue placeholder="Language" />
                 </SelectTrigger>
-                <SelectContent className="bg-white text-black py-1 rounded-md border sm:text-[16px] text-[10px] w-48">
+                <SelectContent className="bg-white text-black py-1 rounded-md border sm:text-[16px] text-[10px] w-[50px]">
                   <SelectItem value="en">
                     <div className="flex items-center gap-3">
                       <Image
                         src={Images.englishFlag}
                         alt=""
-                        className="w-7 h-5"
-                      />{" "}
-                      <p>EN</p>
+                        className="sm:w-7 w-5 h-3 sm:h-5"
+                      />
                     </div>
                   </SelectItem>
                   <SelectItem value="vi">
@@ -155,9 +155,8 @@ function handleLogOut() {
                       <Image
                         src={Images.vietnamFlag}
                         alt=""
-                        className="w-7 h-5"
-                      />{" "}
-                      <p>VI</p>
+                        className="sm:w-7 w-5 h-3 sm:h-5"
+                      />
                     </div>
                   </SelectItem>
                 </SelectContent>
@@ -180,7 +179,7 @@ function handleLogOut() {
               >
                 <FontAwesomeIcon
                   icon={faBagShopping}
-                  className="text-white text-3xl"
+                  className="text-white hover:text-[#0B3D91] text-2xl"
                 />
               </Link>
 
@@ -190,14 +189,14 @@ function handleLogOut() {
               >
                 <FontAwesomeIcon
                   icon={faUser}
-                  className="text-white text-3xl"
+                  className="text-white hover:text-[#0B3D91] text-2xl"
                 />
               </Link>
 
               {isLoggedIn ? (
                 <button
                   onClick={() => (setIsLoggedIn(false), handleLogOut())}
-                  className="bg-[#0B3D91] text-white p-2 rounded-md hover:bg-blue-700 sm:flex hidden items-center"
+                  className="bg-[#0B3D91] text-white whitespace-nowrap p-2 rounded-md hover:bg-blue-700 sm:flex hidden items-center"
                 >
                   {t("Logout")}
                   <FontAwesomeIcon icon={faSignOut} className="pl-3" />
@@ -205,7 +204,7 @@ function handleLogOut() {
               ) : (
                 <Link
                   href="/signin"
-                  className="bg-[#0B3D91] text-white p-2 rounded-md hover:bg-blue-700 sm:flex hidden items-center"
+                  className="bg-[#0B3D91] text-white p-2 whitespace-nowrap rounded-md hover:bg-blue-700 sm:flex hidden items-center"
                 >
                   {t("Login")}
                   <FontAwesomeIcon icon={faSignIn} className="pl-3" />

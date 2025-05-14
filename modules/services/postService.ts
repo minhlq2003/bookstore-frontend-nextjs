@@ -34,10 +34,10 @@ export const getPostsByCategory = async (
 };
 
 export const getPostById = (id: string) =>
-  http.get<PostResponse>(`${API_PREFIX_POST_PATH}/details/${id}`);
+  http.get<PostResponse>(`${API_PREFIX_POST_PATH}/postdetails?id=${id}`);
 
-export const getPostBySlug = (id: string) =>
-  http.get<PostResponse>(`${API_PREFIX_POST_PATH}/details/${id}`);
+export const getPostBySlug = (slug: string) =>
+  http.get<PostResponse>(`${API_PREFIX_POST_PATH}/postdetails?slug=${slug}`);
 
 export const createPost = (data: Partial<Post>) =>
   http.post<PostResponse>(`${API_PREFIX_POST_PATH}/createpost`, data);
