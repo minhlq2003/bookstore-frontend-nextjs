@@ -9,12 +9,13 @@ import { Spinner } from "@heroui/react";
 import TableOfContents from "./table-of-content";
 import NormalContent from "./normal-content";
 import { Post } from "@/constant/types";
+import { getPosts, getPostsByCategory } from "@/modules/services/postService";
+import { Images } from "@/constant/images";
 
 interface PostRenderProps {
   pageData?: Post;
   hasBreadcrumb?: boolean;
   isTemplate?: boolean;
-  locale: string;
 }
 
 const extractTableOfContents = (content: string) => {
@@ -38,7 +39,6 @@ const PostRender = ({
   pageData,
   hasBreadcrumb,
   isTemplate,
-  locale,
 }: PostRenderProps) => {
   const [loading, setLoading] = useState(true);
   const [normalContent, setNormalContent] = useState<string>();
@@ -52,6 +52,7 @@ const PostRender = ({
   const [imageUrl, setImageUrl] = useState<string>();
   const [isTOCOpen, setIsTOCOpen] = useState(false);
   const [isTOCFixed, setIsTOCFixed] = useState(false);
+  const [dataRelatedPost, setDataRelatedPost] = useState<Post[]>();
 
   const fetchData = async () => {
     if (!pageData) return;
@@ -62,6 +63,8 @@ const PostRender = ({
     const contentRaw = tryParse(post?.content ?? "");
     const postContent = post?.content ?? "";
     const toc = extractTableOfContents(postContent);
+    const relatedPosts = await getPosts({ limit: 4, page: 1 });
+    setDataRelatedPost(relatedPosts?.data || []);
 
     setTitleBlog(post?.title ?? "");
     setUpdatedAtBlog(post?.updated_at ?? "");
@@ -82,7 +85,7 @@ const PostRender = ({
       const tocElement = document.getElementById("mobile-toc");
       if (tocElement) {
         const rect = tocElement.getBoundingClientRect();
-        setIsTOCFixed(rect.top <= 66);
+        setIsTOCFixed(rect.top <= 58);
       }
     };
 
@@ -105,10 +108,10 @@ const PostRender = ({
   if (loading) return <Spinner />;
 
   return (
-    <div className="pt-8 sm:pt-16 sm:px-0 relative">
+    <div className="pt-8 sm:pt-16 sm:px-0 relative w-full flex justify-center">
       <div className="container flex flex-col gap-16 relative sm:pb-[2rem] pb-10 sm:px-[7.5rem]">
         <div className="flex flex-col gap-6 items-start max-w-[1000px] relative lg:px-0 px-4">
-          <p className="px-2 py-1.5 rounded-lg bg-[#0B9444] uppercase text-white font-semibold text-sm leading-4">
+          <p className="px-2 py-1.5 rounded-lg bg-[#0B3D91] uppercase text-white font-semibold text-sm leading-4">
             {tag}
           </p>
           <h1 className="text-[#242F3E] font-bold text-5xl leading-[56px]">
@@ -151,14 +154,14 @@ const PostRender = ({
             )}
           </div>
 
-          <div className="w-full sm:hidden block min-h-[88px]">
+          <div className="w-full sm:hidden block min-h-[82px]">
             <div
               className={`sm:hidden block w-full ${
-                isTOCFixed ? "fixed top-[66px] left-0 right-0 z-50 " : ""
+                isTOCFixed ? "fixed top-[58px] left-0 right-0 z-50 " : ""
               } ${isTOCOpen ? "bg-white" : ""}`}
             >
               <Button
-                className="sm:hidden bg-[#0B9444] ml-4 mb-4 text-white px-4 py-2 rounded-lg"
+                className="sm:hidden bg-[#0B3D91] ml-4 mb-4 text-white px-4 py-2 rounded-lg"
                 onClick={() => setIsTOCOpen(!isTOCOpen)}
               >
                 {isTOCOpen ? <MenuFoldOutlined /> : <MenuUnfoldOutlined />}
@@ -192,6 +195,82 @@ const PostRender = ({
               tableOfContents={tableOfContents}
             />
           </div>
+        </div>
+        <div className="bg-[#F9F9FB]">
+          {dataRelatedPost && dataRelatedPost.length > 0 && (
+            <div className="mx-auto w-full sm:w-auto flex flex-col justify-center gap-10 py-8 px-4 container ">
+              <h2 className="text-5xl leading-[56px] font-semibold">
+                Related Posts
+              </h2>
+              <div className="grid sm:grid-cols-3 gap-6 sm:gap-10">
+                {dataRelatedPost
+                  .filter((item) => item.id !== pageData?.id)
+                  .slice(0, 3)
+                  .map((item, index) => {
+                    return (
+                      <a
+                        key={index}
+                        href={`/blog/${item.slug}`}
+                        className="flex flex-col gap-4 lg:mb-6 group "
+                      >
+                        <div className="lg:w-[373.33px] h-auto md:h-[270px] rounded-2xl overflow-hidden">
+                          <img
+                            src={item?.image ?? Images.emptyImage.src}
+                            alt="banner"
+                            className="h-full w-full object-cover rounded-2xl transition-transform duration-500 ease-in-out group-hover:scale-110"
+                            sizes="33vw"
+                          />
+                        </div>
+                        <div className="flex flex-row gap-2 items-center">
+                          {item.created_at && (
+                            <p
+                              className="text-[#999999] font-normal text-sm"
+                              style={{ lineHeight: "19px" }}
+                            >
+                              • {dayjs(item.created_at).format("MMM D, YYYY")}
+                            </p>
+                          )}
+                        </div>
+                        {item.title && (
+                          <p
+                            className="font-semibold text-2xl text-[#242F3E] transition-all duration-300 group-hover:opacity-70 group-hover:underline group-hover:decoration-1 line-clamp-2"
+                            style={{ lineHeight: "28px" }}
+                          >
+                            {item.title}
+                          </p>
+                        )}
+                        {item.excerpt && (
+                          <div
+                            className="text-[#4F4F4F] text-base font-normal line-clamp-3"
+                            style={{ lineHeight: "22px" }}
+                            dangerouslySetInnerHTML={{
+                              __html: item.excerpt || "",
+                            }}
+                          />
+                        )}
+                        <div className="flex flex-row w-full items-center justify-between pb-4 border-b border-[#EBEDF0]">
+                          {item.created_at && (
+                            <p
+                              className="text-[#999999] font-normal text-sm"
+                              style={{ lineHeight: "19px" }}
+                            >
+                              {dayjs(item.created_at).format("DD/MM/YYYY")}
+                            </p>
+                          )}
+
+                          <p
+                            className="text-[#0B3D91] font-normal text-sm  cursor-pointer duration-300 transition-all hover:decoration-1 hover:opacity-70 hover:underline"
+                            style={{ lineHeight: "19px" }}
+                          >
+                            Read more
+                          </p>
+                        </div>
+                      </a>
+                    );
+                  })}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
