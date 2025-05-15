@@ -7,7 +7,7 @@ import Image, { StaticImageData } from "next/image";
 import { Images } from "@/constant/images";
 import { ApiBook, Book } from "@/constant/types";
 import BookItem from "@/components/book-item";
-import { getBestSellingBooks } from "@/modules/services/bookService";
+import { getBooks } from "@/modules/services/bookService";
 import { useRouter } from "next/navigation";
 
 function Home() {
@@ -28,7 +28,7 @@ function Home() {
       setLoadingHero(true);
       setErrorHero(null);
       try {
-        const response = await getBestSellingBooks(5);
+        const response = await getBooks({ limit: 5 });
         if (response && Array.isArray(response.data) && response.data.length > 0) {
           const transformedBooks: Book[] = response.data.map((apiBook: any) => ({
             ...apiBook,
