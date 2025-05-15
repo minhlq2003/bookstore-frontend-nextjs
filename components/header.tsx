@@ -21,12 +21,16 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { isLogin, logout } from "@/lib/actions/auth";
+import { Book, BookListResponse } from "@/constant/types";
+import { getBooks } from "@/modules/services/bookService";
+import { set } from "lodash";
 
 const Header = () => {
   const { t, i18n } = useTranslation("common");
+  const searchRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -35,7 +39,8 @@ const Header = () => {
   const [scrollingUp, setScrollingUp] = useState(true);
   const [prevScrollPos, setPrevScrollPos] = useState(0);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-
+  const [searchTerm, setSearchTerm] = useState("");
+  const [books, setBooks] = useState<Book[]>();
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollPos = window.scrollY;
@@ -76,9 +81,49 @@ const Header = () => {
     localStorage.removeItem("accessToken");
     logout();
   }
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        searchRef.current &&
+        !searchRef.current.contains(event.target as Node)
+      ) {
+        setSearchTerm("");
+        setBooks([]); 
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  useEffect(() => {
+    const fetchBooks = async (searchTerm: string) => {
+      const response = await getBooks({
+        search: searchTerm,
+      });
+      if (response) {
+        setBooks(response.data);
+      } else {
+        setBooks([]);
+      }
+    };
+
+    if (searchTerm) {
+      fetchBooks(searchTerm);
+    }
+  }, [searchTerm]);
+const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      router.push(`/search?query=${encodeURIComponent(searchTerm)}`);
+      setSearchTerm("");
+    }
+  };
   return (
     <div>
-      <div className="h-[95px] sm:h-[75px] bg-[#ececec]">
+      <div className="h-[95px] sm:h-[75px] bg-[#ececec]" ref={searchRef}>
         <header
           className={`bg-[#0B3D9180] p-4 w-full fixed left-0 right-0 z-50 transition-all duration-300 ${
             !scrollingUp ? "top-[-100px]" : "top-0"
@@ -166,11 +211,40 @@ const Header = () => {
                 <input
                   type="text"
                   placeholder={t("Search...")}
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onKeyDown={handleKeyPress}
                   className="px-2 sm:py-2 py-0 w-full rounded-2xl border border-gray-300 placeholder:text-[12px] sm:placeholder:text-[16px] focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
                 <button className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-transparent text-black">
-                  <FontAwesomeIcon icon={faSearch} />
+                  <FontAwesomeIcon icon={faSearch} onClick={() => (
+                    router.push(`/search?query=${encodeURIComponent(searchTerm)}`),
+                    setSearchTerm("")
+                  )} />
                 </button>
+                {books && books.length > 0 && searchTerm && (
+                  <div className="absolute flex flex-col gap-2  top-5 lg:top-10 bg-white border-2 border-[#0B3D91] rounded-md mt-2 w-full z-10 max-h-[300px] overflow-auto">
+                    {books.map((book) => (
+                      <div
+                        key={book.id}
+                        className="flex items-center gap-3 cursor-pointer hover:bg-[#0B3D9180] hover:text-white p-2"
+                        onClick={() => (router.push(`/book/${book.id}`), setSearchTerm(""))}
+                      >
+                        <Image
+                          src={book.book_images[0]?.url || ""}
+                          alt="Book Image"
+                          width={100}
+                          height={100}
+                          className="w-[50px] h-[50px] object-cover"
+                        />
+                        <div className="flex flex-col">
+                          <p>{book.title}</p>
+                          <p className="text-[#0B3D91]">${book.price}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
               <Link

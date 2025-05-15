@@ -17,7 +17,7 @@ import BookItem from "@/components/book-item";
 import { addToCart } from "@/modules/services/cartService";
 import Image from "next/image";
 import { useTranslation } from "next-i18next";
-
+import { toast } from "sonner";
 interface Props {
   book: Book | undefined;
   relatedBooks: Book[];
@@ -37,12 +37,12 @@ const BookDetailClient = ({ book, relatedBooks, user }: Props) => {
     try {
       const response = await addToCart(user.id, book?.id, quantity);
       if (response?.success) {
-        alert("Book added to cart successfully");
+        toast.success("Book added to cart successfully");
       } else {
-        console.error("Failed to add book to cart");
+        toast.error("Failed to add book to cart");
       }
     } catch (err) {
-      console.error("Error adding book to cart:", err);
+      toast.error("Error adding book to cart");
     }
   };
 
