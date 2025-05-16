@@ -184,7 +184,9 @@ const UserProfilePage = () => {
     setLoading(true);
     const token = getToken();
     if (!token) {
-      message.error("Please login to view information.");
+      message.error(
+        t("Please login to view information.")
+      );
       router.push("/signin");
       return;
     }
@@ -204,9 +206,11 @@ const UserProfilePage = () => {
           name: fetchedUser.name,
         });
         setAvatarPreview(fetchedUser.avatar);
-        setNewSelectedAvatarUrl(null);
+        setNewSelectedAvatarUrl(fetchedUser.avatar);
       } else {
-        message.error("No user information found or invalid data.");
+        message.error(
+          t("No user information found or invalid data.")
+        );
         localStorage.removeItem("accessToken");
         localStorage.removeItem("user");
         router.push("/signin");
@@ -219,20 +223,20 @@ const UserProfilePage = () => {
         error.message?.toLowerCase().includes("token")
       ) {
         message.error(
-          "Your session has expired or is invalid. Please log in again."
+          t("Your session has expired or is invalid. Please log in again.")
         );
         localStorage.removeItem("accessToken");
         localStorage.removeItem("user");
         router.push("/signin");
       } else {
         message.error(
-          error.message || "An error occurred while loading user information."
+          t(error.message) || t("An error occurred while loading user information.")
         );
       }
     } finally {
       setLoading(false);
     }
-  }, [ profileForm, router ]);
+  }, [ profileForm, router, t ]);
 
   useEffect(() => {
     fetchUserProfileAndAddresses();
@@ -250,13 +254,16 @@ const UserProfilePage = () => {
     const profileInfoChanged =
       values.name !== original.name ||
       values.username !== original.username ||
-      values.email !== original.email;
+      values.email !== original.email ||
+      values.avatar != original.avatar;
 
     // 1. Kiểm tra thay đổi thông tin cơ bản và Avatar URL
-    const avatarChanged = selectedMediaUrl !== null && selectedMediaUrl !== original.avatar;
+    const avatarChanged = newSelectedAvatarUrl !== null && newSelectedAvatarUrl !== original.avatar;
+    console.log(profileInfoChanged, avatarChanged)
     if (profileInfoChanged || avatarChanged) {
       try {
-        const avatarToSend = avatarChanged ? selectedMediaUrl : undefined;
+        const avatarToSend = avatarChanged ? newSelectedAvatarUrl : undefined;
+        console.log(avatarToSend)
 
         const updateResponse = await updateUser(
           Number(userProfile.id),
@@ -281,7 +288,9 @@ const UserProfilePage = () => {
           throw new Error(updateResponse?.message || "Failed to update profile information.");
         }
       } catch (error: any) {
-        message.error(error.message || "An error occurred while updating profile information.");
+        message.error(
+          t(error.message) || t("An error occurred while updating profile information.")
+        );
       }
     }
 
@@ -300,17 +309,21 @@ const UserProfilePage = () => {
           setUserProfile(updateResponse.user as User);
           originalProfileRef.current = updateResponse.user as User;
         } else {
-          throw new Error(updateResponse?.message || "Failed to update profile information.");
+          throw new Error("Failed to update profile information.");
         }
       } catch (error: any) {
-        message.error(error.message || "An error occurred while loading profile information.");
+        message.error(
+          t(error.message) || t("An error occurred while loading profile information.")
+        );
       }
     }
 
     // 3. Thay đổi mật khẩu
     if (values.newPassword) {
       if (!values.currentPassword) {
-        message.error("Please enter your current password to change your password.");
+        message.error(
+          t("Please enter your current password to change your password.")
+        );
         setSaving(false);
         return;
       }
@@ -328,7 +341,9 @@ const UserProfilePage = () => {
         messages.push("Password changed successfully!");
         hasChanges = true;
       } catch (error: any) {
-        message.error(error.message || "Failed to change password.");
+        message.error(
+          t(error.message) || t("Failed to change password.")
+        );
         console.error("Change password error:", error);
       }
     }
@@ -369,7 +384,7 @@ const UserProfilePage = () => {
     setAddressLoading(true);
     try {
       if (editingAddress) {
-        await updateAddress(editingAddress.id, values);
+        updateAddress(editingAddress.id, values);
         message.success("Address updated successfully!");
       } else {
         await addNewAddress(
@@ -384,7 +399,9 @@ const UserProfilePage = () => {
       setEditingAddress(null);
       await fetchUserProfileAndAddresses();
     } catch (error: any) {
-      message.error(error.message || "An error occurred while saving address information.");
+      message.error(
+        t(error.message) || t("An error occurred while saving address information.")
+      );
     } finally {
       setAddressLoading(false);
     }
@@ -397,7 +414,9 @@ const UserProfilePage = () => {
       message.success("Address deleted successfully!");
       await fetchUserProfileAndAddresses();
     } catch (error: any) {
-      message.error(error.message || "An error occurred while deleting the address.");
+      message.error(
+        t(error.message) || t("An error occurred while deleting the address.")
+      );
     } finally {
       setAddressLoading(false);
     }
@@ -427,7 +446,7 @@ const UserProfilePage = () => {
       {/* Profile Info Section */ }
       <div className="bg-white p-6 md:p-8 rounded-lg shadow-md max-w-4xl mx-auto mb-8">
         <Title level={ 3 } style={ { marginBottom: "24px", textAlign: "center" } }>
-          User Personal Information
+          { t("User Personal Information") }
         </Title>
         <Row gutter={ [ 24, 24 ] } align="top">
           <Col
@@ -454,11 +473,11 @@ const UserProfilePage = () => {
                 style={ { fontSize: '12px', padding: '0 8px' } }
                 className="mt-1"
               >
-                Cancel
+                { t("Cancel") }
               </Button>
             ) }
             <p className="text-xs text-gray-500 mt-1">
-              Choose from library or upload JPG/PNG/GIF file, must be less than 2MB
+              { t("Choose from library or upload JPG/PNG/GIF file, must be less than 2MB") }
             </p>
 
             { selectedMediaUrl && (
@@ -474,7 +493,7 @@ const UserProfilePage = () => {
                 className="mt-1"
                 style={ { fontSize: '12px', padding: '0 8px' } }
               >
-                Cancel
+                { t("Cancel") }
               </Button>
             ) }
 
@@ -494,7 +513,7 @@ const UserProfilePage = () => {
               className="w-full"
             >
               <Title level={ 4 } className="mb-4">
-                Account Information
+                { t("Account Information") }
               </Title>
               <Form.Item
                 label="Display Name"
@@ -524,7 +543,7 @@ const UserProfilePage = () => {
               <Divider />
 
               <Title level={ 4 } className="mt-6 mb-4">
-                Change Password (Optional)
+                { t("Change Password (Optional)") }
               </Title>
               <Form.Item
                 label="Current Password"
@@ -578,6 +597,10 @@ const UserProfilePage = () => {
 
               <Form.Item className="mt-6">
                 <Button
+                  onClick={ () => {
+                    console.log(profileForm.getFieldsValue())
+                    onProfileFinish(profileForm.getFieldsValue())
+                  } }
                   type="primary"
                   htmlType="submit"
                   loading={ saving }
@@ -585,7 +608,7 @@ const UserProfilePage = () => {
                   icon={ <SaveOutlined /> }
                   block
                 >
-                  Save Changes
+                  { t("Save Changes") }
                 </Button>
               </Form.Item>
             </Form>
@@ -603,7 +626,7 @@ const UserProfilePage = () => {
             icon={ <PlusOutlined /> }
             onClick={ handleShowAddAddressModal }
           >
-            Add a new address
+            { t("Add a new address") }
           </Button>
         </div>
         { addressLoading && addresses.length === 0 && (
@@ -622,7 +645,6 @@ const UserProfilePage = () => {
             <List.Item>
               <Card
                 size="small"
-                // bordered={ false }
                 variant="outlined"
                 className="shadow-sm hover:shadow-md transition-shadow border rounded-md"
                 actions={ [
@@ -682,13 +704,13 @@ const UserProfilePage = () => {
 
       <Modal
         open={ isModalOpen }
-        title={ <span className="ml-4">{ t("Select Media") }</span> }
+        title={ <span className="ml-4">{ t("Change your avatar") }</span> }
         onCancel={ handleCloseModal }
         style={ { top: 20 } }
         width="90%"
         footer={ null }
       >
-        <div className="ml-4 mt-5">
+        {/* <div className="ml-4 mt-5">
           <Button
             onClick={ () => setIsChooseMedia(true) }
             className="mr-2"
@@ -708,13 +730,20 @@ const UserProfilePage = () => {
           >
             { t("Upload Media") }
           </Button>
-        </div>
+        </div> */}
+
         <div>
-          { isChooseMedia ? (
+          {/* { isChooseMedia ? (
             <Media isOpenModal={ true } onSelectMedia={ handleSelectMedia } />
           ) : (
             <MediaUpload isOpenModal={ true } setChooseMedia={ setIsChooseMedia } />
-          ) }
+          ) } */}
+
+          {
+            isChooseMedia && (
+              <MediaUpload isOpenModal={ true } setChooseMedia={ setIsChooseMedia } />
+            )
+          }
         </div>
       </Modal>
     </div >

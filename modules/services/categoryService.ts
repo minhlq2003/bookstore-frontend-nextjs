@@ -19,7 +19,7 @@ export const getCategories = async (params?: { page?: number; limit?: number }) 
 };
 
 export const getCategoryById = (id: string) =>
-  http.post<CategoryResponse>(`${API_PREFIX_BOOK_PATH}/category/${id}`);
+  http.post<CategoryResponse>(`${API_PREFIX_BOOK_PATH}/category/categoryinfo/${id}`);
 
 export const createCategory = (data: Partial<Category>) =>
   http.post<CategoryResponse>(`${API_PREFIX_BOOK_PATH}/createcategory`, data);
