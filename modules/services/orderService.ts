@@ -1,4 +1,4 @@
-import { ListOrdersResponse, OrderResponse } from "@/constant/types";
+import { ListOrderFromUserResponse, ListOrdersResponse, OrderResponse, OrderStatusUpdateResponse } from "@/constant/types";
 import { HttpClient } from "@/lib/HttpClient";
 
 const API_PREFIX_PATH = "/cart";
@@ -26,3 +26,17 @@ export const getOrders = async (params?: {
 
 export const getOrderById = (id: string) =>
   http.get<OrderResponse>(`${API_PREFIX_PATH}/getorderinfo/${id}`);
+
+export const getAllOrdersFromUser = async (userId:number, params?: {
+  page?: number;
+  limit?: number;
+  sortBy?: string;
+  sortOrder?: string;
+  search?: string;
+}) => 
+  http.get<ListOrderFromUserResponse>(`${API_PREFIX_PATH}/getallorders/${userId}`,{
+    params,
+  })
+
+export const updateOrderStatus = async (orderId:number, status:string) => 
+  http.post<OrderStatusUpdateResponse>(`${API_PREFIX_PATH}/updateorderstatus/${orderId}`,{status})

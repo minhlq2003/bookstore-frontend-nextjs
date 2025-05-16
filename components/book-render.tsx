@@ -1,7 +1,7 @@
 "use client";
 
 import { Book, User } from "@/constant/types";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar, faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
 import { BreadcrumbItem, Breadcrumbs } from "@heroui/breadcrumbs";
@@ -27,17 +27,32 @@ interface Props {
 const BookDetailClient = ({ book, relatedBooks, user }: Props) => {
   const { t } = useTranslation("common");
   const [quantity, setQuantity] = useState(1);
-
+  const [userLocal, setUserLocal] = useState<User | null>(null);
+  useEffect(() => {
+    if(user){
+      return;
+    }
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      try {
+        const parsedUser = JSON.parse(storedUser);
+        setUserLocal(parsedUser);
+      } catch (e) {
+        console.error("Failed to parse user from localStorage", e);
+      }
+    }
+  }, []);
+  
   const increaseQuantity = () => setQuantity((prev) => prev + 1);
   const decreaseQuantity = () =>
     setQuantity((prev) => (prev <= 1 ? 1 : prev - 1));
 
-  const handleAddToCart = async () => {
-    if (!book || !user) return;
+  const handleAddToCart = async () => {    
+    if (!book || !userLocal) return;
     try {
-      const response = await addToCart(user.id, book?.id, quantity);
+      const response = await addToCart(userLocal.id, book?.id, quantity);
       if (response?.success) {
-        toast.success("Book added to cart successfully");
+        toast.success(t("Book added to cart successfully"));
       } else {
         toast.error("Failed to add book to cart");
       }
@@ -69,29 +84,39 @@ const BookDetailClient = ({ book, relatedBooks, user }: Props) => {
         <div className="flex flex-col gap-3 lg:gap-5 text-sm md:text-base lg:text-lg md:w-full text-black lg:px-14">
           <div className="flex flex-col items-center justify-center md:flex-row-reverse md:justify-between gap-2">
             <div className="bg-customblue text-white flex items-center justify-center w-[30%] h-6 rounded-lg mt-3 md:mt-0">
-              <p>Best seller</p>
+              <p>{t("Best seller")}</p>
             </div>
             <h1 className="text-2xl md:text-3xl">{book?.title}</h1>
           </div>
           <div className="flex gap-5 md:gap-7 lg:gap-12">
-            <p>Author: {book?.author}</p>
-            <p>Publisher: {book?.publisher?.name}</p>
+            <p>
+              {t("Author")}: {book?.author}
+            </p>
+            <p>
+              {t("Publisher")}: {book?.publisher?.name}
+            </p>
           </div>
           <div className="flex">
             <p className="text-blue">
-              <span>Reviews: 100</span> {book?.rating}
+              <span>{t("Reviews")}: 100</span> {book?.rating}
             </p>
             <FontAwesomeIcon icon={faStar} className="text-blue size-5" />
           </div>
-          <p>Genre: {book?.categories?.name}</p>
+          <p>
+            {t("Genre")}: {book?.categories?.name}
+          </p>
           <div className="flex gap-5 md:gap-7 lg:gap-12">
-            <p>Sold: {book?.sold}</p>
-            <p>Storage: {book?.stock}</p>
+            <p>
+              {t("Sold")}: {book?.sold}
+            </p>
+            <p>
+              {t("Storage")}: {book?.stock}
+            </p>
           </div>
           <div className="flex items-center justify-between">
             <div className="flex gap-3">
               <p className="text-blue text-base md:text-lg">
-                ${Number(book?.price).toFixed(2)}
+                {t("Price")}: ${Number(book?.price).toFixed(2)}
               </p>
               <p className="-translate-y-0.5 text-gray-500 line-through">
                 ${(Number(book?.price) + Number(book?.import_price)).toFixed(2)}
@@ -117,7 +142,7 @@ const BookDetailClient = ({ book, relatedBooks, user }: Props) => {
             className="bg-blue text-white w-full h-7 md:h-9 lg:h-12 rounded-lg"
             onClick={handleAddToCart}
           >
-            Add To Cart
+            {t("Add To Cart")}
           </button>
         </div>
       </div>
