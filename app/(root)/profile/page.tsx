@@ -501,6 +501,7 @@ const UserProfilePage = () => {
               <Title level={ 5 } className="mt-4 mb-0">{ userProfile.name }</Title>
             ) }
             <p className="text-gray-600">{ userProfile.email }</p>
+            <button className="bg-[#1677FF] p-2 rounded-md mt-2" onClick={()=>router.push("/orderhistory")}>View Order History</button>
           </Col>
 
           <Col xs={ 24 } md={ 16 }>

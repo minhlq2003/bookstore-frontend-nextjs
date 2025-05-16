@@ -51,7 +51,7 @@ const CartPage = () => {
         finalQuantity
       );
       if (response?.success) {
-        toast.success("Cart updated successfully");
+        toast.success(t("Cart updated successfully"));
       } else {
         toast.error("Failed to update cart item quantity");
       }
@@ -105,7 +105,7 @@ const CartPage = () => {
     try {
       const response = await deleteCartItem(itemId);
       if (response?.success) {
-        toast.success("Item removed from cart successfully");
+        toast.success(t("Item removed from cart successfully"));
         setCartItems((prev) => prev.filter((item) => item.id !== itemId));
       }
     } catch (error) {
@@ -131,7 +131,7 @@ const CartPage = () => {
 
   const handleCheckout = () => {
     if(selectedItems.length === 0){
-      toast.error("Please select at least one item")
+      toast.error(t("Please select at least one item"))
       return;
     }
     const tempOrder = cartItems.filter((item) =>
@@ -158,20 +158,20 @@ const CartPage = () => {
                 }
                 onChange={handleSelectAll}
               />
-              <span>All</span>
+              <span>{t("All")}</span>
             </div>
-            <span>Title</span>
-            <span>Quantity</span>
-            <span>Total</span>
+            <span>{t("Title")}</span>
+            <span>{t("Quantity")}</span>
+            <span>{t("Total")}</span>
             <span>{""}</span>
           </div>
           {loading ? (
-            <p className="text-base">Loading cart...</p>
+            <p className="text-base">{t("Loading cart...")}</p>
           ) : (
             <>
               {cartItems.length === 0 ? (
                 <div className="py-2">
-                  <p className="text-xl font-bold w-full text-center">Cart is empty.</p>
+                  <p className="text-xl font-bold w-full text-center">{t("Cart is empty.")}</p>
                 </div>
               ) : (
                 <>
@@ -248,15 +248,15 @@ const CartPage = () => {
         <div className="py-3 mt-10 md:mt-0 md:mx-3 md:mr-3 px-5 text-black rounded md:w-[40%] bg-white border shadow-md">
           <div className="mt-3 flex flex-col gap-1">
             <div className="flex justify-between text-xs lg:text-base">
-              <span>Subtotal:</span>
+              <span>{t("Subtotal")}:</span>
               <span>${subtotal.toFixed(2)}</span>
             </div>
             <div className="flex justify-between text-xs lg:text-base">
-              <span>Transfer Fee:</span>
+              <span>{t("Transfer Fee")}:</span>
               <span>$0.00</span>
             </div>
             <div className="flex justify-between font-bold text-lg lg:text-xl my-2">
-              <span>Total:</span>
+              <span>{t("Total")}:</span>
               <span className="text-darkblue">${subtotal.toFixed(2)}</span>
             </div>
           </div>
@@ -265,7 +265,7 @@ const CartPage = () => {
             disabled={isEmpty}
             className={`text-white w-full h-7 md:h-9 lg:h-12 rounded-lg ${isEmpty ? "bg-gray-400" : "bg-blue"}`}
           >
-            Checkout
+            {t("Checkout")}
           </button>
         </div>
       </div>

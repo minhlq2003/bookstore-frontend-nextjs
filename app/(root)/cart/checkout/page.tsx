@@ -1,15 +1,20 @@
 "use client";
+import ModalCheckoutSuccess from "@/components/modal-checkout-success";
 import { Address, CartResponse, User } from "@/constant/types";
 import { checkout } from "@/modules/services/cartService";
 import {
   addNewAddress,
   getAllAddressByUserId,
 } from "@/modules/services/userServices";
+import { faCheck, faUser } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 const page = () => {
+  const { t } = useTranslation("common");
   const [orderItems, setOrderItems] = useState<CartResponse[]>([]);
   const [user, setUser] = useState<User | null>(null);
   const [addresses, setAddresses] = useState<Address[]>([]);
@@ -20,6 +25,7 @@ const page = () => {
   const [receiverName, setReceiverName] = useState("");
   const [receiverPhone, setReceiverPhone] = useState("");
   const [selectedAddress, setSelectedAddress] = useState<string | null>(null);
+  const [isOpenModalSuccess, setIsOpenModalSuccess] = useState(false);
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
@@ -75,7 +81,7 @@ const page = () => {
     receiverPhone: String
   ) => {
     if (!address || !receiverName || !receiverPhone) {
-      toast.error("Please fill all fields.");
+      toast.error(t("Please fill all fields."));
       return;
     }
     try {
@@ -86,7 +92,7 @@ const page = () => {
         receiverPhone
       );
       if (response?.success) {
-        toast.success("New address added successfully");
+        toast.success(t("New address added successfully"));
         setIsModalOpen(false);
         getUserAddress(userId);
       }
@@ -95,33 +101,36 @@ const page = () => {
     }
   };
 
-  const handleConfirm = async(userId: number, address:String, paymentMethod:string) => {
+  const handleConfirm = async (
+    userId: number,
+    address: String,
+    paymentMethod: string
+  ) => {
     if (!address || !paymentMethod) {
-        toast.error("Please choose address and payment method");
-        return;
-      }
-    try {
-        const response = await checkout(userId,address,paymentMethod)
-        if(response?.success){
-            toast.success("Checkout successful")
-            localStorage.removeItem("tempOrder")
-            router.push("/")
-        }
-    } catch (error) {
-        toast.error("Error when confirm checkout");
+      toast.error(t("Please choose address and payment method"));
+      return;
     }
-  }
+    setIsOpenModalSuccess((prev) => !prev);
+    /* try {
+      const response = await checkout(userId, address, paymentMethod);
+      if (response?.success) {
+        setIsOpenModalSuccess((prev) => !prev);
+      }
+    } catch (error) {
+      toast.error("Error when confirm checkout");
+    } */
+  };
 
   return (
     <div className="max-w-[1200px] mx-auto h-screen py-10 md:py-20 lg:py-24 bg-white">
       <h1 className=" text-center text-base md:text-xl lg:text-3xl py-3 text-darkblue font-bold uppercase">
-        Checkout
+        {t("Checkout")}
       </h1>
       <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-5">
         <div className="flex flex-col gap-5  w-full">
           <div className="border rounded-lg p-4 shadow-md w-full bg-white ">
             <div className="flex items-center justify-between border-b pb-2 font-semibold text-xs lg:text-base">
-              <span>Delivery Address</span>
+              <span>{t("Delivery Address")}</span>
             </div>
             <div>
               {addresses.map((item: Address) => (
@@ -146,26 +155,26 @@ const page = () => {
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                   <div className="bg-white p-6 rounded-lg w-full max-w-md shadow-lg relative">
                     <h2 className="text-lg font-bold mb-4">
-                      Enter Address Information
+                      {t("Enter Address Information")}
                     </h2>
 
                     <input
                       type="text"
-                      placeholder="Address"
+                      placeholder={t("Address")}
                       className="w-full border p-2 rounded mb-2"
                       value={address}
                       onChange={(e) => setAddress(e.target.value)}
                     />
                     <input
                       type="text"
-                      placeholder="Receiver Name"
+                      placeholder={t("Receiver Name")}
                       className="w-full border p-2 rounded mb-2"
                       value={receiverName}
                       onChange={(e) => setReceiverName(e.target.value)}
                     />
                     <input
                       type="text"
-                      placeholder="Receiver Phone"
+                      placeholder={t("Receiver Phone")}
                       className="w-full border p-2 rounded mb-4"
                       value={receiverPhone}
                       onChange={(e) => setReceiverPhone(e.target.value)}
@@ -176,7 +185,7 @@ const page = () => {
                         className="bg-red-600 px-4 py-2 rounded"
                         onClick={() => setIsModalOpen(false)}
                       >
-                        Cancel
+                        {t("Cancel")}
                       </button>
                       <button
                         onClick={() =>
@@ -189,7 +198,7 @@ const page = () => {
                         }
                         className="bg-blue-600 text-white px-4 py-2 rounded"
                       >
-                        Add
+                        {t("Add")}
                       </button>
                     </div>
                   </div>
@@ -199,7 +208,7 @@ const page = () => {
           </div>
           <div className="border rounded-lg p-4 shadow-md w-full bg-white">
             <div className="flex items-center justify-between border-b pb-2 font-semibold text-xs lg:text-base">
-              <span>Payment Method</span>
+              <span>{t("Payment Method")}</span>
             </div>
             <div>
               <div className="flex gap-2">
@@ -210,7 +219,7 @@ const page = () => {
                   checked={paymentMethod === "CASH"}
                   onChange={() => setPaymentMethod("CASH")}
                 />
-                <p>Pay when received package</p>
+                <p>{t("Pay when received package")}</p>
               </div>
               <div className="flex gap-2">
                 <input
@@ -220,7 +229,7 @@ const page = () => {
                   checked={paymentMethod === "CARD"}
                   onChange={() => setPaymentMethod("CARD")}
                 />
-                <p>Card</p>
+                <p>{t("Card")}</p>
               </div>
             </div>
           </div>
@@ -235,22 +244,37 @@ const page = () => {
         <div className="py-3 mt-10 md:mt-0 md:mx-3 md:mr-3 px-5 text-black rounded md:w-[40%] bg-white border shadow-md">
           <div className="mt-3 flex flex-col gap-1">
             <div className="flex justify-between text-xs lg:text-base">
-              <span>Name:</span>
+              <span>{t("Name")}:</span>
               <span>{user?.name}</span>
             </div>
             <div className="flex justify-between font-bold text-lg lg:text-xl my-2">
-              <span>Total:</span>
+              <span>{t("Total")}:</span>
               <span className="text-darkblue">${subtotal.toFixed(2)}</span>
             </div>
           </div>
           <button
-            onClick={()=>handleConfirm(Number(user?.id), selectedAddress || "", paymentMethod)}
+            onClick={() =>
+              handleConfirm(
+                Number(user?.id),
+                selectedAddress || "",
+                paymentMethod
+              )
+            }
             className="bg-blue text-white w-full h-7 md:h-9 lg:h-12 rounded-lg"
           >
-            Confirm
+            {t("Confirm")}
           </button>
         </div>
       </div>
+      {isOpenModalSuccess && (
+        <ModalCheckoutSuccess 
+          date={new Date().toLocaleDateString("en-GB")}
+          address={new String(selectedAddress ?? "")}
+          name={user?.name ? user.name.toString() : ""}
+          total={subtotal}
+          numberOfItem={orderItems.length}
+        />
+      )}
     </div>
   );
 };
