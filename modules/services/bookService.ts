@@ -8,13 +8,14 @@ const BASE_URL =
 
 const http = new HttpClient(BASE_URL);
 
-export const getBooks = async (params?: {
-  page?: number;
-  limit?: number;
-  sortBy?: string;
-  sortOrder?: string;
-  search?: string;
-}) => {
+export const getBooks = async (
+  params?: {
+    page?: number;
+    limit?: number;
+    sortBy?: string;
+    sortOrder?: string;
+    search?: string;
+  }) => {
   const response = await http.get<BookListResponse>(
     `${API_PREFIX_BOOK_PATH}/all`,
     { params }
