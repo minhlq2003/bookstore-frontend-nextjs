@@ -249,7 +249,7 @@ const filterMenuItemsByPermission = (
             return true;
           });
 
-          if (filteredChildren.length) {
+          if (filteredChildren?.length) {
             filteredMenuItems.push({
               ...item,
               children: filteredChildren,
