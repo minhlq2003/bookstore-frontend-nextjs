@@ -4,17 +4,17 @@ import { useState, useEffect } from "react";
 import { Category } from "@/constant/types";
 import { Button, Modal } from "antd";
 import Table, { ColumnsType } from "antd/es/table";
-import { getCategories } from '@/modules/services/categoryService'
+import { getCategories } from "@/modules/services/categoryService";
 
 export default function ListCategory() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(null);
+  const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(
+    null
+  );
 
   const fetchCategories = async (pageNo: number, pageSize: number) => {
     const response = await getCategories({ page: pageNo, limit: pageSize });
-    console.log("response", response);
-
     setCategories(response?.data ?? []);
   };
 

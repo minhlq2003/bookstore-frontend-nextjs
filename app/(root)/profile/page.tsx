@@ -41,13 +41,9 @@ import {
   addNewAddress,
   updateAddress,
   deleteAddress,
-  updateUser
+  updateUser,
 } from "@/modules/services/userServices";
-import {
-  User,
-  UserResponse,
-  Address,
-} from "@/constant/types";
+import { User, UserResponse, Address } from "@/constant/types";
 import Media from "@/modules/media/pages/Media";
 import MediaUpload from "@/modules/media/pages/AddNewMedia";
 
@@ -68,7 +64,7 @@ const AddressFormModal: React.FC<AddressFormModalProps> = ({
   initialValues,
   loading,
 }) => {
-  const [ form ] = Form.useForm<Omit<Address, "id" | "user_id">>();
+  const [form] = Form.useForm<Omit<Address, "id" | "user_id">>();
 
   useEffect(() => {
     if (initialValues && visible) {
@@ -76,7 +72,7 @@ const AddressFormModal: React.FC<AddressFormModalProps> = ({
     } else {
       form.resetFields();
     }
-  }, [ initialValues, visible, form ]);
+  }, [initialValues, visible, form]);
 
   const handleFormFinish = (values: Omit<Address, "id" | "user_id">) => {
     onFinish(values);
@@ -84,57 +80,60 @@ const AddressFormModal: React.FC<AddressFormModalProps> = ({
 
   return (
     <Modal
-      title={ initialValues ? "Edit an existing address" : "Add a new address" }
-      open={ visible }
-      onCancel={ onCancel }
-      footer={ [
-        <Button key="back" onClick={ onCancel } disabled={ loading }>
+      title={initialValues ? "Edit an existing address" : "Add a new address"}
+      open={visible}
+      onCancel={onCancel}
+      footer={[
+        <Button key="back" onClick={onCancel} disabled={loading}>
           Cancel
         </Button>,
         <Button
           key="submit"
           type="primary"
-          loading={ loading }
-          onClick={ () => form.submit() }
+          loading={loading}
+          onClick={() => form.submit()}
         >
-          { initialValues ? "Edit" : "Add" }
+          {initialValues ? "Edit" : "Add"}
         </Button>,
-      ] }
+      ]}
       destroyOnClose
     >
       <Form
-        form={ form }
+        form={form}
         layout="vertical"
-        onFinish={ handleFormFinish }
-        initialValues={ initialValues || {} }
+        onFinish={handleFormFinish}
+        initialValues={initialValues || {}}
       >
         <Form.Item
           name="receiver_name"
           label="Recipient's name"
-          rules={ [ { required: true, message: "Please enter recipient name!" } ] }
+          rules={[{ required: true, message: "Please enter recipient name!" }]}
         >
           <Input placeholder="Nguyễn Văn A" />
         </Form.Item>
         <Form.Item
           name="receiver_phone"
           label="Recipient's phone number"
-          rules={ [
-            { required: true, message: "Please enter recipient's phone number!" },
+          rules={[
+            {
+              required: true,
+              message: "Please enter recipient's phone number!",
+            },
             {
               pattern: /^[0-9]{10,11}$/,
               message: "Invalid phone number!",
             },
-          ] }
+          ]}
         >
           <Input placeholder="09xxxxxxxx" />
         </Form.Item>
         <Form.Item
           name="address"
           label="Recipient's detailed address"
-          rules={ [ { required: true, message: "Please enter address!" } ] }
+          rules={[{ required: true, message: "Please enter address!" }]}
         >
           <Input.TextArea
-            rows={ 3 }
+            rows={3}
             placeholder="House number, street name, ward, district, province/city"
           />
         </Form.Item>
@@ -144,26 +143,28 @@ const AddressFormModal: React.FC<AddressFormModalProps> = ({
 };
 
 const UserProfilePage = () => {
-  const [ profileForm ] = Form.useForm();
+  const [profileForm] = Form.useForm();
   const { t } = useTranslation("common");
   const router = useRouter();
-  const [ loading, setLoading ] = useState(true);
-  const [ saving, setSaving ] = useState(false);
-  const [ userProfile, setUserProfile ] = useState<User | null>(null);
-  const [ avatarFile, setAvatarFile ] = useState<RcFile | null>(null);
-  const [ avatarPreview, setAvatarPreview ] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [userProfile, setUserProfile] = useState<User | null>(null);
+  const [avatarFile, setAvatarFile] = useState<RcFile | null>(null);
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const originalProfileRef = useRef<User | null>(null);
 
-  const [ addresses, setAddresses ] = useState<Address[]>([]);
-  const [ isAddressModalVisible, setIsAddressModalVisible ] = useState(false);
-  const [ editingAddress, setEditingAddress ] = useState<Address | null>(null);
-  const [ addressLoading, setAddressLoading ] = useState(false);
+  const [addresses, setAddresses] = useState<Address[]>([]);
+  const [isAddressModalVisible, setIsAddressModalVisible] = useState(false);
+  const [editingAddress, setEditingAddress] = useState<Address | null>(null);
+  const [addressLoading, setAddressLoading] = useState(false);
 
-  const [ isModalOpen, setIsModalOpen ] = useState(false);
-  const [ isChooseMedia, setIsChooseMedia ] = useState(true);
-  const [ selectedMedia, setSelectedMedia ] = useState<string>("");
-  const [ selectedMediaUrl, setSelectedMediaUrl ] = useState<string | null>(null);
-  const [ newSelectedAvatarUrl, setNewSelectedAvatarUrl ] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isChooseMedia, setIsChooseMedia] = useState(true);
+  const [selectedMedia, setSelectedMedia] = useState<string>("");
+  const [selectedMediaUrl, setSelectedMediaUrl] = useState<string | null>(null);
+  const [newSelectedAvatarUrl, setNewSelectedAvatarUrl] = useState<
+    string | null
+  >(null);
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -174,7 +175,6 @@ const UserProfilePage = () => {
   };
 
   const handleSelectMedia = (mediaUrl: string) => {
-    console.log("Modal selected media:", mediaUrl);
     setNewSelectedAvatarUrl(mediaUrl);
     setAvatarPreview(mediaUrl);
     setIsModalOpen(false);
@@ -184,9 +184,7 @@ const UserProfilePage = () => {
     setLoading(true);
     const token = getToken();
     if (!token) {
-      message.error(
-        t("Please login to view information.")
-      );
+      message.error(t("Please login to view information."));
       router.push("/signin");
       return;
     }
@@ -208,9 +206,7 @@ const UserProfilePage = () => {
         setAvatarPreview(fetchedUser.avatar);
         setNewSelectedAvatarUrl(fetchedUser.avatar);
       } else {
-        message.error(
-          t("No user information found or invalid data.")
-        );
+        message.error(t("No user information found or invalid data."));
         localStorage.removeItem("accessToken");
         localStorage.removeItem("user");
         router.push("/signin");
@@ -230,17 +226,18 @@ const UserProfilePage = () => {
         router.push("/signin");
       } else {
         message.error(
-          t(error.message) || t("An error occurred while loading user information.")
+          t(error.message) ||
+            t("An error occurred while loading user information.")
         );
       }
     } finally {
       setLoading(false);
     }
-  }, [ profileForm, router, t ]);
+  }, [profileForm, router, t]);
 
   useEffect(() => {
     fetchUserProfileAndAddresses();
-  }, [ fetchUserProfileAndAddresses ]);
+  }, [fetchUserProfileAndAddresses]);
 
   const onProfileFinish = async (values: any) => {
     if (!userProfile || !originalProfileRef.current) return;
@@ -257,13 +254,13 @@ const UserProfilePage = () => {
       values.email !== original.email ||
       values.avatar != original.avatar;
 
-    // 1. Kiểm tra thay đổi thông tin cơ bản và Avatar URL
-    const avatarChanged = newSelectedAvatarUrl !== null && newSelectedAvatarUrl !== original.avatar;
-    console.log(profileInfoChanged, avatarChanged)
+    const avatarChanged =
+      newSelectedAvatarUrl !== null && newSelectedAvatarUrl !== original.avatar;
+    console.log(profileInfoChanged, avatarChanged);
     if (profileInfoChanged || avatarChanged) {
       try {
         const avatarToSend = avatarChanged ? newSelectedAvatarUrl : undefined;
-        console.log(avatarToSend)
+        console.log(avatarToSend);
 
         const updateResponse = await updateUser(
           Number(userProfile.id),
@@ -275,8 +272,10 @@ const UserProfilePage = () => {
 
         if (updateResponse && updateResponse.user) {
           messages.push("Profile information updated successfully!");
-          if (profileInfoChanged) messages.push("Profile information updated successfully!");
-          if (avatarChanged) messages.push("Profile image updated successfully!");
+          if (profileInfoChanged)
+            messages.push("Profile information updated successfully!");
+          if (avatarChanged)
+            messages.push("Profile image updated successfully!");
           hasChanges = true;
           const updatedUser = updateResponse.user as User;
           setUserProfile(updatedUser);
@@ -285,11 +284,14 @@ const UserProfilePage = () => {
           setNewSelectedAvatarUrl(null);
           profileForm.setFieldsValue(updatedUser);
         } else {
-          throw new Error(updateResponse?.message || "Failed to update profile information.");
+          throw new Error(
+            updateResponse?.message || "Failed to update profile information."
+          );
         }
       } catch (error: any) {
         message.error(
-          t(error.message) || t("An error occurred while updating profile information.")
+          t(error.message) ||
+            t("An error occurred while updating profile information.")
         );
       }
     }
@@ -309,16 +311,18 @@ const UserProfilePage = () => {
           setUserProfile(updateResponse.user as User);
           originalProfileRef.current = updateResponse.user as User;
         } else {
-          throw new Error("Failed to update profile information.");
+          throw new Error(
+            updateResponse?.message || "Failed to update profile information."
+          );
         }
       } catch (error: any) {
         message.error(
-          t(error.message) || t("An error occurred while loading profile information.")
+          error.message ||
+            "An error occurred while loading profile information."
         );
       }
     }
 
-    // 3. Thay đổi mật khẩu
     if (values.newPassword) {
       if (!values.currentPassword) {
         message.error(
@@ -341,9 +345,7 @@ const UserProfilePage = () => {
         messages.push("Password changed successfully!");
         hasChanges = true;
       } catch (error: any) {
-        message.error(
-          t(error.message) || t("Failed to change password.")
-        );
+        message.error(t(error.message) || t("Failed to change password."));
         console.error("Change password error:", error);
       }
     }
@@ -351,7 +353,12 @@ const UserProfilePage = () => {
     // Hiển thị thông báo
     if (messages.length > 0) {
       message.success(messages.join(" "));
-    } else if (!hasChanges && !profileInfoChanged && !avatarChanged && !values.newPassword) {
+    } else if (
+      !hasChanges &&
+      !profileInfoChanged &&
+      !avatarChanged &&
+      !values.newPassword
+    ) {
       message.info("No information has been changed.");
     }
 
@@ -359,7 +366,6 @@ const UserProfilePage = () => {
   };
 
   const handleCancelAvatarSelection = () => {
-    console.log("Cancelling avatar selection. Reverting to:", originalProfileRef.current?.avatar);
     setNewSelectedAvatarUrl(null);
     setAvatarPreview(originalProfileRef.current?.avatar || null);
   };
@@ -379,7 +385,9 @@ const UserProfilePage = () => {
     setEditingAddress(null);
   };
 
-  const handleAddressFormFinish = async (values: Omit<Address, "id" | "user_id">) => {
+  const handleAddressFormFinish = async (
+    values: Omit<Address, "id" | "user_id">
+  ) => {
     if (!userProfile) return;
     setAddressLoading(true);
     try {
@@ -400,7 +408,8 @@ const UserProfilePage = () => {
       await fetchUserProfileAndAddresses();
     } catch (error: any) {
       message.error(
-        t(error.message) || t("An error occurred while saving address information.")
+        t(error.message) ||
+          t("An error occurred while saving address information.")
       );
     } finally {
       setAddressLoading(false);
@@ -434,7 +443,7 @@ const UserProfilePage = () => {
     return (
       <div className="container mx-auto px-4 py-8 text-center">
         <p>Unable to load user information.</p>
-        <Button type="link" onClick={ () => router.push('/signin') }>
+        <Button type="link" onClick={() => router.push("/signin")}>
           Please log in again
         </Button>
       </div>
@@ -443,108 +452,124 @@ const UserProfilePage = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      {/* Profile Info Section */ }
+      {/* Profile Info Section */}
       <div className="bg-white p-6 md:p-8 rounded-lg shadow-md max-w-4xl mx-auto mb-8">
-        <Title level={ 3 } style={ { marginBottom: "24px", textAlign: "center" } }>
-          { t("User Personal Information") }
+        <Title level={3} style={{ marginBottom: "24px", textAlign: "center" }}>
+          {t("User Personal Information")}
         </Title>
-        <Row gutter={ [ 24, 24 ] } align="top">
+        <Row gutter={[24, 24]} align="top">
           <Col
-            xs={ 24 }
-            md={ 8 }
+            xs={24}
+            md={8}
             className="flex flex-col items-center text-center mb-6 md:mb-0"
           >
             <Avatar
-              size={ 150 }
-              src={ avatarPreview || userProfile.avatar || undefined }
-              icon={ !(avatarPreview || userProfile.avatar) && <UserOutlined /> }
+              size={150}
+              src={avatarPreview || userProfile.avatar || undefined}
+              icon={!(avatarPreview || userProfile.avatar) && <UserOutlined />}
               className="mb-4 border-2 border-gray-200 shadow-sm"
             />
-            <Button icon={ <SelectOutlined /> } onClick={ handleOpenModal } className="mb-1">
-              { avatarPreview ? "Change your avatar" : "Select avatar" }
+            <Button
+              icon={<SelectOutlined />}
+              onClick={handleOpenModal}
+              className="mb-1"
+            >
+              {avatarPreview ? "Change your avatar" : "Select avatar"}
             </Button>
-            { newSelectedAvatarUrl && newSelectedAvatarUrl !== originalProfileRef.current?.avatar && (
-              <Button
-                type="link"
-                danger
-                size="small"
-                onClick={ handleCancelAvatarSelection }
-                icon={ <TrashIcon size={ 14 } className="mr-1" /> }
-                style={ { fontSize: '12px', padding: '0 8px' } }
-                className="mt-1"
-              >
-                { t("Cancel") }
-              </Button>
-            ) }
+            {newSelectedAvatarUrl &&
+              newSelectedAvatarUrl !== originalProfileRef.current?.avatar && (
+                <Button
+                  type="link"
+                  danger
+                  size="small"
+                  onClick={handleCancelAvatarSelection}
+                  icon={<TrashIcon size={14} className="mr-1" />}
+                  style={{ fontSize: "12px", padding: "0 8px" }}
+                  className="mt-1"
+                >
+                  {t("Cancel")}
+                </Button>
+              )}
             <p className="text-xs text-gray-500 mt-1">
-              { t("Choose from library or upload JPG/PNG/GIF file, must be less than 2MB") }
+              {t(
+                "Choose from library or upload JPG/PNG/GIF file, must be less than 2MB"
+              )}
             </p>
 
-            { selectedMediaUrl && (
+            {selectedMediaUrl && (
               <Button
                 type="dashed"
                 danger
                 size="small"
-                onClick={ () => {
+                onClick={() => {
                   setSelectedMediaUrl(null);
                   setAvatarPreview(originalProfileRef.current?.avatar || null);
-                } }
-                icon={ <TrashIcon size={ 14 } /> }
+                }}
+                icon={<TrashIcon size={14} />}
                 className="mt-1"
-                style={ { fontSize: '12px', padding: '0 8px' } }
+                style={{ fontSize: "12px", padding: "0 8px" }}
               >
-                { t("Cancel") }
+                {t("Cancel")}
               </Button>
-            ) }
+            )}
 
-            { userProfile.name && (
-              <Title level={ 5 } className="mt-4 mb-0">{ userProfile.name }</Title>
-            ) }
-            <p className="text-gray-600">{ userProfile.email }</p>
-            <button className="bg-[#1677FF] p-2 rounded-md mt-2" onClick={()=>router.push("/orderhistory")}>View Order History</button>
+            {userProfile.name && (
+              <Title level={5} className="mt-4 mb-0">
+                {userProfile.name}
+              </Title>
+            )}
+            <p className="text-gray-600">{userProfile.email}</p>
+            <button
+              className="bg-[#1677FF] p-2 rounded-md mt-2"
+              onClick={() => router.push("/orderhistory")}
+            >
+              View Order History
+            </button>
           </Col>
 
-          <Col xs={ 24 } md={ 16 }>
+          <Col xs={24} md={16}>
             <Form
-              form={ profileForm }
+              form={profileForm}
               name="profileForm"
               layout="vertical"
-              onFinish={ onProfileFinish }
+              onFinish={onProfileFinish}
               autoComplete="off"
               className="w-full"
             >
-              <Title level={ 4 } className="mb-4">
-                { t("Account Information") }
+              <Title level={4} className="mb-4">
+                {t("Account Information")}
               </Title>
               <Form.Item
                 label="Display Name"
                 name="name"
-                rules={ [ { required: true, message: "Please enter display name!" } ] }
+                rules={[
+                  { required: true, message: "Please enter display name!" },
+                ]}
               >
                 <Input placeholder="Enter the name you want to display" />
               </Form.Item>
               <Form.Item
                 label="Username"
                 name="username"
-                rules={ [ { required: true, message: "Please enter username!" } ] }
+                rules={[{ required: true, message: "Please enter username!" }]}
               >
                 <Input placeholder="Enter your username" />
               </Form.Item>
               <Form.Item
                 label="Email"
                 name="email"
-                rules={ [
+                rules={[
                   { required: true, message: "Please enter your email!" },
-                  { type: 'email', message: 'Invalid email!' }
-                ] }
+                  { type: "email", message: "Invalid email!" },
+                ]}
               >
                 <Input placeholder="Enter email address" />
               </Form.Item>
 
               <Divider />
 
-              <Title level={ 4 } className="mt-6 mb-4">
-                { t("Change Password (Optional)") }
+              <Title level={4} className="mt-6 mb-4">
+                {t("Change Password (Optional)")}
               </Title>
               <Form.Item
                 label="Current Password"
@@ -556,16 +581,20 @@ const UserProfilePage = () => {
               <Form.Item
                 label="New Password"
                 name="newPassword"
-                rules={ [
+                rules={[
                   ({ getFieldValue }) => ({
                     validator(_, value) {
                       if (value && value.length < 6) {
-                        return Promise.reject(new Error('New password must be at least 6 characters.'));
+                        return Promise.reject(
+                          new Error(
+                            "New password must be at least 6 characters."
+                          )
+                        );
                       }
                       return Promise.resolve();
                     },
-                  })
-                ] }
+                  }),
+                ]}
                 tooltip="New password must be at least 6 characters. You can leave it blank if you do not want to change your password."
               >
                 <Input.Password placeholder="Leave blank if you do not want to change your password." />
@@ -573,43 +602,47 @@ const UserProfilePage = () => {
               <Form.Item
                 name="confirmNewPassword"
                 label="Confirm new password"
-                dependencies={ [ 'newPassword' ] }
+                dependencies={["newPassword"]}
                 hasFeedback
-                rules={ [
+                rules={[
                   ({ getFieldValue }) => ({
                     validator(_, value) {
-                      const newPassword = getFieldValue('newPassword');
+                      const newPassword = getFieldValue("newPassword");
                       if (!newPassword) {
                         return Promise.resolve();
                       }
                       if (!value) {
-                        return Promise.reject(new Error('Please confirm new password!'));
+                        return Promise.reject(
+                          new Error("Please confirm new password!")
+                        );
                       }
                       if (newPassword === value) {
                         return Promise.resolve();
                       }
-                      return Promise.reject(new Error('Confirmation password does not match!'));
+                      return Promise.reject(
+                        new Error("Confirmation password does not match!")
+                      );
                     },
                   }),
-                ] }
+                ]}
               >
                 <Input.Password placeholder="Re-enter new password" />
               </Form.Item>
 
               <Form.Item className="mt-6">
                 <Button
-                  onClick={ () => {
-                    console.log(profileForm.getFieldsValue())
-                    onProfileFinish(profileForm.getFieldsValue())
-                  } }
+                  onClick={() => {
+                    console.log(profileForm.getFieldsValue());
+                    onProfileFinish(profileForm.getFieldsValue());
+                  }}
                   type="primary"
                   htmlType="submit"
-                  loading={ saving }
+                  loading={saving}
                   size="large"
-                  icon={ <SaveOutlined /> }
+                  icon={<SaveOutlined />}
                   block
                 >
-                  { t("Save Changes") }
+                  {t("Save Changes")}
                 </Button>
               </Form.Item>
             </Form>
@@ -619,48 +652,50 @@ const UserProfilePage = () => {
 
       <div className="bg-white p-6 md:p-8 rounded-lg shadow-md max-w-4xl mx-auto">
         <div className="flex justify-between items-center mb-6">
-          <Title level={ 3 } className="!mb-0">
+          <Title level={3} className="!mb-0">
             User's Address Book
           </Title>
           <Button
             type="primary"
-            icon={ <PlusOutlined /> }
-            onClick={ handleShowAddAddressModal }
+            icon={<PlusOutlined />}
+            onClick={handleShowAddAddressModal}
           >
-            { t("Add a new address") }
+            {t("Add a new address")}
           </Button>
         </div>
-        { addressLoading && addresses.length === 0 && (
-          <div className="text-center py-4"><Spin /></div>
-        ) }
-        { !addressLoading && addresses.length === 0 && (
+        {addressLoading && addresses.length === 0 && (
+          <div className="text-center py-4">
+            <Spin />
+          </div>
+        )}
+        {!addressLoading && addresses.length === 0 && (
           <Text className="block text-center text-gray-500 py-4">
             You don't have any addresses yet. Add a new one!
           </Text>
-        ) }
+        )}
         <List
-          grid={ { gutter: 16, xs: 1, sm: 1, md: 2 } }
-          dataSource={ addresses }
-          loading={ addressLoading && addresses.length > 0 }
-          renderItem={ (item) => (
+          grid={{ gutter: 16, xs: 1, sm: 1, md: 2 }}
+          dataSource={addresses}
+          loading={addressLoading && addresses.length > 0}
+          renderItem={(item) => (
             <List.Item>
               <Card
                 size="small"
                 variant="outlined"
                 className="shadow-sm hover:shadow-md transition-shadow border rounded-md"
-                actions={ [
-                  < Button
+                actions={[
+                  <Button
                     type="text"
                     key="edit"
-                    icon={ < EditOutlined /> }
-                    onClick={ () => handleShowEditAddressModal(item) }
+                    icon={<EditOutlined />}
+                    onClick={() => handleShowEditAddressModal(item)}
                   >
                     Edit
                   </Button>,
                   <Popconfirm
                     title="Delete this address?"
                     description="This action cannot be undone."
-                    onConfirm={ () => handleDeleteAddress(item.id) }
+                    onConfirm={() => handleDeleteAddress(item.id)}
                     okText="Delete"
                     cancelText="Cancel"
                     placement="topRight"
@@ -668,68 +703,74 @@ const UserProfilePage = () => {
                     <Button
                       type="text"
                       danger
-                      icon={ <DeleteOutlined /> }
+                      icon={<DeleteOutlined />}
                       key="delete"
                     >
                       Delete
                     </Button>
                   </Popconfirm>,
-                ] }
+                ]}
               >
                 <div className="font-semibold mb-1">
-                  <HomeOutlined className="mr-2 text-gray-600" /> { item.receiver_name }
+                  <HomeOutlined className="mr-2 text-gray-600" />{" "}
+                  {item.receiver_name}
                 </div>
                 <p className="text-sm text-gray-700 mb-1 pl-5">
-                  <span className="font-medium">Telephone number</span> { item.receiver_phone }
+                  <span className="font-medium">Telephone number</span>{" "}
+                  {item.receiver_phone}
                 </p>
                 <p className="text-sm text-gray-700 pl-5">
-                  <span className="font-medium">Address</span> { item.address }
+                  <span className="font-medium">Address</span> {item.address}
                 </p>
               </Card>
             </List.Item>
-          ) }
+          )}
         />
       </div>
 
       <AddressFormModal
-        visible={ isAddressModalVisible }
-        onCancel={ handleAddressModalCancel }
-        onFinish={ handleAddressFormFinish }
-        initialValues={ editingAddress ? {
-          address: editingAddress.address,
-          receiver_name: editingAddress.receiver_name,
-          receiver_phone: editingAddress.receiver_phone
-        } : undefined }
-        loading={ addressLoading }
+        visible={isAddressModalVisible}
+        onCancel={handleAddressModalCancel}
+        onFinish={handleAddressFormFinish}
+        initialValues={
+          editingAddress
+            ? {
+                address: editingAddress.address,
+                receiver_name: editingAddress.receiver_name,
+                receiver_phone: editingAddress.receiver_phone,
+              }
+            : undefined
+        }
+        loading={addressLoading}
       />
 
       <Modal
-        open={ isModalOpen }
-        title={ <span className="ml-4">{ t("Change your avatar") }</span> }
-        onCancel={ handleCloseModal }
-        style={ { top: 20 } }
+        open={isModalOpen}
+        title={<span className="ml-4">{t("Change your avatar")}</span>}
+        onCancel={handleCloseModal}
+        style={{ top: 20 }}
         width="90%"
-        footer={ null }
+        footer={null}
       >
         {/* <div className="ml-4 mt-5">
           <Button
-            onClick={ () => setIsChooseMedia(true) }
+            onClick={() => setIsChooseMedia(true)}
             className="mr-2"
-            style={ {
+            style={{
               backgroundColor: isChooseMedia ? "blue" : "initial",
               color: isChooseMedia ? "white" : "initial",
-            } }
+            }}
           >
-            { t("Select Media") }
+            {t("Select Media")}
           </Button>
           <Button
-            onClick={ () => setIsChooseMedia(false) }
-            style={ {
+            onClick={() => setIsChooseMedia(false)}
+            style={{
               backgroundColor: !isChooseMedia ? "blue" : "initial",
               color: !isChooseMedia ? "white" : "initial",
-            } }
+            }}
           >
-            { t("Upload Media") }
+            {t("Upload Media")}
           </Button>
         </div> */}
 
@@ -740,14 +781,12 @@ const UserProfilePage = () => {
             <MediaUpload isOpenModal={ true } setChooseMedia={ setIsChooseMedia } />
           ) } */}
 
-          {
-            isChooseMedia && (
-              <MediaUpload isOpenModal={ true } setChooseMedia={ setIsChooseMedia } />
-            )
-          }
+          {isChooseMedia && (
+            <MediaUpload isOpenModal={true} setChooseMedia={setIsChooseMedia} />
+          )}
         </div>
       </Modal>
-    </div >
+    </div>
   );
 };
 

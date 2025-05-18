@@ -6,6 +6,7 @@ export interface Book {
     id: number;
     url: string;
   }[];
+  images?: string[];
   id: number;
   title: string;
   subTitle?: string;
@@ -177,7 +178,7 @@ export type Order = {
   receiverPhone: string;
   address: string;
   payment_method: PaymentMethod;
-  orderStatus: OrderStatus;
+  status: OrderStatus;
   total: number;
   user_id?: string;
   order_details: OrderDetail[];
@@ -230,12 +231,12 @@ export interface OrderFromUserResponse {
 }
 
 export interface OrderStatusUpdateResponse {
-  success:boolean;
+  success: boolean;
   data: {
     orderId: number;
     status: string;
     message: string;
-  }
+  };
 }
 
 export interface Address {
@@ -425,9 +426,9 @@ export interface CategoryOption {
 }
 
 export interface ModalCheckoutSuccessProps {
-  date: string,
-  numberOfItem: number,
-  address:String,
-  name:string,
-  total: number,
+  date: string;
+  numberOfItem: number;
+  address: String;
+  name: string;
+  total: number;
 }

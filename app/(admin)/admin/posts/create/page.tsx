@@ -25,6 +25,7 @@ export default function AddPost() {
       ? categories.join(",")
       : "";
     const dataPayload: Post = {
+      ...values,
       title: values.title,
       slug,
       content: values.content,

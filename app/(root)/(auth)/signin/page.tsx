@@ -7,46 +7,47 @@ import Image from "next/image";
 import { Images } from "../../../../constant/images";
 import { Eye, EyeOff } from "lucide-react";
 import { loginWithGoogle } from "@/lib/actions/auth";
-import {useRouter} from "next/navigation";
+import { useRouter } from "next/navigation";
 
 function SignIn() {
   const { t } = useTranslation("common");
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setLoading(true);
-    setError('');
+    setError("");
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/user/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username: email, password }),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/user/login`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ username: email, password }),
+        }
+      );
 
       if (!response.ok) {
-        throw new Error('Invalid credentials');
+        throw new Error("Invalid credentials");
       }
 
       const data = await response.json();
-      console.log('Login successful', data);
-      // Handle successful login, e.g., redirect or store token
       localStorage.setItem("user", JSON.stringify(data.user));
       localStorage.setItem("accessToken", data.token);
-      if(data.user.role === "admin") {
+      if (data.user.role === "admin") {
         router.push("/admin");
       } else {
         router.push("/");
       }
     } catch (err: any) {
-      setError(err.message || 'An error occurred');
+      setError(err.message || "An error occurred");
     } finally {
       setLoading(false);
     }
@@ -106,7 +107,7 @@ function SignIn() {
               className="w-full bg-blue-500 text-white font-medium py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
               disabled={loading}
             >
-              {loading ? 'Logging in...' : t("LOG IN")}
+              {loading ? "Logging in..." : t("LOG IN")}
             </button>
             <div className="mt-4 text-center text-gray-500">
               <p>
