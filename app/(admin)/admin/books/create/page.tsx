@@ -27,7 +27,7 @@ export default function AddBook() {
       publishedDate: values.publishedDate,
       discount: values.discount,
       //slug: slug,
-      bookImages: uploadedImages.map((url) => ({ url })),
+      bookImages: uploadedImages?.map((url) => ({ url })),
     };
 
     try {

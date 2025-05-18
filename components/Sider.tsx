@@ -30,7 +30,7 @@ export const LayoutSider = ({
   const [menuItems, setMenuItems] = useState(originalMenuItems);
 
   useEffect(() => {
-    const updatedMenuItems = originalMenuItems.map((item) => ({
+    const updatedMenuItems = originalMenuItems?.map((item) => ({
       ...item,
       label: t(item?.label ?? ""),
       children: item.children?.map((child) => ({
@@ -103,7 +103,7 @@ export const LayoutSider = ({
         onClick={(info) => {
           route.push(`/admin/${info.key}`);
         }}
-        selectedKeys={[`/${pathname.split("/").slice(2).join("/")}`]}
+        selectedKeys={[`/${pathname.split("/")?.slice(2).join("/")}`]}
         style={{ minWidth: 0, flex: "auto" }}
       />
     </Sider>

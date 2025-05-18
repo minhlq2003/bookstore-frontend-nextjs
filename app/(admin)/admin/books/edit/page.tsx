@@ -73,7 +73,7 @@ const EditBook = () => {
 
   useEffect(() => {
     form.setFieldsValue(book);
-    const images = book?.book_images.map((values) => values.url) || [];
+    const images = book?.book_images?.map((values) => values.url) || [];
     setUploadedImages(images);
   }, [book, form]);
 
