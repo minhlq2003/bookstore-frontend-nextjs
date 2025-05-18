@@ -151,6 +151,14 @@ export default function ListBook({ searchTerm }: ListBookProps) {
     },
   ];
 
+  if (data && data?.length === 0) {
+    return (
+      <div className="w-full mt-5">
+        <h2 className="text-center text-lg font-semibold">Đang tải dữ liệu</h2>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full mt-5">
       <Table
