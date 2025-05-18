@@ -240,7 +240,7 @@ const filterMenuItemsByPermission = (
 
       if (hasPermission) {
         if (item.children?.length) {
-          const filteredChildren = item.children.filter((child) => {
+          const filteredChildren = item.children?.filter((child) => {
             const path = child.key?.toString() || "";
 
             if (path.includes("/create")) {
