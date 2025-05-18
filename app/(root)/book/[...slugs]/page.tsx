@@ -1,7 +1,7 @@
 import { Metadata, ResolvingMetadata } from "next";
 import { Book, User } from "@/constant/types";
 import BookDetailClient from "@/components/book-render";
-import { getBookById } from "@/modules/services/bookService";
+import { getBookById, getBooksByCategory } from "@/modules/services/bookService";
 import { last } from "lodash";
 
 const Page = async (props: {
@@ -15,7 +15,8 @@ const Page = async (props: {
   console.log("res", res);
 
   const book = res?.data;
-  const relatedBooks = Array(4).fill(book);
+  const related = await getBooksByCategory(res?.data?.categories?.slug)
+  const relatedBooks = related?.data?.filter(item => item.id !== res?.data.id).slice(0, 4) || [];
 
   const user: User | null = null;
 

@@ -4,9 +4,7 @@ import { getBooks } from "@/modules/services/bookService";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
-import {
-  faSearch,
-} from "@fortawesome/free-solid-svg-icons";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useTranslation } from "react-i18next";
 import BookItem from "@/components/book-item";
@@ -20,6 +18,9 @@ const page = () => {
   const [books, setBooks] = useState<Book[]>();
   const [searchBook, setsearchBook] = useState<Book[]>();
   const [isOut, setIsOut] = useState(false);
+  const [totalPages, setTotalPages] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -37,11 +38,15 @@ const page = () => {
   }, []);
 
   useEffect(() => {
-    const fetchBooks = async (searchTerm: string) => {
+    const fetchBooks = async (searchTerm: string, page: number) => {
       const response = await getBooks({
         search: searchTerm,
+        limit: 16,
+        page: page,
       });
       if (response) {
+        setTotalItems(response.total);
+        setTotalPages(response.totalPages);
         setsearchBook(response.data);
       } else {
         setsearchBook([]);
@@ -49,9 +54,10 @@ const page = () => {
     };
 
     if (query) {
-        fetchBooks(query);
+      fetchBooks(query, currentPage);
     }
-  }, [query]);
+  }, [query, currentPage]);
+  console.log("SEARCH BOOK", searchBook);
 
   useEffect(() => {
     const fetchBooks = async (searchTerm: string) => {
@@ -67,10 +73,9 @@ const page = () => {
     };
 
     if (searchTerm) {
-        fetchBooks(searchTerm);
+      fetchBooks(searchTerm);
     }
   }, [searchTerm, isOut]);
-
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -129,13 +134,38 @@ const page = () => {
       <div className="flex flex-col px-5">
         <div className="pb-6 md:col-span-5 ">
           <div className="bg-[#0B3D91] px-2 m-2">
-            <p className="text-white">{searchBook?.length} books founds</p>
+            <p className="text-white">
+              {totalItems} {t("books founds")}
+            </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {searchBook?.map((book) => (
               <BookItem key={book.id} book={book} />
             ))}
           </div>
+          {totalPages > 1 && (
+            <div className="flex gap-2 justify-center mt-4">
+              {Array.from({ length: totalPages }, (_, index) => {
+                const page = index + 1;
+                return (
+                  <button
+                    key={page}
+                    onClick={() => (
+                      setCurrentPage(page),
+                      window.scrollTo({ top: 0, behavior: "smooth" })
+                    )}
+                    className={`px-3 py-1 rounded ${
+                      page === currentPage
+                        ? "bg-customblue text-white"
+                        : "bg-gray-200 text-black"
+                    }`}
+                  >
+                    {page}
+                  </button>
+                );
+              })}
+            </div>
+          )}
         </div>
       </div>
     </div>

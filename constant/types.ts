@@ -200,6 +200,44 @@ export type ListOrdersResponse = {
   totalPages: number;
 };
 
+export interface ListOrderFromUserResponse {
+  success: boolean;
+  data: OrderFromUserResponse[];
+}
+
+export interface OrderFromUserResponse {
+  id: number;
+  user_id: number;
+  total: string;
+  address: string;
+  status: string;
+  payment_method: string;
+  created_at: string;
+  updated_at: string;
+  order_items: [
+    {
+      id: number;
+      order_id: number;
+      book_id: number;
+      quantity: number;
+      price: string;
+      created_at: string;
+      book_title: string;
+      book_image: string;
+      book_price: string;
+    }
+  ];
+}
+
+export interface OrderStatusUpdateResponse {
+  success:boolean;
+  data: {
+    orderId: number;
+    status: string;
+    message: string;
+  }
+}
+
 export interface Address {
   id: number;
   user_id: number;
@@ -384,4 +422,12 @@ export interface CategoryOption {
   label: string | undefined;
   value: string;
   disabled: boolean;
+}
+
+export interface ModalCheckoutSuccessProps {
+  date: string,
+  numberOfItem: number,
+  address:String,
+  name:string,
+  total: number,
 }
