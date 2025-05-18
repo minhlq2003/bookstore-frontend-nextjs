@@ -59,6 +59,7 @@ const EditPost = () => {
       category: categoryString,
       status: values.status ? "draft" : "published",
       image: uploadedImage,
+      ...values,
     };
 
     try {

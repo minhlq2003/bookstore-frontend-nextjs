@@ -7,9 +7,13 @@ import { useEffect, useState, useCallback } from "react";
 import { CheckCircleIcon } from "lucide-react";
 
 import { Order } from "@/constant/types";
-import { getOrderById } from "@/modules/services/orderService";
+import {
+  getOrderById,
+  updateOrderStatus,
+} from "@/modules/services/orderService";
 import OrderForm from "@/modules/order/OrderForm";
 import { useTranslation } from "react-i18next";
+import { formatDate } from "@/lib/utils";
 
 const EditOrder = () => {
   const { t } = useTranslation("common");
@@ -36,18 +40,9 @@ const EditOrder = () => {
   );
 
   const onFinish = async (values: Order) => {
-    const dataPayload = {
-      receiverName: values.receiverName,
-      receiverPhone: values.receiverPhone,
-      address: values.address,
-      paymentMethod: values.payment_method,
-      orderStatus: values.orderStatus,
-      total: Number(values.total),
-    };
-
     try {
       if (id) {
-        //await updateOrder(id, dataPayload);
+        await updateOrderStatus(Number(id), values.status);
       } else {
         message.error("Order ID không hợp lệ.");
       }
@@ -68,6 +63,12 @@ const EditOrder = () => {
   useEffect(() => {
     if (order) {
       form.setFieldsValue(order);
+      const { formattedDate: createdDate, formattedTime: createdTime } =
+        formatDate(order.created_at);
+      form.setFieldValue("created_at", createdTime + " " + createdDate);
+      const { formattedDate: updatedDate, formattedTime: updatedTime } =
+        formatDate(order.updated_at);
+      form.setFieldValue("updated_at", updatedTime + " " + updatedDate);
     }
   }, [order, form]);
 
@@ -80,7 +81,7 @@ const EditOrder = () => {
       ) : (
         <div className="w-full">
           <h1 className="ml-[10px] text-3xl font-bold pb-6">
-            {t("Order Detail")}
+            {t("Order Details")}
           </h1>
           <div className="flex justify-between">
             <OrderForm form={form} onFinish={onFinish} />

@@ -32,6 +32,28 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <title>Great Book | Nhà Sách Trực Tuyến</title>
+        <meta
+          name="description"
+          content="Great Book - Hệ thống nhà sách chuyên nghiệp. Đáp ứng tất cả các yêu cầu về sách, nhiều ưu đãi hấp dẫn, voucher miễn phí vận chuyển. Đặt mua ngay!"
+        />
+        <meta name="og:title" content="Greate Book | Nhà Sách Trực Tuyến" />
+        <meta
+          name="og:description"
+          content="Great Book - Hệ thống nhà sách chuyên nghiệp. Đáp ứng tất cả các yêu cầu về sách, nhiều ưu đãi hấp dẫn, voucher miễn phí vận chuyển. Đặt mua ngay!"
+        />
+        <meta
+          name="og:image"
+          content="https://bookstore-frontend-nextjs.vercel.app/_next/static/media/logo_greatbook.1f95abfc.webp"
+        />
+        <link
+          rel="icon"
+          type="image/x-icon"
+          href="https://bookstore-frontend-nextjs.vercel.app/_next/static/media/logo_greatbook.1f95abfc.webp"
+        />
+        <script id="headerScripts" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${merriweather.variable} antialiased font-merriweather`}
       >

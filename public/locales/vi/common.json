@@ -165,6 +165,9 @@
     "Payment was successful": "Thanh toán thành công",
     "Yes! Your payment has been successful and your order has been placed. If there is any problem, please contact us as soon as possible.": "Vâng! Thanh toán của bạn đã thành công và đơn hàng của bạn đã được đặt. Nếu có bất kỳ vấn đề gì, vui lòng liên hệ với chúng tôi sớm nhất có thể.",
     "Date": "Ngày",
-    "Number of item": "Số lượng"
-
+    "Number of item": "Số lượng",
+    "Order Status": "Trạng thái đơn hàng",
+    "Total Amount": "Tổng số tiền",
+    "Order Date": "Ngày đặt hàng",
+    "Delivery Date": "Ngày giao hàng"
 }

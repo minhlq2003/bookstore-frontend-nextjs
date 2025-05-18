@@ -3,6 +3,7 @@
 import { Form, Input, InputNumber, Select, FormInstance } from "antd";
 import React from "react";
 import { Order } from "@/constant/types";
+import { useTranslation } from "react-i18next";
 
 const { TextArea } = Input;
 
@@ -17,12 +18,15 @@ const statusOptions: { label: string; value: string }[] = [
   { label: "Đang giao", value: "SHIPPING" },
   { label: "Đã hoàn thành", value: "COMPLETED" },
   { label: "Đã hủy", value: "CANCELLED" },
+  { label: "Đã giao hàng", value: "DELIVERED" },
+  { label: "Đang xử lý", value: "PROCESSING" },
 ];
 
 const OrderForm: React.FC<{
   form: FormInstance;
   onFinish: (values: Order) => void;
 }> = ({ form, onFinish }) => {
+  const { t } = useTranslation("common");
   const handleSubmit = () => {
     onFinish(form.getFieldsValue());
   };
@@ -39,44 +43,82 @@ const OrderForm: React.FC<{
       <div className="border border-[#d9d9d9] p-4 rounded-md">
         <div className="flex flex-row justify-between">
           <Form.Item
-            name="receiverName"
-            label="Tên người nhận"
+            name="username"
+            label={t("Receiver Name")}
             rules={[
               { required: true, message: "Vui lòng nhập tên người nhận!" },
             ]}
             style={{ width: "48%" }}
           >
-            <Input placeholder="Nhập tên người nhận" className="custom-input" />
+            <Input
+              disabled
+              placeholder="Nhập tên người nhận"
+              className="custom-input"
+            />
           </Form.Item>
 
           <Form.Item
-            name="receiverPhone"
-            label="Số điện thoại"
+            name="user_phone"
+            label={t("Receiver Phone")}
             rules={[
               { required: true, message: "Vui lòng nhập số điện thoại!" },
             ]}
             style={{ width: "48%" }}
           >
-            <Input placeholder="Nhập số điện thoại" className="custom-input" />
+            <Input
+              disabled
+              placeholder="Nhập số điện thoại"
+              className="custom-input"
+            />
           </Form.Item>
         </div>
 
-        <Form.Item
-          name="address"
-          label="Địa chỉ giao hàng"
-          rules={[{ required: true, message: "Vui lòng nhập địa chỉ!" }]}
-        >
-          <TextArea
-            rows={3}
-            placeholder="Nhập địa chỉ giao hàng"
-            className="custom-textarea"
-          />
-        </Form.Item>
+        <div className="flex flex-row justify-between">
+          <Form.Item
+            name="address"
+            label={t("Address")}
+            rules={[{ required: true, message: "Vui lòng nhập địa chỉ!" }]}
+            style={{ width: "48%" }}
+          >
+            <TextArea
+              disabled
+              rows={5}
+              placeholder="Nhập địa chỉ giao hàng"
+              className="custom-textarea"
+            />
+          </Form.Item>
+          <div className="flex flex-col" style={{ width: "48%" }}>
+            <Form.Item
+              name="created_at"
+              label={t("Order Date")}
+              style={{ width: "100%" }}
+            >
+              <Input
+                disabled
+                placeholder="Nhập ngày đặt hàng"
+                className="custom-input"
+              />
+            </Form.Item>
+            {form.getFieldValue("status") === "delivered" && (
+              <Form.Item
+                name="updated_at"
+                label={t("Delivery Date")}
+                style={{ width: "100%" }}
+              >
+                <Input
+                  disabled
+                  placeholder="Nhập ngày cập nhật"
+                  className="custom-input"
+                />
+              </Form.Item>
+            )}
+          </div>
+        </div>
 
         <div className="flex flex-row justify-between">
           <Form.Item
-            name="paymentMethod"
-            label="Phương thức thanh toán"
+            name="payment_method"
+            label={t("Payment Method")}
             rules={[
               {
                 required: true,
@@ -85,25 +127,25 @@ const OrderForm: React.FC<{
             ]}
             style={{ width: "48%" }}
           >
-            <Select placeholder="Chọn phương thức thanh toán">
+            <Select disabled placeholder="Chọn phương thức thanh toán">
               {paymentOptions.map((option) => (
                 <Select.Option key={option.value} value={option.value}>
-                  {option.label}
+                  {option.value}
                 </Select.Option>
               ))}
             </Select>
           </Form.Item>
 
           <Form.Item
-            name="orderStatus"
-            label="Trạng thái đơn hàng"
+            name="status"
+            label={t("Order Status")}
             rules={[{ required: true, message: "Vui lòng chọn trạng thái!" }]}
             style={{ width: "48%" }}
           >
             <Select placeholder="Chọn trạng thái đơn hàng">
               {statusOptions.map((option) => (
                 <Select.Option key={option.value} value={option.value}>
-                  {option.label}
+                  {option.value}
                 </Select.Option>
               ))}
             </Select>
@@ -112,10 +154,11 @@ const OrderForm: React.FC<{
 
         <Form.Item
           name="total"
-          label="Tổng tiền"
+          label={t("Total Amount")}
           rules={[{ required: true, message: "Vui lòng nhập tổng tiền!" }]}
         >
           <InputNumber
+            disabled
             min={0}
             placeholder="Nhập tổng tiền (VND)"
             className="custom-input w-full"

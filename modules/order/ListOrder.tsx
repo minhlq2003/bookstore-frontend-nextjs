@@ -41,13 +41,7 @@ export default function ListOrder({ searchTerm }: ListOrderProps) {
       search: searchTerm,
     });
     if (response?.data) {
-      const ordersWithUsers = await Promise.all(
-        response.data.map(async (order) => {
-          const user = await getUserById(order.user_id || "");
-          return { ...order, user };
-        })
-      );
-      setData(ordersWithUsers);
+      setData(response.data);
       setTotalOrders(response?.total ?? 0);
     }
   };
@@ -88,15 +82,13 @@ export default function ListOrder({ searchTerm }: ListOrderProps) {
   const columns: ColumnsType<Order> = [
     {
       title: "Tên người nhận",
-      dataIndex: ["user", "user", "name"],
+      dataIndex: ["username"],
       key: "receiverName",
     },
     {
       title: "Số điện thoại",
-      dataIndex: "user",
+      dataIndex: "user_phone",
       key: "receiverPhone",
-      render: (user) =>
-        user ? `${user.user.addresses[0].receiver_phone}` : "Unknown User",
     },
     {
       title: "Địa chỉ",

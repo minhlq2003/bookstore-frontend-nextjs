@@ -169,81 +169,35 @@ const PostForm: React.FC<PostFormProps> = ({
         </Form.Item>
       </div>
 
-      {/* <span className="text-base font-medium pt-2 pb-2">{t("SEO")}</span> */}
+      <p className="my-2 font-semibold text-lg">{t("SEO")}</p>
 
-      {/* <div className="grid grid-cols-2 gap-x-5 gap-y-2 p-5 border rounded-[10px]">
-        <Form.Item
-          name="metaTitle"
-          label={
-            <span className="text-base font-medium p">{t("Meta Title")}</span>
-          }
-        >
-          <Input className="custom-input py-2" />
-        </Form.Item>
+      <div className="flex flex-col p-4 border rounded-[10px] mb-4">
+        <div className="flex flex-row w-full justify-between gap-10">
+          <Form.Item
+            name="meta_title"
+            label={<p className="">{t("Meta Title")}</p>}
+            className="w-1/2"
+          >
+            <Input className="custom-input" />
+          </Form.Item>
 
-        <Form.Item
-          name="keywords"
-          label={
-            <span className="text-base font-medium">{t("Meta Keywords")}</span>
-          }
-        >
-          <Input className="custom-input py-2" />
-        </Form.Item>
-
-        <Form.Item
-          name="metaDescription"
-          label={
-            <span className="text-base font-medium">
-              {t("Meta Description")}
-            </span>
-          }
-        >
-          <Input.TextArea className="custom-input py-2" rows={5} />
-        </Form.Item>
+          <Form.Item
+            className="w-1/2"
+            name="keywords"
+            label={<p className="">{t("Meta Keywords")}</p>}
+          >
+            <Input className="custom-input" />
+          </Form.Item>
+        </div>
 
         <Form.Item
-          name="structuredData"
-          label={
-            <span className="text-base font-medium">
-              {t("Structured Data")}
-            </span>
-          }
-          rules={[
-            {
-              validator: (_, value) => {
-                if (value && !isValidJson(value)) {
-                  return Promise.reject(new Error(t("Invalid JSON format!")));
-                }
-                return Promise.resolve();
-              },
-            },
-          ]}
+          name="meta_desc"
+          className=""
+          label={<p className="">{t("Meta Description")}</p>}
         >
-          <Input.TextArea
-            className="custom-input py-2"
-            rows={5}
-            placeholder={t('@example: {"id": "string"}')}
-          />
+          <Input.TextArea className="custom-input" rows={5} />
         </Form.Item>
-
-        <Form.Item
-          name="metaRobots"
-          label={
-            <span className="text-base font-medium">{t("Meta Robots")}</span>
-          }
-        >
-          <Input className="custom-input py-2" />
-        </Form.Item>
-
-        <Form.Item
-          name="metaViewport"
-          label={
-            <span className="text-base font-medium">{t("Meta Viewport")}</span>
-          }
-        >
-          <Input className="custom-input py-2" />
-        </Form.Item>
-      </div> */}
+      </div>
 
       <ModalSelectMedia
         isOpen={isModalOpen}

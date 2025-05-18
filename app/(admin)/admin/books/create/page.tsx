@@ -18,6 +18,7 @@ export default function AddBook() {
     //const slug = values.title.trim().replace(/\s+/g, "-").toLowerCase();
 
     const dataPayload = {
+      ...values,
       title: values.title,
       author: values.author,
       price: values.price,

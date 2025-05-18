@@ -7,7 +7,10 @@ import Title from "antd/es/typography/Title";
 import CategoryForm from "../CategoryForm";
 import { CheckCircleIcon } from "lucide-react";
 import { Category } from "@/constant/types";
-import { getCategoryById, updateCategory } from "@/modules/services/categoryService";
+import {
+  getCategoryById,
+  updateCategory,
+} from "@/modules/services/categoryService";
 
 export default function EditCategory() {
   const [form] = Form.useForm();
@@ -62,7 +65,6 @@ export default function EditCategory() {
 
   useEffect(() => {
     form.setFieldsValue(category);
-    console.log("category", category);
   }, [category, form]);
 
   return (

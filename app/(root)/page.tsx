@@ -7,14 +7,14 @@ import { Images } from "@/constant/images";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
-    title: `Greate Book | Nhà Sách Trực Tuyến`,
+    title: `Great Book | Nhà Sách Trực Tuyến`,
     description:
       "Great Book - Hệ thống nhà sách chuyên nghiệp. Đáp ứng tất cả các yêu cầu về sách, nhiều ưu đãi hấp dẫn, voucher miễn phí vận chuyển. Đặt mua ngay!",
     openGraph: {
       title: `Greate Book | Nhà Sách Trực Tuyến`,
       description:
         "Great Book - Hệ thống nhà sách chuyên nghiệp. Đáp ứng tất cả các yêu cầu về sách, nhiều ưu đãi hấp dẫn, voucher miễn phí vận chuyển. Đặt mua ngay!",
-      images: [ { url: Images.logo.src } ],
+      images: [{ url: Images.logo.src }],
     },
   };
 }
