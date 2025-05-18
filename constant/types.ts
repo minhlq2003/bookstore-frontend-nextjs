@@ -30,6 +30,9 @@ export interface Book {
   stock?: number;
   publish_year: number;
   is_featured: boolean;
+  meta_title?: string;
+  meta_desc?: string;
+  keywords?: string;
 }
 
 export type ApiBook = {
@@ -42,6 +45,7 @@ export type ApiBook = {
   book_images?: { url: string }[];
   import_price?: number;
   is_featured: boolean;
+  stock?: number;
 };
 
 export interface PathItem {

@@ -31,6 +31,7 @@ function Category() {
     author: string;
     rating: number;
     book_images: { url: string }[];
+    stock?: number;
   } => ({
     id: apiBook.id,
     title: apiBook.title,
@@ -40,6 +41,7 @@ function Category() {
     author: apiBook.author,
     rating: 0, // API does not provide rating
     book_images: apiBook.book_images || [],
+    stock: apiBook.stock,
   });
 
   const fetchNewArrivals = useCallback(async () => {
