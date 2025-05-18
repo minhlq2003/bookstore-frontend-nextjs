@@ -15,7 +15,7 @@ interface ListBookProps {
 }
 
 export default function ListBook({ searchTerm }: ListBookProps) {
-  const [data, setData] = useState<Book[]>();
+  const [data, setData] = useState<Book[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [bookToDelete, setBookToDelete] = useState<Book | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -46,6 +46,10 @@ export default function ListBook({ searchTerm }: ListBookProps) {
     setData(response?.data ?? []);
     setTotalBooks(response?.total ?? 0);
   };
+
+  useEffect(() => {
+    console.log("data", data);
+  }, [data]);
 
   useEffect(() => {
     fetchBooks(currentPage, pageSize, sortBy, sortOrder);
@@ -150,14 +154,6 @@ export default function ListBook({ searchTerm }: ListBookProps) {
       ),
     },
   ];
-
-  if (data && data?.length === 0) {
-    return (
-      <div className="w-full mt-5">
-        <h2 className="text-center text-lg font-semibold">Đang tải dữ liệu</h2>
-      </div>
-    );
-  }
 
   return (
     <div className="w-full mt-5">
