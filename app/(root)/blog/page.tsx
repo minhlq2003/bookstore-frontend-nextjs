@@ -5,6 +5,7 @@ import { useEffect, useState, Suspense } from "react";
 import { Post } from "@/constant/types";
 import PostItem from "@/components/post-item";
 import { getPosts } from "@/modules/services/postService";
+import { Metadata } from "next";
 
 function Blog() {
   const { t } = useTranslation("common");

@@ -16,7 +16,6 @@ export default function ProductPage() {
 
   const refreshCategories = () => {
     setRefreshTrigger((prev) => prev + 1);
-    console.log(refreshTrigger);
   };
 
   return (

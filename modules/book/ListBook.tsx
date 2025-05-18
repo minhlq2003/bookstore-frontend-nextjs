@@ -53,7 +53,6 @@ export default function ListBook({ searchTerm }: ListBookProps) {
 
   const handleDelete = () => {
     deleteBook(String(bookToDelete?.id ?? "")).then((result) => {
-      console.log(result);
       setIsModalVisible(false);
       setBookToDelete(null);
       fetchBooks(currentPage, pageSize);

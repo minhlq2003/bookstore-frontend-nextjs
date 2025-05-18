@@ -16,6 +16,7 @@ import {
   faUser,
   faSignIn,
   faSignOut,
+  faBlog,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
@@ -27,6 +28,9 @@ import { isLogin, logout } from "@/lib/actions/auth";
 import { Book, BookListResponse } from "@/constant/types";
 import { getBooks } from "@/modules/services/bookService";
 import { set } from "lodash";
+import ScrollToTop from "./scroll-to-top";
+import PopupContact from "./popup-contact";
+import ModalEntrance from "./modal-entrance";
 
 const Header = () => {
   const { t, i18n } = useTranslation("common");
@@ -89,7 +93,7 @@ const Header = () => {
         !searchRef.current.contains(event.target as Node)
       ) {
         setSearchTerm("");
-        setBooks([]); 
+        setBooks([]);
       }
     };
 
@@ -115,7 +119,7 @@ const Header = () => {
       fetchBooks(searchTerm);
     }
   }, [searchTerm]);
-const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       router.push(`/search?query=${encodeURIComponent(searchTerm)}`);
       setSearchTerm("");
@@ -217,10 +221,15 @@ const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
                   className="px-2 sm:py-2 py-0 w-full rounded-2xl border border-gray-300 placeholder:text-[12px] sm:placeholder:text-[16px] focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
                 <button className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-transparent text-black">
-                  <FontAwesomeIcon icon={faSearch} onClick={() => (
-                    router.push(`/search?query=${encodeURIComponent(searchTerm)}`),
-                    setSearchTerm("")
-                  )} />
+                  <FontAwesomeIcon
+                    icon={faSearch}
+                    onClick={() => (
+                      router.push(
+                        `/search?query=${encodeURIComponent(searchTerm)}`
+                      ),
+                      setSearchTerm("")
+                    )}
+                  />
                 </button>
                 {books && books.length > 0 && searchTerm && (
                   <div className="absolute flex flex-col gap-2  top-5 lg:top-10 bg-white border-2 border-[#0B3D91] rounded-md mt-2 w-full z-10 max-h-[300px] overflow-auto">
@@ -228,7 +237,9 @@ const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
                       <div
                         key={book.id}
                         className="flex items-center gap-3 cursor-pointer hover:bg-[#0B3D9180] hover:text-white p-2"
-                        onClick={() => (router.push(`/book/${book.id}`), setSearchTerm(""))}
+                        onClick={() => (
+                          router.push(`/book/${book.id}`), setSearchTerm("")
+                        )}
                       >
                         <Image
                           src={book.book_images[0]?.url || ""}
@@ -293,8 +304,8 @@ const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
         <ul className="flex justify-evenly">
           <li>
             <Link href="/" className="flex flex-col">
-              <FontAwesomeIcon icon={faBars} />
-              {t("Home")}
+              <FontAwesomeIcon icon={faBlog} />
+              {t("Blog")}
             </Link>
           </li>
           <li>
@@ -317,6 +328,8 @@ const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
           </li>
         </ul>
       </div>
+      <ScrollToTop />
+      <PopupContact />
     </div>
   );
 };
