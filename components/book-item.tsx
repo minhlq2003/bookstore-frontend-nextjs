@@ -1,12 +1,17 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import Image from "next/image";
 import { Book } from "@/constant/types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
+import { useTranslation } from "react-i18next";
 
 const BookItem: React.FC<{ book: Book }> = ({ book }) => {
+  const { t } = useTranslation("common");
+  useEffect(() => {
+    console.log("BookItem", book);
+  }, []);
   return (
     <div className="border border-gray-300 rounded sm:p-4 p-2 shadow-md bg-white hover:scale-105 transition duration-300 ease-in-out hover:shadow-[0_0_10px_5px_rgba(30,136,229,0.3)]">
       <div className="relative flex justify-center">
@@ -36,7 +41,7 @@ const BookItem: React.FC<{ book: Book }> = ({ book }) => {
       {/* Conditionally render subtitle */}
       <p className="text-sm text-gray-600">By {book.author}</p>
       <div className="flex items-center justify-between mt-2">
-        <p className="text-lg font-semibold">
+        <p className="md:text-lg text-sm font-semibold mr-2">
           ${Number(book.price).toFixed(2)}{" "}
           {book.discount &&
             book.discount > 0 && ( // Conditionally render discount price
@@ -46,8 +51,8 @@ const BookItem: React.FC<{ book: Book }> = ({ book }) => {
             )}
         </p>
         <Link href={`/book/${book.id}`}>
-          <button className=" text-white px-4 py-2 rounded hover:border hover:border-white">
-            Buy
+          <button className=" text-white md:text-lg text-sm  px-4 py-2 rounded hover:border hover:border-white">
+            {t(`${book.stock == 0 ? "Sold Out" : "Buy"}`)}
           </button>
         </Link>
       </div>

@@ -1,7 +1,10 @@
 import { Metadata, ResolvingMetadata } from "next";
 import { Book, User } from "@/constant/types";
 import BookDetailClient from "@/components/book-render";
-import { getBookById, getBooksByCategory } from "@/modules/services/bookService";
+import {
+  getBookById,
+  getBooksByCategory,
+} from "@/modules/services/bookService";
 import { last } from "lodash";
 
 const Page = async (props: {
@@ -12,8 +15,9 @@ const Page = async (props: {
   const res = await getBookById(last(params.slugs) || "");
 
   const book = res?.data;
-  const related = await getBooksByCategory(res?.data?.categories?.slug)
-  const relatedBooks = related?.data?.filter(item => item.id !== res?.data.id).slice(0, 4) || [];
+  const related = await getBooksByCategory(res?.data?.categories?.slug);
+  const relatedBooks =
+    related?.data?.filter((item) => item.id !== res?.data.id).slice(0, 4) || [];
 
   const user: User | null = null;
 
@@ -31,11 +35,11 @@ export async function generateMetadata(context: {
   const book = res?.data;
 
   return {
-    title: `${book?.title} | Great Book`,
-    description: book?.description?.slice(0, 150),
+    title: `${book?.meta_title || book?.title} | Great Book`,
+    description: `${book?.meta_desc || book?.description}`.slice(0, 150),
     openGraph: {
-      title: `${book?.title} | Great Book`,
-      description: book?.description?.slice(0, 150),
+      title: `${book?.meta_title || book?.title} | Great Book`,
+      description: `${book?.meta_desc || book?.description}`.slice(0, 150),
       images: [{ url: book?.book_images[0]?.url || "/default-image.jpg" }],
     },
   };

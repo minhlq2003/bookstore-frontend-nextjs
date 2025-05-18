@@ -29,7 +29,7 @@ const BookDetailClient = ({ book, relatedBooks, user }: Props) => {
   const [quantity, setQuantity] = useState(1);
   const [userLocal, setUserLocal] = useState<User | null>(null);
   useEffect(() => {
-    if(user){
+    if (user) {
       return;
     }
     const storedUser = localStorage.getItem("user");
@@ -42,12 +42,12 @@ const BookDetailClient = ({ book, relatedBooks, user }: Props) => {
       }
     }
   }, []);
-  
+
   const increaseQuantity = () => setQuantity((prev) => prev + 1);
   const decreaseQuantity = () =>
     setQuantity((prev) => (prev <= 1 ? 1 : prev - 1));
 
-  const handleAddToCart = async () => {    
+  const handleAddToCart = async () => {
     if (!book || !userLocal) return;
     try {
       const response = await addToCart(userLocal.id, book?.id, quantity);
@@ -139,10 +139,13 @@ const BookDetailClient = ({ book, relatedBooks, user }: Props) => {
             </div>
           </div>
           <button
-            className="bg-blue text-white w-full h-7 md:h-9 lg:h-12 rounded-lg"
+            disabled={book?.stock == 0}
+            className={`${
+              book?.stock == 0 ? "bg-gray-400" : "bg-blue text-white"
+            } w-full h-7 md:h-9 lg:h-12 rounded-lg`}
             onClick={handleAddToCart}
           >
-            {t("Add To Cart")}
+            {t(`${book?.stock == 0 ? "Sold Out" : "Add to Cart"}`)}
           </button>
         </div>
       </div>

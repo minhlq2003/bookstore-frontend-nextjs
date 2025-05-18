@@ -169,5 +169,9 @@
     "Order Status": "Trạng thái đơn hàng",
     "Total Amount": "Tổng số tiền",
     "Order Date": "Ngày đặt hàng",
-    "Delivery Date": "Ngày giao hàng"
+    "Delivery Date": "Ngày giao hàng",
+    "Sold Out": "Hết hàng",
+    "Buy Again": "Mua lại",
+    "Buy": "Mua",
+    "Add to cart": "Thêm vào giỏ hàng"
 }
