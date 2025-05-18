@@ -269,12 +269,12 @@ const filterMenuItemsByPermission = (
 
 export const getFilteredMenuItems = (): MenuItem[] => {
   if (typeof window !== "undefined") {
-    const permissions = JSON.parse(localStorage.getItem("permissions") || "{}");
-    const filteredMenuItems = filterMenuItemsByPermission(
-      menuItems,
-      permissions
-    );
-    return filteredMenuItems;
+    // const permissions = JSON.parse(localStorage.getItem("permissions") || "{}");
+    // const filteredMenuItems = filterMenuItemsByPermission(
+    //   menuItems,
+    //   permissions
+    // );
+    return menuItems;
   } else {
     return menuItems;
   }
