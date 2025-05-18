@@ -110,15 +110,65 @@ const page = () => {
       toast.error(t("Please choose address and payment method"));
       return;
     }
-    setIsOpenModalSuccess((prev) => !prev);
-    /* try {
+    const response = await fetch("/api/email", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        subject: "[GREAT BOOK] Đặt hàng thành công",
+        emailTo: user?.email,
+        content: `
+  <div style="font-family: Arial, sans-serif; font-size: 16px; color: #333;">
+    <h2 style="color: #0b3d91;">[GREAT BOOK] Đặt hàng thành công</h2>
+    <p><strong>Thông tin đơn hàng:</strong></p>
+    <ul>
+      <li><strong>Họ và tên:</strong> ${user?.name}</li>
+      <li><strong>Địa chỉ:</strong> ${selectedAddress}</li>
+      <li><strong>Số điện thoại:</strong> ${receiverPhone}</li>
+      <li><strong>Phương thức thanh toán:</strong> ${paymentMethod}</li>
+      <li><strong>Ngày đặt hàng:</strong> ${new Date().toLocaleDateString(
+        "en-GB"
+      )}</li>
+    </ul>
+    <p><strong>Sản phẩm đã đặt:</strong></p>
+    <table style="width: 100%; border-collapse: collapse;">
+      <thead>
+        <tr style="background-color: #f2f2f2;">
+          <th style="border: 1px solid #ddd; padding: 8px;">Tên sách</th>
+          <th style="border: 1px solid #ddd; padding: 8px;">Số lượng</th>
+          <th style="border: 1px solid #ddd; padding: 8px;">Giá</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${orderItems
+          .map(
+            (item) => `
+              <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">${item.book.title}</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">${item.quantity}</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">${item.book.price}$</td>
+              </tr>`
+          )
+          .join("")}
+      </tbody>
+    </table>
+    <p style="margin-top: 20px;"><strong>Tổng tiền:</strong> ${subtotal.toFixed(
+      2
+    )}$</p>
+    <p>Cảm ơn bạn đã mua hàng tại GREAT BOOK!</p>
+  </div>
+`,
+      }),
+    });
+    try {
       const response = await checkout(userId, address, paymentMethod);
       if (response?.success) {
         setIsOpenModalSuccess((prev) => !prev);
       }
     } catch (error) {
       toast.error("Error when confirm checkout");
-    } */
+    }
   };
 
   return (
@@ -267,7 +317,7 @@ const page = () => {
         </div>
       </div>
       {isOpenModalSuccess && (
-        <ModalCheckoutSuccess 
+        <ModalCheckoutSuccess
           date={new Date().toLocaleDateString("en-GB")}
           address={new String(selectedAddress ?? "")}
           name={user?.name ? user.name.toString() : ""}
