@@ -9,19 +9,20 @@ import LocaleProvider from "@/components/locale-provider";
 import { i18nInstance } from "../../language/i18n";
 import { HeroUIProvider } from "@heroui/react";
 import { Toaster } from "sonner";
+import ChatbotWidget from "@/components/chatbot-widget";
 const geistSans = Geist({
   variable: "--font-geist-sans",
-  subsets: ["latin"],
+  subsets: [ "latin" ],
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
-  subsets: ["latin"],
+  subsets: [ "latin" ],
 });
 
 const merriweather = Merriweather({
-  subsets: ["latin"],
-  weight: ["300", "400", "700"],
+  subsets: [ "latin" ],
+  weight: [ "300", "400", "700" ],
   variable: "--font-merriweather",
 });
 
@@ -55,20 +56,21 @@ export default function RootLayout({
         <script id="headerScripts" />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${merriweather.variable} antialiased font-merriweather`}
+        className={ `${geistSans.variable} ${geistMono.variable} ${merriweather.variable} antialiased font-merriweather` }
       >
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={ <div>Loading...</div> }>
           <LocaleProvider>
-            {() => (
-              <I18nextProvider i18n={i18nInstance}>
+            { () => (
+              <I18nextProvider i18n={ i18nInstance }>
                 <Header />
                 <HeroUIProvider>
-                  <Toaster richColors position="top-center" duration={2000} />
-                  {children}
+                  <Toaster richColors position="top-center" duration={ 2000 } />
+                  { children }
                 </HeroUIProvider>
                 <Footer />
+                <ChatbotWidget />
               </I18nextProvider>
-            )}
+            ) }
           </LocaleProvider>
         </Suspense>
       </body>
