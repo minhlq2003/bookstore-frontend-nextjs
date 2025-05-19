@@ -14,7 +14,7 @@ interface MenuItem {
   permissionKey?: string;
   parent?: string;
   hasPermission?: boolean;
-  children?: MenuItem[];
+  children: MenuItem[];
 }
 
 export const LayoutSider = ({
@@ -43,7 +43,7 @@ export const LayoutSider = ({
     })) as MenuItem[];
 
     setMenuItems(updatedMenuItems);
-  }, [language]);
+  }, [language, originalMenuItems, t]);
   return (
     <Sider
       trigger={null}

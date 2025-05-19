@@ -256,11 +256,9 @@ const UserProfilePage = () => {
 
     const avatarChanged =
       newSelectedAvatarUrl !== null && newSelectedAvatarUrl !== original.avatar;
-    console.log(profileInfoChanged, avatarChanged);
     if (profileInfoChanged || avatarChanged) {
       try {
         const avatarToSend = avatarChanged ? newSelectedAvatarUrl : undefined;
-        console.log(avatarToSend);
 
         const updateResponse = await updateUser(
           Number(userProfile.id),
@@ -632,7 +630,6 @@ const UserProfilePage = () => {
               <Form.Item className="mt-6">
                 <Button
                   onClick={() => {
-                    console.log(profileForm.getFieldsValue());
                     onProfileFinish(profileForm.getFieldsValue());
                   }}
                   type="primary"

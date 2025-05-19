@@ -48,10 +48,6 @@ export default function ListBook({ searchTerm }: ListBookProps) {
   };
 
   useEffect(() => {
-    console.log("data", data);
-  }, [data]);
-
-  useEffect(() => {
     fetchBooks(currentPage, pageSize, sortBy, sortOrder);
   }, [currentPage, pageSize, sortBy, sortOrder, searchTerm]);
 
