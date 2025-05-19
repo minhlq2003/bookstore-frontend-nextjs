@@ -44,6 +44,9 @@ export const LayoutSider = ({
 
     setMenuItems(updatedMenuItems);
   }, [language, originalMenuItems, t]);
+
+  if (!menuItems) return <div> Đang load menu</div>;
+
   return (
     <Sider
       trigger={null}
