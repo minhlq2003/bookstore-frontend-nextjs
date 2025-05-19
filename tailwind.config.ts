@@ -2,7 +2,7 @@ import { heroui } from "@heroui/theme";
 import type { Config } from "tailwindcss";
 
 export default {
-  darkMode: ["class"],
+  darkMode: [ "class" ],
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -64,33 +64,38 @@ export default {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
-      animation:{
+      animation: {
         'ping-large': "ping-large 1s ease-in-out infinite",
         'move-left': "move-left 1s linear infinite",
         'move-right': "move-right 1s linear infinite",
+        "wiggle": "wiggle 0.2s ease-in-out infinite",
       },
-      keyframes:{
+      keyframes: {
         'ping-large': {
-          '75%, 100%':{
+          '75%, 100%': {
             transform: 'scale(3)',
             opacity: '0'
           }
         },
-        'move-left':{
-          '0%':{
+        'move-left': {
+          '0%': {
             transform: 'translateX(0%)'
           },
-          '100%':{
+          '100%': {
             transform: 'translateX(-50%)'
           }
         },
-        'move-right':{
-          '0%':{
+        'move-right': {
+          '0%': {
             transform: 'translateX(-50%)'
           },
-          '100%':{
+          '100%': {
             transform: 'translateX(0%)'
           }
+        },
+        wiggle: {
+          '0%, 100%': { transform: 'rotate(-3deg)' },
+          '50%': { transform: 'rotate(3deg)' },
         }
       }
     },
@@ -100,5 +105,9 @@ export default {
       lg: "1440px",
     },
   },
-  plugins: [[heroui()], require("tailwindcss-animate")],
+  plugins: [
+    [ heroui() ],
+    require("tailwindcss-animate"),
+    require('@tailwindcss/line-clamp')
+  ],
 } satisfies Config;

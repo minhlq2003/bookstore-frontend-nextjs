@@ -17,6 +17,7 @@ const page = () => {
   const [orderDetailsModal, setOrderDetailsModal] = useState(false);
   const [orderDetailsId, setOrderDetailsId] = useState<number | null>(null);
   const [reload, setReload] = useState(false);
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
@@ -32,6 +33,7 @@ const page = () => {
   useEffect(() => {
     if (user) {
       const fetchOrders = async (userId: number, search?: string) => {
+        setLoading(true);
         try {
           const response = await getAllOrdersFromUser(userId, {
             search: search,
@@ -43,6 +45,8 @@ const page = () => {
           }
         } catch (error) {
           console.error("Error fetching orders:", error);
+        } finally {
+          setLoading(false);
         }
       };
       if (ordersFiltered === "all") {
@@ -94,7 +98,7 @@ const page = () => {
           <span className="bg-gray-200 p-1 rounded-md">{orders?.length}</span>
         </h1>
       </div>
-      <div className="flex items-center justify-between bg-gray-200 p-2 rounded-md">
+      <div className="flex items-center justify-between bg-gray-200 p-2 rounded-md overflow-x-auto">
         <div className="flex gap-2 md:gap-5 ">
           <button
             className={`w-[100px] h-[30px] rounded-md ${
@@ -105,6 +109,26 @@ const page = () => {
             onClick={() => setOrdersFiltered("all")}
           >
             {t("All")}
+          </button>
+          <button
+            className={`w-[100px] h-[30px] rounded-md ${
+              ordersFiltered === "pending"
+                ? "bg-white text-customblue"
+                : "bg-gray-200 text-black"
+            }`}
+            onClick={() => setOrdersFiltered("pending")}
+          >
+            {t("Pending")}
+          </button>
+          <button
+            className={`w-[100px] h-[30px] rounded-md ${
+              ordersFiltered === "processing"
+                ? "bg-white text-customblue"
+                : "bg-gray-200 text-black"
+            }`}
+            onClick={() => setOrdersFiltered("processing")}
+          >
+            {t("Processing")}
           </button>
           <button
             className={`w-[100px] h-[30px] rounded-md ${
@@ -129,114 +153,139 @@ const page = () => {
         </div>
       </div>
       <div className="flex flex-col gap-10 items-center justify-center w-full">
-        {orders.map((order: OrderFromUserResponse) => (
-          <div
-            key={order.id}
-            className="w-full bg-gray-200 border-l-4 border-gray-200 h-auto flex flex-col gap-5 p-5 rounded-md hover:border-l-4 hover:border-customblue hover:shadow-md"
-          >
-            <div>
-              {order.status === "pending" ||
-              order.status === "processing" ||
-              order.status === "shipped" ? (
-                <div className="relative flex items-center gap-2">
-                  <div className="relative top-0 left-0 size-3 rounded-full bg-customblue ">
-                    <div className="absolute inset-0 rounded-full bg-customblue z-20 animate-ping [animation-duration:2s]"></div>
-                    <div className="absolute inset-0 rounded-full bg-customblue z-10"></div>
-                  </div>
-                  <p className="text-base">{t("Estimated delivery in 3-4 days")}</p>
-                </div>
-              ) : (
-                <p
-                  className={`text-base ${
-                    order.status === "delivered"
-                      ? "text-green-600"
-                      : "text-red-500"
-                  }`}
+        {loading ? (
+          <p className="text-base lg:text-xl text-black">Loading...</p>
+        ) : (
+          <>
+            {orders.length === 0 ? (
+              <p className="text-base lg:text-xl text-black">
+                Don&apos;t have any orders
+              </p>
+            ) : (
+              orders.map((order: OrderFromUserResponse) => (
+                <div
+                  key={order.id}
+                  className="w-full bg-gray-200 border-l-4 border-gray-200 h-auto flex flex-col gap-5 p-5 rounded-md hover:border-l-4 hover:border-customblue hover:shadow-md"
                 >
-                  {t(`${order.status}`).charAt(0).toUpperCase() + t(`${order.status}`).slice(1)}
-                </p>
-              )}
-              <div className="w-full h-1 bg-white border border-gray-200" />
-            </div>
-            <div className="w-full flex flex-col md:flex-row items-center justify-between gap-1">
-              <div className="flex w-full gap-1">
-                <div className="flex flex-col justify-center gap-5 bg-white rounded-sm h-[250px] md:h-[200px] w-full p-2">
-                  {order.order_items.slice(0, 2).map((item) => (
-                    <div
-                      className="flex items-center gap-2 w-full"
-                      key={item.id}
-                    >
-                      <Image
-                        src={item.book_image}
-                        alt="Item"
-                        width={50}
-                        height={50}
-                        className="object-cover"
-                      />
-                      <div>
-                        <p className="text-base md:text-lg font-medium">
-                          {item.book_title}
+                  <div>
+                    {order.status === "pending" ||
+                    order.status === "processing" ||
+                    order.status === "shipped" ? (
+                      <div className="relative flex items-center gap-2">
+                        <div className="relative top-0 left-0 size-3 rounded-full bg-customblue ">
+                          <div className="absolute inset-0 rounded-full bg-customblue z-20 animate-ping [animation-duration:2s]"></div>
+                          <div className="absolute inset-0 rounded-full bg-customblue z-10"></div>
+                        </div>
+                        <p className="text-base">
+                          {t("Estimated delivery in 3-4 days")}
                         </p>
-                        <p className="text-black font-bold text-sm md:text-base">
-                          <span className="text-black/80 font-normal">
-                            {t("Quantity")}:
-                          </span>{" "}
-                          {item.quantity}
-                        </p>
-                        <p className="text-black font-bold text-sm md:text-base">
-                          <span className="text-black/80 font-normal">
-                            {t("Price")}:
-                          </span>{" "}
-                          ${item.price}
+                      </div>
+                    ) : (
+                      <p
+                        className={`text-base ${
+                          order.status === "delivered"
+                            ? "text-green-600"
+                            : "text-red-500"
+                        }`}
+                      >
+                        {t(`${order.status}`).charAt(0).toUpperCase() +
+                          t(`${order.status}`).slice(1)}
+                      </p>
+                    )}
+                    <div className="w-full h-1 bg-white border border-gray-200" />
+                  </div>
+                  <div className="w-full flex flex-col md:flex-row items-center justify-between gap-1">
+                    <div className="flex w-full gap-1 h-[150px] md:h-[110px]">
+                      <div className="flex flex-col justify-center gap-5 bg-white rounded-sm h-full w-full p-2">
+                        {order.order_items.slice(0, 1).map((item) => (
+                          <div
+                            className="flex items-center gap-2 w-full"
+                            key={item.id}
+                          >
+                            <Image
+                              src={item.book_image}
+                              alt="Item"
+                              width={50}
+                              height={50}
+                              className="object-cover"
+                            />
+                            <div>
+                              <p className="text-base md:text-lg font-medium">
+                                {item.book_title}
+                              </p>
+                              <p className="text-black font-bold text-sm md:text-base">
+                                <span className="text-black/80 font-normal">
+                                  {t("Quantity")}:
+                                </span>{" "}
+                                {item.quantity}
+                              </p>
+                              <p className="text-black font-bold text-sm md:text-base">
+                                <span className="text-black/80 font-normal">
+                                  {t("Price")}:
+                                </span>{" "}
+                                ${item.price}
+                              </p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="flex flex-col items-center justify-center bg-white w-[200px] h-full rounded-sm p-2">
+                        <p className="text-base font-medium">{t("Total")}</p>
+                        <p className="text-xl font-bold text-customblue">
+                          ${order.total}
                         </p>
                       </div>
                     </div>
-                  ))}
+                    <div className="flex w-full md:w-auto md:flex-col justify-between h-[50px] md:h-[110px]">
+                      <button
+                        onClick={() => (
+                          setOrderDetailsModal(true),
+                          setOrderDetailsId(order.id)
+                        )}
+                        className="w-[47%] md:w-[250px] text-xs md:text-base rounded-sm p-3 bg-customblue text-white hover:bg-blue-900"
+                      >
+                        {t("View order details")}
+                      </button>
+                      {(order.status === "pending" ||
+                        order.status === "processing" ||
+                        order.status === "shipped") && (
+                        <button
+                          onClick={() =>
+                            handleCancelOrder(order.id, "cancelled")
+                          }
+                          className="w-[47%] md:w-[250px] text-xs md:text-base rounded-sm p-3 bg-white text-customblue border border-customblue hover:bg-customblue hover:text-white"
+                        >
+                          {t("Cancel order")}
+                        </button>
+                      )}
+                      {(order.status === "delivered" ||
+                        order.status === "cancelled") && (
+                        <button
+                          onClick={() => {
+                            if (!user) return;
+                            order.order_items.forEach((item) =>
+                              handleAddToCart(
+                                user.id,
+                                item.book_id,
+                                item.quantity
+                              )
+                            );
+                            toast.success("Add all items to cart");
+                          }}
+                          className="w-[30%] md:w-[250px] text-xs md:text-base rounded-sm p-3 bg-white text-customblue border border-customblue hover:bg-customblue hover:text-white"
+                        >
+                          {t("Buy again")}
+                        </button>
+                      )}
+                    </div>
+                  </div>
                 </div>
-                <div className="flex flex-col items-center justify-center bg-white w-[200px] h-[250px] md:h-[200px] rounded-sm p-2">
-                  <p className="text-base font-medium">{t("Total")}</p>
-                  <p className="text-xl font-bold text-customblue">
-                    ${order.total}
-                  </p>
-                </div>
-              </div>
-              <div className="flex w-full md:w-auto md:flex-col justify-between h-[50px] md:h-[200px]">
-                <button
-                  onClick={() => (
-                    setOrderDetailsModal(true), setOrderDetailsId(order.id)
-                  )}
-                  className="w-[30%] md:w-[250px] text-xs md:text-base rounded-sm p-3 bg-customblue text-white hover:bg-blue-900"
-                >
-                  {t("View order details")}
-                </button>
-                <button
-                  onClick={() => {
-                    if (!user) return;
-                    order.order_items.forEach((item) =>
-                      handleAddToCart(user.id, item.book_id, item.quantity)
-                    );
-                    toast.success("Add all items to cart");
-                  }}
-                  className="w-[30%] md:w-[250px] text-xs md:text-base rounded-sm p-3 bg-white text-customblue border border-customblue hover:bg-customblue hover:text-white"
-                >
-                  {t("Buy again")}
-                </button>
-                {order.status === "delivered" ||
-                order.status === "cancelled" ? (
-                  <></>
-                ) : (
-                  <button
-                    onClick={() => handleCancelOrder(order.id, "cancelled")}
-                    className="w-[30%] md:w-[250px] text-xs md:text-base rounded-sm p-3 bg-white text-customblue border border-customblue hover:bg-customblue hover:text-white"
-                  >
-                    {t("Cancel orders")}
-                  </button>
-                )}
-              </div>
-            </div>
-          </div>
-        ))}
+              ))
+            )}
+          </>
+        )}
       </div>
+
       {orderDetailsModal && (
         <div className="fixed z-50 inset-0 flex items-center justify-center bg-black/50">
           <div className="bg-white rounded-lg p-5 w-[70%] max-w-[800px]">
@@ -266,7 +315,9 @@ const page = () => {
                 <p>
                   {t("Status")}:{" "}
                   <span className="text-customblue font-bold">
-                    {t(`${ordersFilteredList[0].status}`).charAt(0).toUpperCase() +
+                    {t(`${ordersFilteredList[0].status}`)
+                      .charAt(0)
+                      .toUpperCase() +
                       t(`${ordersFilteredList[0].status}`).slice(1)}
                   </span>
                 </p>
@@ -318,11 +369,12 @@ const page = () => {
                           <p>{t("Discount")}:</p>
                           <p>{t("Transfer Fee")}:</p>
                           <p className="text-base lg:text-xl text-customblue font-bold">
-                            {t("Total")} ({order.order_items.length} {t("items")}):
+                            {t("Total")} ({order.order_items.length}{" "}
+                            {t("items")}):
                           </p>
                         </div>
                         <div className="flex flex-col items-end text-sm lg:text-base text-black">
-                          <p>$0.00</p>
+                          <p>${order.total}</p>
                           <p>$0.00</p>
                           <p>$0.00</p>
                           <p className="text-base lg:text-xl text-customblue font-bold">

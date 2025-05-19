@@ -16,11 +16,20 @@ const page = () => {
   const query = searchParams.get("query") || "";
   const [searchTerm, setSearchTerm] = useState("");
   const [books, setBooks] = useState<Book[]>();
-  const [searchBook, setsearchBook] = useState<Book[]>();
+  const [searchBook, setSearchBook] = useState<Book[]>();
   const [isOut, setIsOut] = useState(false);
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [selectedSort, setSelectedSort] = useState("title_asc");
+  const [sortedBooks, setSortedBooks] = useState<Book[]>([]);
+  const sortOptions = [
+    { value: "title_asc", label: "A-Z" },
+    { value: "title_desc", label: "Z-A" },
+    { value: "price_asc", label: "Price Up" },
+    { value: "price_desc", label: "Price Low" },
+  ];
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -39,6 +48,7 @@ const page = () => {
 
   useEffect(() => {
     const fetchBooks = async (searchTerm: string, page: number) => {
+      setIsLoading(true);
       const response = await getBooks({
         search: searchTerm,
         limit: 16,
@@ -47,17 +57,39 @@ const page = () => {
       if (response) {
         setTotalItems(response.total);
         setTotalPages(response.totalPages);
-        setsearchBook(response.data);
+        setSearchBook(response.data);
       } else {
-        setsearchBook([]);
+        setSearchBook([]);
       }
+      setIsLoading(false);
     };
 
     if (query) {
       fetchBooks(query, currentPage);
     }
   }, [query, currentPage]);
+  useEffect(() => {
+    let sorted = [...(searchBook || [])];
 
+    switch (selectedSort) {
+      case "title_asc":
+        sorted.sort((a, b) => a.title.localeCompare(b.title));
+        break;
+      case "title_desc":
+        sorted.sort((a, b) => b.title.localeCompare(a.title));
+        break;
+      case "price_asc":
+        sorted.sort((a, b) => a.price - b.price);
+        break;
+      case "price_desc":
+        sorted.sort((a, b) => b.price - a.price);
+        break;
+      default:
+        break;
+    }
+
+    setSortedBooks(sorted);
+  }, [selectedSort, searchBook]);
   useEffect(() => {
     const fetchBooks = async (searchTerm: string) => {
       const response = await getBooks({
@@ -132,16 +164,43 @@ const page = () => {
       </div>
       <div className="flex flex-col px-5">
         <div className="pb-6 md:col-span-5 ">
-          <div className="bg-[#0B3D91] px-2 m-2">
+          <div className="bg-[#0B3D91] p-2 m-2 flex items-center justify-between">
             <p className="text-white">
               {totalItems} {t("books founds")}
             </p>
+            <select
+              value={selectedSort}
+              onChange={(e) => setSelectedSort(e.target.value)}
+              className="px-2 py-1 border rounded"
+            >
+              {sortOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {searchBook?.map((book) => (
-              <BookItem key={book.id} book={book} />
-            ))}
-          </div>
+
+          {isLoading ? (
+            <p className="text-base lg:text-xl text-black text-center">
+              Loading...
+            </p>
+          ) : (
+            <>
+              {searchBook?.length === 0 ? (
+                <p className="text-base lg:text-xl text-black text-center">
+                  No books found.
+                </p>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {sortedBooks?.map((book) => (
+                    <BookItem key={book.id} book={book} />
+                  ))}
+                </div>
+              )}
+            </>
+          )}
+
           {totalPages > 1 && (
             <div className="flex gap-2 justify-center mt-4">
               {Array.from({ length: totalPages }, (_, index) => {
