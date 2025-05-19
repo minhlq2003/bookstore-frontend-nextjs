@@ -18,7 +18,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { t } = useTranslation("common");
   const [collapsed, setCollapsed] = useState(false);
 
   const [userAvatar, setUserAvatar] = useState<string>("");
@@ -77,7 +76,7 @@ export default function RootLayout({
                       </Layout>
                     </Content>
                     <Footer style={{ textAlign: "center" }}>
-                      {t("Copyright ©2025 - Ly Quoc Minh")}
+                      "Copyright ©2025 - Ly Quoc Minh"
                     </Footer>
                   </Layout>
                 </Layout>
