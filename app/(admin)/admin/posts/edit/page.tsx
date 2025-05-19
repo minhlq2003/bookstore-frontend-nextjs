@@ -34,7 +34,7 @@ const EditPost = () => {
           form.setFieldsValue(data);
           setUploadedImage(data.image || "");
           const categoriesArray = data.category
-            ? data.category.split(",").map((cat: string) => cat.trim())
+            ? data.category.split(",")?.map((cat: string) => cat.trim())
             : [];
           setCategories(categoriesArray);
         }

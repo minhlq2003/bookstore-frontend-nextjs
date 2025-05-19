@@ -1,3 +1,5 @@
+"use client";
+
 import { Image, Menu } from "antd";
 import Sider from "antd/es/layout/Sider";
 import { usePathname, useRouter } from "next/navigation";
@@ -12,7 +14,7 @@ interface MenuItem {
   permissionKey?: string;
   parent?: string;
   hasPermission?: boolean;
-  children?: MenuItem[];
+  children: MenuItem[];
 }
 
 export const LayoutSider = ({
@@ -30,7 +32,7 @@ export const LayoutSider = ({
   const [menuItems, setMenuItems] = useState(originalMenuItems);
 
   useEffect(() => {
-    const updatedMenuItems = originalMenuItems.map((item) => ({
+    const updatedMenuItems = originalMenuItems?.map((item) => ({
       ...item,
       label: t(item?.label ?? ""),
       children: item.children?.map((child) => ({
@@ -41,7 +43,10 @@ export const LayoutSider = ({
     })) as MenuItem[];
 
     setMenuItems(updatedMenuItems);
-  }, [language]);
+  }, [language, originalMenuItems, t]);
+
+  if (!menuItems) return <div> Đang load menu</div>;
+
   return (
     <Sider
       trigger={null}
@@ -103,7 +108,7 @@ export const LayoutSider = ({
         onClick={(info) => {
           route.push(`/admin/${info.key}`);
         }}
-        selectedKeys={[`/${pathname.split("/").slice(2).join("/")}`]}
+        selectedKeys={[`/${pathname.split("/")?.slice(2).join("/")}`]}
         style={{ minWidth: 0, flex: "auto" }}
       />
     </Sider>

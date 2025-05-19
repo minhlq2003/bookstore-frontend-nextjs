@@ -18,7 +18,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { t } = useTranslation("common");
   const [collapsed, setCollapsed] = useState(false);
 
   const [userAvatar, setUserAvatar] = useState<string>("");
@@ -40,7 +39,7 @@ export default function RootLayout({
         <title>Admin | Book Store</title>
       </head>
       <body>
-        <Suspense>
+        <Suspense fallback={<div>Loading...</div>}>
           <LocaleProvider>
             {() => (
               <I18nextProvider i18n={i18nInstance}>
@@ -67,13 +66,17 @@ export default function RootLayout({
                             borderRadius: "8px",
                           }}
                         >
-                          <Toaster richColors position="top-center" duration={2000} />
+                          <Toaster
+                            richColors
+                            position="top-center"
+                            duration={2000}
+                          />
                           {children}
                         </Content>
                       </Layout>
                     </Content>
                     <Footer style={{ textAlign: "center" }}>
-                      {t("Copyright ©2025 - Ly Quoc Minh")}
+                      "Copyright ©2025 - Ly Quoc Minh"
                     </Footer>
                   </Layout>
                 </Layout>

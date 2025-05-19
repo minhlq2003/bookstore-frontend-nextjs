@@ -208,17 +208,17 @@ export const menuItems: Array<CustomMenuItem> = [
     icon: <SettingOutlined />,
     children: settingItems,
   },
-  {
-    label: "Contact Form",
-    key: "contactform",
-    icon: <MailOutlined />,
-    children: contactForm,
-  },
-  {
-    label: "General Setting",
-    key: "general-setting",
-    icon: <CodeSandboxOutlined />,
-  },
+  // {
+  //   label: "Contact Form",
+  //   key: "contactform",
+  //   icon: <MailOutlined />,
+  //   children: contactForm,
+  // },
+  // {
+  //   label: "General Setting",
+  //   key: "general-setting",
+  //   icon: <CodeSandboxOutlined />,
+  // },
   // {
   //   label: "Base System",
   //   key: "base-system",
@@ -240,7 +240,7 @@ const filterMenuItemsByPermission = (
 
       if (hasPermission) {
         if (item.children?.length) {
-          const filteredChildren = item.children.filter((child) => {
+          const filteredChildren = item.children?.filter((child) => {
             const path = child.key?.toString() || "";
 
             if (path.includes("/create")) {
@@ -249,7 +249,7 @@ const filterMenuItemsByPermission = (
             return true;
           });
 
-          if (filteredChildren.length) {
+          if (filteredChildren?.length) {
             filteredMenuItems.push({
               ...item,
               children: filteredChildren,
@@ -268,14 +268,10 @@ const filterMenuItemsByPermission = (
 };
 
 export const getFilteredMenuItems = (): MenuItem[] => {
-  if (typeof window !== "undefined") {
-    const permissions = JSON.parse(localStorage.getItem("permissions") || "{}");
-    const filteredMenuItems = filterMenuItemsByPermission(
-      menuItems,
-      permissions
-    );
-    return filteredMenuItems;
-  } else {
-    return menuItems;
-  }
+  // const permissions = JSON.parse(localStorage.getItem("permissions") || "{}");
+  // const filteredMenuItems = filterMenuItemsByPermission(
+  //   menuItems,
+  //   permissions
+  // );
+  return menuItems;
 };
