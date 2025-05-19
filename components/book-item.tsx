@@ -9,9 +9,6 @@ import { useTranslation } from "react-i18next";
 
 const BookItem: React.FC<{ book: Book }> = ({ book }) => {
   const { t } = useTranslation("common");
-  useEffect(() => {
-    console.log("BookItem", book);
-  }, []);
   return (
     <div className="border border-gray-300 rounded sm:p-4 p-2 shadow-md bg-white hover:scale-105 transition duration-300 ease-in-out hover:shadow-[0_0_10px_5px_rgba(30,136,229,0.3)]">
       <div className="relative flex justify-center">

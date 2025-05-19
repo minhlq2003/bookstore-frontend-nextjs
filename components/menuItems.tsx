@@ -208,17 +208,17 @@ export const menuItems: Array<CustomMenuItem> = [
     icon: <SettingOutlined />,
     children: settingItems,
   },
-  {
-    label: "Contact Form",
-    key: "contactform",
-    icon: <MailOutlined />,
-    children: contactForm,
-  },
-  {
-    label: "General Setting",
-    key: "general-setting",
-    icon: <CodeSandboxOutlined />,
-  },
+  // {
+  //   label: "Contact Form",
+  //   key: "contactform",
+  //   icon: <MailOutlined />,
+  //   children: contactForm,
+  // },
+  // {
+  //   label: "General Setting",
+  //   key: "general-setting",
+  //   icon: <CodeSandboxOutlined />,
+  // },
   // {
   //   label: "Base System",
   //   key: "base-system",
@@ -268,14 +268,10 @@ const filterMenuItemsByPermission = (
 };
 
 export const getFilteredMenuItems = (): MenuItem[] => {
-  if (typeof window !== "undefined") {
-    // const permissions = JSON.parse(localStorage.getItem("permissions") || "{}");
-    // const filteredMenuItems = filterMenuItemsByPermission(
-    //   menuItems,
-    //   permissions
-    // );
-    return menuItems;
-  } else {
-    return menuItems;
-  }
+  // const permissions = JSON.parse(localStorage.getItem("permissions") || "{}");
+  // const filteredMenuItems = filterMenuItemsByPermission(
+  //   menuItems,
+  //   permissions
+  // );
+  return menuItems;
 };

@@ -57,7 +57,6 @@ const page = () => {
       fetchBooks(query, currentPage);
     }
   }, [query, currentPage]);
-  console.log("SEARCH BOOK", searchBook);
 
   useEffect(() => {
     const fetchBooks = async (searchTerm: string) => {
