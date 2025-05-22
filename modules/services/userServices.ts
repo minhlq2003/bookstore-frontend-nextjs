@@ -30,6 +30,30 @@ export const getProfile = async (): Promise<UserResponse> => {
   return response;
 };
 
+export const signup = async (username: string, password: string, name: string | null | undefined, email: string): Promise<UserResponse> => {
+  const response = await http.post<UserResponse | null>(`${API_PREFIX_PATH}/signup`, {
+    username,
+    password,
+    name,
+    email,
+  })
+  if (!response) {
+    throw new Error("Failed to fetch user profile");
+  }
+  return response;
+}
+
+export const login = async (username: string, password: string): Promise<UserResponse> => {
+  const response = await http.post<UserResponse | null>(`${API_PREFIX_PATH}/login`, {
+    username,
+    password,
+  })
+  if (!response) {
+    return {} as UserResponse;
+  }
+  return response;
+}
+
 export const changePassword = (
   userId: number,
   currentPassword: string,

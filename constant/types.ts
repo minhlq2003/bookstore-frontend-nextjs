@@ -270,6 +270,7 @@ export interface User {
 }
 
 export interface UserResponse {
+  token: string;
   user: any;
   code: number;
   message?: string;

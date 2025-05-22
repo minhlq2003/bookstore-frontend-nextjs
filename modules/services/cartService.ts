@@ -22,9 +22,10 @@ export const getCartItems = (userId:number) =>
 export const deleteCartItem = (cartItemId:number) =>
   http.post<AddToCartResponse>(`${API_PREFIX_PATH}/removecartitem/${cartItemId}`);
 
-export const checkout = (userId:number, address:String, paymentMethod:String) => 
+export const checkout = (userId:number, address:String, paymentMethod:String, cartItemIds:number[]) =>
   http.post<CheckoutResponse>(`${API_PREFIX_PATH}/checkout`,{
     userId,
     address,
-    paymentMethod
+    paymentMethod,
+    cartItemIds
   });
