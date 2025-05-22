@@ -116,13 +116,13 @@ const page = () => {
       toast.error(t("Please choose address and payment method"));
       return;
     }
-    /*const response = await fetch("/api/email", {
+    const response = await fetch("/api/email", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        subject: "[GREAT BOOK] Đặt hàng thành công",
+        subject: "[GreatBook] Đặt hàng thành công",
         emailTo: user?.email,
         content: `
   <div style="font-family: Arial, sans-serif; font-size: 16px; color: #333;">
@@ -166,7 +166,7 @@ const page = () => {
   </div>
 `,
       }),
-    });*/
+    });
     try {
       setIsOpenModalSuccess(true);
       const response = await checkout(userId, address, paymentMethod, cartItemIds);
