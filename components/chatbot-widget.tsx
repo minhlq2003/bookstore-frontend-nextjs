@@ -216,7 +216,7 @@ const ChatbotWidget: React.FC = () => {
   };
 
   return (
-    <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[999]">
+    <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[100]">
       {!isWidgetOpen && (
         <button
           onClick={toggleWidget}

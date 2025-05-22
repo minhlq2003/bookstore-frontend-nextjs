@@ -55,10 +55,7 @@ const MediaUpload: React.FC<MediaUploadProps> = ({
           if (setChooseMedia) {
             setChooseMedia(true);
           }
-          setUploadedFiles((prev) => [
-            ...prev,
-            response.attachment,
-          ]);
+          setUploadedFiles((prev) => [...prev, response.attachment]);
           setFileList([]);
           message.success(t("Media uploaded successfully!"));
         } else {
@@ -127,7 +124,7 @@ const MediaUpload: React.FC<MediaUploadProps> = ({
         </div>
       )}
 
-      <div style={{ height: isOpenModal ? "700px" : "200px" }}>
+      <div style={{ height: isOpenModal ? "700px" : "400px" }}>
         {loading ? (
           <div
             className="h-full"
@@ -157,8 +154,7 @@ const MediaUpload: React.FC<MediaUploadProps> = ({
           //     {t("Support for a single or bulk upload.")}
           //   </p>
           // </Dragger>
-          <div>
-            {" "}
+          <div className="h-full">
             <div
               className=" left-20 right-0 top-5 bottom-0 w-full flex-col gap-5 h-full rounded-lg border border-[#1677ff] bg-white flex items-center justify-center cursor-pointer"
               onClick={handleImageClick}
