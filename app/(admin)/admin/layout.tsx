@@ -60,8 +60,6 @@ export default function RootLayout({
                         <Content
                           style={{
                             padding: "0 12px",
-                            overflowY: "scroll",
-                            height: "calc(100vh - 210px)",
                             backgroundColor: "#fff",
                             borderRadius: "8px",
                           }}
