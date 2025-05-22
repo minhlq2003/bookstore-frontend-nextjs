@@ -15,6 +15,8 @@ import Media from "@/modules/media/pages/Media";
 import MediaUpload from "@/modules/media/pages/AddNewMedia";
 import { useTranslation } from "react-i18next";
 import ModalSelectMedia from "@/modules/media/pages/ModalSelectMedia";
+import { getAllDiscount, getAllPublishers } from "../services/bookService";
+import { getCategories } from "../services/categoryService";
 
 const { TextArea } = Input;
 
@@ -46,10 +48,18 @@ const BookForm: React.FC<{
     setUploadedImages([...uploadedImages, media]);
   };
 
+  const fetchData = async () => {
+    const categoriesData = await getCategories({ limit: 1000 });
+    const publishersData = await getAllPublishers();
+    const discountsData = await getAllDiscount();
+
+    setCategories(categoriesData?.data ?? []);
+    setPublishers(publishersData ?? []);
+    setDiscounts(discountsData ?? []);
+  };
+
   useEffect(() => {
-    setCategories([]);
-    setDiscounts([]);
-    setPublishers([]);
+    fetchData();
   }, []);
 
   const handleSubmit = () => {
@@ -133,7 +143,7 @@ const BookForm: React.FC<{
                 </Form.Item>
 
                 <Form.Item
-                  name="publishedDate"
+                  name="publish_year"
                   label="Năm xuất bản"
                   style={{ width: "45%" }}
                 >
@@ -151,7 +161,7 @@ const BookForm: React.FC<{
 
         <div className="flex flex-row justify-between border border-[#d9d9d9] p-4 rounded-md mt-4">
           <Form.Item
-            name="category"
+            name="category_id"
             label="Danh mục"
             // rules={[{ required: true, message: "Vui lòng chọn danh mục!" }]}
             style={{ width: "30%" }}
@@ -166,7 +176,7 @@ const BookForm: React.FC<{
           </Form.Item>
 
           <Form.Item
-            name="publisher"
+            name="publisher_id"
             label="Nhà xuất bản"
             // rules={[{ required: true, message: "Vui lòng chọn nhà xuất bản!" }]}
             style={{ width: "30%" }}
@@ -180,10 +190,14 @@ const BookForm: React.FC<{
             </Select>
           </Form.Item>
 
-          <Form.Item name="discount" label="Giảm giá" style={{ width: "30%" }}>
+          <Form.Item
+            name="discount_id"
+            label="Giảm giá"
+            style={{ width: "30%" }}
+          >
             <Select placeholder="Chọn mức giảm giá">
               {discounts.map((discount) => (
-                <Select.Option key={discount.id} value={discount.code}>
+                <Select.Option key={discount.id} value={discount.id}>
                   {discount.code}
                 </Select.Option>
               ))}

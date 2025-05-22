@@ -11,6 +11,7 @@ import NormalContent from "./normal-content";
 import { Post } from "@/constant/types";
 import { getPosts, getPostsByCategory } from "@/modules/services/postService";
 import { Images } from "@/constant/images";
+import PostItem from "./post-item";
 
 interface PostRenderProps {
   pageData?: Post;
@@ -108,95 +109,101 @@ const PostRender = ({
   if (loading) return <Spinner />;
 
   return (
-    <div className="pt-8 sm:pt-16 sm:px-0 relative w-full flex justify-center">
-      <div className="container flex flex-col gap-16 relative sm:pb-[2rem] pb-10 sm:px-[7.5rem]">
-        <div className="flex flex-col gap-6 items-start max-w-[1000px] relative lg:px-0 px-4">
-          <p className="px-2 py-1.5 rounded-lg bg-[#0B3D91] uppercase text-white font-semibold text-sm leading-4">
-            {tag}
-          </p>
-          <h1 className="text-[#242F3E] font-bold text-5xl leading-[56px]">
-            {titleBlog}
-          </h1>
-          <div
-            dangerouslySetInnerHTML={{ __html: excerpt || "" }}
-            className="text-xl font-normal text-[#4F4F4F]"
-          />
-          <div className="flex flex-row gap-16 items-center">
-            <div className="flex flex-col gap-1 items-start">
-              <p className="uppercase text-[#999999] font-normal text-sm">
-                WRITTEN BY
-              </p>
-              <p className="text-[#242F3E] font-normal text-base">Manager</p>
-            </div>
-            <div className="flex flex-col gap-1 items-start">
-              <p className="uppercase text-[#999999] font-normal text-sm">
-                PUBLISH ON
-              </p>
-              <p className="text-[#242F3E] font-normal text-base">
-                {dayjs(updatedAtBlog).format("MMM D, YYYY")}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div
-          id="mobile-toc"
-          className="flex flex-col sm:flex-row items-start gap-16 relative"
-        >
-          <div className="hidden sm:flex flex-col gap-6 sticky top-24  lg:px-0 px-4">
-            {tableOfContents.length > 0 && (
-              <div className="flex flex-col justify-center gap-4">
-                <h2 className="sm:text-sm font-normal uppercase text-[#999999]">
-                  Table of contents
-                </h2>
-                <TableOfContents items={tableOfContents} />
-              </div>
-            )}
-          </div>
-
-          <div className="w-full sm:hidden block min-h-[82px]">
+    <div>
+      <div className="pt-8 sm:pt-16 sm:px-0 relative w-full flex justify-center">
+        <div className="container flex flex-col gap-16 relative sm:pb-[2rem] pb-10 sm:px-[7.5rem]">
+          <div className="flex flex-col gap-6 items-start max-w-[1000px] relative lg:px-0 px-4">
+            <p className="px-2 py-1.5 rounded-lg bg-[#0B3D91] uppercase text-white font-semibold text-sm leading-4">
+              {tag}
+            </p>
+            <h1 className="text-[#242F3E] font-bold text-5xl leading-[56px]">
+              {titleBlog}
+            </h1>
             <div
-              className={`sm:hidden block w-full ${
-                isTOCFixed ? "fixed top-[58px] left-0 right-0 z-50 " : ""
-              } ${isTOCOpen ? "bg-white" : ""}`}
-            >
-              <Button
-                className="sm:hidden bg-[#0B3D91] ml-4 mb-4 text-white px-4 py-2 rounded-lg"
-                onClick={() => setIsTOCOpen(!isTOCOpen)}
-              >
-                {isTOCOpen ? <MenuFoldOutlined /> : <MenuUnfoldOutlined />}
-              </Button>
-
-              <div
-                className={`flex flex-col gap-6 transition-all max-h-[80vh] overflow-y-auto duration-300 overflow-hidden ${
-                  isTOCOpen ? "h-[1500px] opacity-100" : "h-0 opacity-0"
-                }`}
-              >
-                {tableOfContents.length > 0 && (
-                  <div className="flex flex-col justify-center gap-4 px-4">
-                    <h2 className="sm:text-sm font-normal uppercase text-[#999999]">
-                      Table of contents
-                    </h2>
-                    <TableOfContents items={tableOfContents} />
-                  </div>
-                )}
+              dangerouslySetInnerHTML={{ __html: excerpt || "" }}
+              className="text-xl font-normal text-[#4F4F4F]"
+            />
+            <div className="flex flex-row gap-16 items-center">
+              <div className="flex flex-col gap-1 items-start">
+                <p className="uppercase text-[#999999] font-normal text-sm">
+                  WRITTEN BY
+                </p>
+                <p className="text-[#242F3E] font-normal text-base">Manager</p>
+              </div>
+              <div className="flex flex-col gap-1 items-start">
+                <p className="uppercase text-[#999999] font-normal text-sm">
+                  PUBLISH ON
+                </p>
+                <p className="text-[#242F3E] font-normal text-base">
+                  {dayjs(updatedAtBlog).format("MMM D, YYYY")}
+                </p>
               </div>
             </div>
           </div>
 
-          <div className="flex flex-col gap-16 sm:max-w-[888px]">
-            <img
-              src={imageUrl}
-              alt=""
-              className="w-full sm:h-[499px] h-[228px] sm:rounded-2xl object-cover"
-            />
-            <NormalContent
-              content={normalContent ?? ""}
-              tableOfContents={tableOfContents}
-            />
+          <div
+            id="mobile-toc"
+            className="flex flex-col sm:flex-row items-start gap-16 relative"
+          >
+            <div className="hidden sm:flex flex-col gap-6 sticky top-24  lg:px-0 px-4">
+              {tableOfContents.length > 0 && (
+                <div className="flex flex-col justify-center gap-4">
+                  <h2 className="sm:text-sm font-normal uppercase text-[#999999]">
+                    Table of contents
+                  </h2>
+                  <TableOfContents items={tableOfContents} />
+                </div>
+              )}
+            </div>
+
+            <div className="w-full sm:hidden block min-h-[82px]">
+              <div
+                className={`sm:hidden block w-full ${
+                  isTOCFixed
+                    ? "fixed top-[58px] left-0 right-0 z-50 "
+                    : "z-[200] relative"
+                } ${isTOCOpen ? "bg-white" : ""}`}
+              >
+                <Button
+                  className="sm:hidden bg-[#0B3D91] ml-4 mb-4 text-white px-4 py-2 rounded-lg"
+                  onClick={() => setIsTOCOpen(!isTOCOpen)}
+                >
+                  {isTOCOpen ? <MenuFoldOutlined /> : <MenuUnfoldOutlined />}
+                </Button>
+
+                <div
+                  className={`flex flex-col gap-6 transition-all max-h-[80vh] overflow-y-auto duration-300 overflow-hidden ${
+                    isTOCOpen ? "h-[1500px] opacity-100" : "h-0 opacity-0"
+                  }`}
+                >
+                  {tableOfContents.length > 0 && (
+                    <div className="flex flex-col justify-center gap-4 px-4">
+                      <h2 className="sm:text-sm font-normal uppercase text-[#999999]">
+                        Table of contents
+                      </h2>
+                      <TableOfContents items={tableOfContents} />
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-16 sm:max-w-[888px]">
+              <img
+                src={imageUrl}
+                alt=""
+                className="w-full sm:h-[499px] h-[228px] sm:rounded-2xl object-cover"
+              />
+              <NormalContent
+                content={normalContent ?? ""}
+                tableOfContents={tableOfContents}
+              />
+            </div>
           </div>
         </div>
-        <div className="bg-[#F9F9FB]">
+      </div>
+      <div className="bg-[#F9F9FB]">
+        <div className="max-w-[1240px] mx-auto flex flex-col md:flex-row">
           {dataRelatedPost && dataRelatedPost.length > 0 && (
             <div className="mx-auto w-full sm:w-auto flex flex-col justify-center gap-10 py-8 px-4 container ">
               <h2 className="text-5xl leading-[56px] font-semibold">
@@ -206,68 +213,9 @@ const PostRender = ({
                 {dataRelatedPost
                   .filter((item) => item.id !== pageData?.id)
                   .slice(0, 3)
-                  .map((item, index) => {
-                    return (
-                      <a
-                        key={index}
-                        href={`/blog/${item.slug}`}
-                        className="flex flex-col gap-4 lg:mb-6 group "
-                      >
-                        <div className="lg:w-[373.33px] h-auto md:h-[270px] rounded-2xl overflow-hidden">
-                          <img
-                            src={item?.image ?? Images.emptyImage.src}
-                            alt="banner"
-                            className="h-full w-full object-cover rounded-2xl transition-transform duration-500 ease-in-out group-hover:scale-110"
-                            sizes="33vw"
-                          />
-                        </div>
-                        <div className="flex flex-row gap-2 items-center">
-                          {item.created_at && (
-                            <p
-                              className="text-[#999999] font-normal text-sm"
-                              style={{ lineHeight: "19px" }}
-                            >
-                              • {dayjs(item.created_at).format("MMM D, YYYY")}
-                            </p>
-                          )}
-                        </div>
-                        {item.title && (
-                          <p
-                            className="font-semibold text-2xl text-[#242F3E] transition-all duration-300 group-hover:opacity-70 group-hover:underline group-hover:decoration-1 line-clamp-2"
-                            style={{ lineHeight: "28px" }}
-                          >
-                            {item.title}
-                          </p>
-                        )}
-                        {item.excerpt && (
-                          <div
-                            className="text-[#4F4F4F] text-base font-normal line-clamp-3"
-                            style={{ lineHeight: "22px" }}
-                            dangerouslySetInnerHTML={{
-                              __html: item.excerpt || "",
-                            }}
-                          />
-                        )}
-                        <div className="flex flex-row w-full items-center justify-between pb-4 border-b border-[#EBEDF0]">
-                          {item.created_at && (
-                            <p
-                              className="text-[#999999] font-normal text-sm"
-                              style={{ lineHeight: "19px" }}
-                            >
-                              {dayjs(item.created_at).format("DD/MM/YYYY")}
-                            </p>
-                          )}
-
-                          <p
-                            className="text-[#0B3D91] font-normal text-sm  cursor-pointer duration-300 transition-all hover:decoration-1 hover:opacity-70 hover:underline"
-                            style={{ lineHeight: "19px" }}
-                          >
-                            Read more
-                          </p>
-                        </div>
-                      </a>
-                    );
-                  })}
+                  .map((item, index) => (
+                    <PostItem key={index} post={item} />
+                  ))}
               </div>
             </div>
           )}

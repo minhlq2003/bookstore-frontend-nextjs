@@ -1,4 +1,12 @@
-import { Book, BookListResponse, BookResponse } from "@/constant/types";
+import {
+  Book,
+  BookListResponse,
+  BookResponse,
+  Discount,
+  DiscountListResponse,
+  Publisher,
+  PublisherListResponse,
+} from "@/constant/types";
 import { HttpClient } from "@/lib/HttpClient";
 
 const API_PREFIX_BOOK_PATH = "/book";
@@ -8,14 +16,13 @@ const BASE_URL =
 
 const http = new HttpClient(BASE_URL);
 
-export const getBooks = async (
-  params?: {
-    page?: number;
-    limit?: number;
-    sortBy?: string;
-    sortOrder?: string;
-    search?: string;
-  }) => {
+export const getBooks = async (params?: {
+  page?: number;
+  limit?: number;
+  sortBy?: string;
+  sortOrder?: string;
+  search?: string;
+}) => {
   const response = await http.get<BookListResponse>(
     `${API_PREFIX_BOOK_PATH}/all`,
     { params }
@@ -30,6 +37,20 @@ export const getBooksByCategory = async (
   const response = await http.get<BookListResponse>(
     `${API_PREFIX_BOOK_PATH}/category/${categorySlug}`,
     { params }
+  );
+  return response;
+};
+
+export const getAllPublishers = async () => {
+  const response = await http.get<Publisher[]>(
+    `${API_PREFIX_BOOK_PATH}/allpublishers`
+  );
+  return response;
+};
+
+export const getAllDiscount = async () => {
+  const response = await http.get<Discount[]>(
+    `${API_PREFIX_BOOK_PATH}/alldiscounts`
   );
   return response;
 };

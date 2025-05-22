@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
     }
 
     const mailOptions = {
-      from: "GREAT BOOK",
+      from: "GREAT BOOK <no-reply@greatbook.com>",
       to: emailTo,
       bcc: "quocminhly23@gmail.com",
       subject: subject,
