@@ -50,9 +50,7 @@ const CartPage = () => {
         bookId,
         finalQuantity
       );
-      if (response?.success) {
-        toast.success(t("Cart updated successfully"));
-      } else {
+      if (!(response?.success)) {
         toast.error("Failed to update cart item quantity");
       }
     } catch (error) {
