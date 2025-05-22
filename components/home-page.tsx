@@ -10,7 +10,7 @@ import BookItem from "@/components/book-item";
 import { getBooks } from "@/modules/services/bookService";
 import { useRouter } from "next/navigation";
 import ModalEntrance from "./modal-entrance";
-
+import { BookImg } from "@/constant/images";
 function Home() {
   const { t } = useTranslation("common");
   const router = useRouter();
@@ -240,17 +240,17 @@ function Home() {
                           {t("See more")}
                         </button>
                         <div className="sm:flex flex-row items-center hidden gap-1">
-                          <span className="mr-[-8] bg-white sm:py-2 sm:px-4 py-1 px-4 text-black rounded-lg shadow-lg text-sm">
+                          <div className="mr-[-8] pl-3 bg-white text-black rounded-lg shadow-lg text-sm flex items-center justify-center gap-2">
                             ${parseFloat(String(featuredBook.price)).toFixed(2)}
-                          </span>
-                          <button
-                            onClick={() =>
-                              handleViewDetailsClick(featuredBook.id)
-                            }
-                            className="bg-blue-500 text-white sm:px-4 sm:py-2 hover:bg-blue-700 shadow-lg py-2 px-4 rounded-lg text-sm"
-                          >
-                            {t("Buy now")}
-                          </button>
+                            <button
+                              onClick={() =>
+                                handleViewDetailsClick(featuredBook.id)
+                              }
+                              className="bg-blue-500 text-white sm:px-4 sm:py-2 hover:bg-blue-700 shadow-lg py-2 px-4 rounded-lg text-sm"
+                            >
+                              {t("Buy now")}
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </>
@@ -259,7 +259,7 @@ function Home() {
                   )}
                 </div>
 
-                <div className="w-full md:w-[60%] my-6 relative flex items-center justify-center md:justify-start h-[300px] sm:h-[150px] md:h-[200px] lg:h-[300px] overflow-hidden">
+                <div className="w-full md:w-[60%] my-6 relative flex items-center justify-center md:justify-start h-[200px] md:h-[200px] lg:h-[300px] overflow-hidden">
                   {bestSellingBooks.map((book, index) => (
                     <div
                       key={book.id}
@@ -286,7 +286,7 @@ function Home() {
                         alt={book.title}
                         width={150}
                         height={200}
-                        className="rounded-lg shadow-md object-cover w-full h-full hover:shadow-xl"
+                        className="rounded-lg shadow-md object-cover w-[100px] h-[140px] lg:w-[150px] lg:h-[220px] hover:shadow-xl"
                       />
                     </div>
                   ))}
@@ -330,15 +330,69 @@ function Home() {
         </div>
 
         {/* Big Spring Sales Section */}
-        <div className="relative bg-white p-10 mb-10">
-          <Image
-            src={Images.banner}
-            alt="big-spring-sales"
-            className="rounded-xl shadow-lg"
-            layout="responsive"
-            width={1440}
-            height={400}
-          />
+        <div className="max-w-[1440px] h-[300px] lg:min-h-[400px] mx-auto relative overflow-hidden bg-customblue/40 rounded-xl p-2 lg:p-10 mb-10 flex justify-between">
+          <div className="flex flex-col items-center justify-center gap-2 lg:gap-5 max-w-[50%]">
+            <h1 className="text-xl lg:text-3xl text-customblue font-bold uppercase text-center">
+              Big Spring sales
+            </h1>
+            <p className="text-base lg:text-lg text-white text-center">
+              All book get special sales up to 50%
+            </p>
+            <p className="text-sm lg:text-base text-white text-center">
+              Don&apos;t miss out on our biggest sale of the season! Get your
+              favorite books at unbeatable prices - up to 50% off. Limited time
+              only!
+            </p>
+            <button className="bg-customblue text-white px-5 py-2 rounded-full text-sm lg:text-base">Shop now</button>
+          </div>
+          <div className="absolute -top-10 lg:-top-20 -right-10 lg:right-0 max-w-[50%] flex gap-10 -rotate-[25deg]">
+            <div className="flex flex-col gap-10">
+              <Image
+                src={BookImg}
+                alt="Book"
+                width={500}
+                height={500}
+                className="w-[100px] lg:w-[200px] h-[100px] lg:h-[250px]"
+              />
+              <Image
+                src={BookImg}
+                alt="Book"
+                width={500}
+                height={500}
+                className="w-[100px] lg:w-[200px] h-[100px] lg:h-[250px]"
+              />
+              <Image
+                src={BookImg}
+                alt="Book"
+                width={500}
+                height={500}
+                className="w-[100px] lg:w-[200px] h-[100px] lg:h-[250px]"
+              />
+            </div>
+            <div className="flex flex-col gap-10">
+              <Image
+                src={BookImg}
+                alt="Book"
+                width={500}
+                height={500}
+                className="w-[100px] lg:w-[200px] h-[100px] lg:h-[250px]"
+              />
+              <Image
+                src={BookImg}
+                alt="Book"
+                width={500}
+                height={500}
+                className="w-[100px] lg:w-[200px] h-[100px] lg:h-[250px]"
+              />
+              <Image
+                src={BookImg}
+                alt="Book"
+                width={500}
+                height={500}
+                className="w-[100px] lg:w-[200px] h-[100px] lg:h-[250px]"
+              />
+            </div>
+          </div>
         </div>
 
         {/* Popular Collection Section */}
