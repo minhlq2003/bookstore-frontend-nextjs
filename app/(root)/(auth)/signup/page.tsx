@@ -4,6 +4,7 @@ import { useTranslation } from "next-i18next";
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense, useState } from "react";
+import {loginWithGoogle} from "@/lib/actions/auth";
 
 function SignUp() {
   const { t } = useTranslation("common");
@@ -137,11 +138,11 @@ function SignUp() {
                 </Link>
               </p>
             </div>
-
+          </form>
             <div className="mt-6 text-center text-gray-500">
               <p>{t("or continue with")}</p>
             </div>
-            <button className="w-full bg-white border border-gray-300 rounded-md py-2 px-4 flex items-center justify-center mt-2 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300">
+            <button onClick={() => loginWithGoogle()} className="w-full bg-white border border-gray-300 rounded-md py-2 px-4 flex items-center justify-center mt-2 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300">
               <Image
                 src={Images.googleIcon}
                 alt="Google Icon"
@@ -151,7 +152,7 @@ function SignUp() {
               />
               <p className="text-black">{t("Continue with Google")}</p>
             </button>
-          </form>
+
         </div>
       </div>
     </Suspense>
