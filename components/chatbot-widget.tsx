@@ -18,10 +18,10 @@ interface ChatMessage {
 }
 
 const ChatbotWidget: React.FC = () => {
-  const [ isWidgetOpen, setIsWidgetOpen ] = useState(false);
-  const [ messages, setMessages ] = useState<ChatMessage[]>([]);
-  const [ input, setInput ] = useState("");
-  const [ isLoading, setIsLoading ] = useState(false);
+  const [isWidgetOpen, setIsWidgetOpen] = useState(false);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [input, setInput] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
   const inputRef = useRef<null | HTMLInputElement>(null);
 
@@ -29,7 +29,7 @@ const ChatbotWidget: React.FC = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  useEffect(scrollToBottom, [ messages ]);
+  useEffect(scrollToBottom, [messages]);
 
   useEffect(() => {
     if (isWidgetOpen) {
@@ -37,10 +37,10 @@ const ChatbotWidget: React.FC = () => {
       if (
         messages.length === 0 ||
         (messages.length === 1 &&
-          messages[ 0 ].type === "system" &&
+          messages[0].type === "system" &&
           !(
-            messages[ 0 ].content &&
-            messages[ 0 ].content.toString().includes("Chào bạn")
+            messages[0].content &&
+            messages[0].content.toString().includes("Chào bạn")
           ))
       ) {
         setMessages([
@@ -53,8 +53,8 @@ const ChatbotWidget: React.FC = () => {
                   Hello! I am GreatBook's virtual assistant.
                 </p>
                 <p>
-                  Let me know what kind of books you are looking for
-                  (e.g., Vietnamese history books, romance novels, science books).
+                  Let me know what kind of books you are looking for (e.g.,
+                  Vietnamese history books, romance novels, science books).
                 </p>
               </div>
             ),
@@ -62,7 +62,7 @@ const ChatbotWidget: React.FC = () => {
         ]);
       }
     }
-  }, [ isWidgetOpen ]);
+  }, [isWidgetOpen]);
 
   const handleSendMessage = async (messageContent?: string) => {
     const query = messageContent || input;
@@ -73,7 +73,7 @@ const ChatbotWidget: React.FC = () => {
       type: "user",
       content: query,
     };
-    setMessages((prevMessages) => [ ...prevMessages, newUserMessage ]);
+    setMessages((prevMessages) => [...prevMessages, newUserMessage]);
     if (!messageContent) {
       setInput("");
     }
@@ -105,8 +105,9 @@ const ChatbotWidget: React.FC = () => {
       setIsLoading(false);
 
       if (!response.ok) {
-        let errorDetail = `Lỗi ${response.status}: ${response.statusText || "Unable to connect to chatbot server."
-          }`;
+        let errorDetail = `Lỗi ${response.status}: ${
+          response.statusText || "Unable to connect to chatbot server."
+        }`;
         try {
           const errorData = await response.json();
           errorDetail =
@@ -114,7 +115,7 @@ const ChatbotWidget: React.FC = () => {
         } catch (jsonError) {
           try {
             errorDetail = await response.text();
-          } catch (textError) { }
+          } catch (textError) {}
         }
         throw new Error(errorDetail);
       }
@@ -128,39 +129,39 @@ const ChatbotWidget: React.FC = () => {
               Here are some suggestions for you:
             </p>
             <div className="grid grid-cols-1 gap-2 max-h-80 overflow-y-auto chatbot-books-scroll pr-1">
-              { data.books.map((book: Book) => (
+              {data.books.map((book: Book) => (
                 <a
-                  key={ book.id }
-                  href={ `/book/${book.id}` }
+                  key={book.id}
+                  href={`/book/${book.id}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="block bg-white p-2 rounded-md shadow-sm hover:shadow-md transition-shadow border border-gray-200 text-left hover:bg-gray-50"
                 >
                   <h4 className="font-bold text-blue-800 text-md leading-tight mb-0.5 truncate">
-                    { book.title }
+                    {book.title}
                   </h4>
-                  { book.author && (
+                  {book.author && (
                     <p className="text-2xs text-gray-800 mb-0.5 truncate">
-                      Author: { book.author }
+                      Author: {book.author}
                     </p>
-                  ) }
-                  { typeof book.price === "number" && (
+                  )}
+                  {typeof book.price === "number" && (
                     <p className="text-2xs text-gray-800 font-medium mb-0.5">
-                      Price: { book.price.toLocaleString("en-US") } USD
+                      Price: {book.price.toLocaleString("en-US")} USD
                     </p>
-                  ) }
-                  { book.category && (
+                  )}
+                  {book.category && (
                     <p className="text-2xs text-gray-800 mb-0.5 truncate">
-                      Category: { book.category }
+                      Category: {book.category}
                     </p>
-                  ) }
-                  { book.description && (
+                  )}
+                  {book.description && (
                     <p className="text-2xs text-gray-800 mb-0.5 truncate">
-                      Description: { book.description }
+                      Description: {book.description}
                     </p>
-                  ) }
+                  )}
                 </a>
-              )) }
+              ))}
             </div>
           </div>
         );
@@ -216,138 +217,139 @@ const ChatbotWidget: React.FC = () => {
 
   return (
     <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[999]">
-      { !isWidgetOpen && (
+      {!isWidgetOpen && (
         <button
-          onClick={ toggleWidget }
-          className="fixed bottom-[75px] md:bottom-[85px] w-14 h-14 right-3 md:right-6 bg-gradient-to-br from-blue-500 to-indigo-600 text-white rounded-full shadow-xl flex items-center justify-center
+          onClick={toggleWidget}
+          className="fixed bottom-[75px] md:bottom-[150px] w-14 h-14 right-3 md:right-6 bg-gradient-to-br from-blue-500 to-indigo-600 text-white rounded-full shadow-xl flex items-center justify-center
                     transition-all duration-300 ease-in-out z-[999] hover:scale-110 hover:shadow-2xl focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 group"
           aria-label="Open chatbot widget"
           title="Chat with Great Book's virtual assistant"
         >
           <MessageCircleQuestionIcon
-            size={ 30 }
+            size={30}
             className="group-hover:animate-wiggle"
           />
         </button>
-      ) }
+      )}
 
       <div
-        className={ `
+        className={`
           bg-white rounded-xl shadow-2xl flex flex-col
           w-[calc(100vw-2rem)] max-w-[370px] sm:max-w-[380px]
           h-[calc(100vh-6rem)] max-h-[550px] sm:max-h-[600px]
           transition-all duration-300 ease-out origin-bottom-right
-          ${isWidgetOpen
-            ? "opacity-100 translate-y-0 scale-100"
-            : "opacity-0 translate-y-10 scale-95 pointer-events-none"
+          ${
+            isWidgetOpen
+              ? "opacity-100 translate-y-0 scale-100"
+              : "opacity-0 translate-y-10 scale-95 pointer-events-none"
           }
         `}
       >
         <div
           className="bg-gradient-to-r from-blue-500 to-sky-500 text-white p-3 flex justify-between items-center rounded-t-xl cursor-pointer"
-          onClick={ !isWidgetOpen ? toggleWidget : undefined }
+          onClick={!isWidgetOpen ? toggleWidget : undefined}
         >
           <div className="flex items-center space-x-2">
-            <BotIcon size={ 20 } className="text-white/90" />
+            <BotIcon size={20} className="text-white/90" />
             <h3 className="font-semibold text-base sm:text-md">
               GreatBook Assistant
             </h3>
           </div>
           <button
-            onClick={ toggleWidget }
+            onClick={toggleWidget}
             className="text-white/80 hover:text-white hover:bg-white/20 p-1 rounded-full transition-colors"
           >
-            { isWidgetOpen ? (
-              <XIcon size={ 18 } />
+            {isWidgetOpen ? (
+              <XIcon size={18} />
             ) : (
-              <MessageCircleQuestionIcon size={ 18 } />
-            ) }
+              <MessageCircleQuestionIcon size={18} />
+            )}
           </button>
         </div>
 
         <div className="flex-1 p-2.5 space-y-2.5 overflow-y-auto chatbot-messages text-xs sm:text-sm">
-          { messages.map((msg) => (
+          {messages.map((msg) => (
             <div
-              key={ msg.id }
-              className={ `flex ${msg.type === "user" ? "justify-end" : "justify-start"
-                }` }
+              key={msg.id}
+              className={`flex ${
+                msg.type === "user" ? "justify-end" : "justify-start"
+              }`}
             >
               <div
-                className={ `max-w-[90%] py-1.5 px-2.5 rounded-lg shadow-sm break-words ${msg.type === "user"
-                  ? "bg-blue-500 text-white rounded-br-none"
-                  : msg.type === "bot"
+                className={`max-w-[90%] py-1.5 px-2.5 rounded-lg shadow-sm break-words ${
+                  msg.type === "user"
+                    ? "bg-blue-500 text-white rounded-br-none"
+                    : msg.type === "bot"
                     ? "bg-gray-100 text-gray-800 rounded-bl-none"
                     : msg.type === "loading"
-                      ? "bg-gray-100 text-gray-800 rounded-bl-none"
-                      : msg.type === "error"
-                        ? "bg-blue-100 text-blue-600 rounded-bl-none border border-blue-200 text-xs"
-                        : "bg-indigo-50 text-indigo-700 rounded-bl-none text-xs"
-                  }` }
+                    ? "bg-gray-100 text-gray-800 rounded-bl-none"
+                    : msg.type === "error"
+                    ? "bg-blue-100 text-blue-600 rounded-bl-none border border-blue-200 text-xs"
+                    : "bg-indigo-50 text-indigo-700 rounded-bl-none text-xs"
+                }`}
               >
-                { msg.type === "loading" && (
+                {msg.type === "loading" && (
                   <div className="flex items-center space-x-1.5">
                     <BotIcon className="w-4 h-4 animate-pulse text-blue-500" />
-                    <span className="text-xs text-gray-600">
-                      Searching...
-                    </span>
+                    <span className="text-xs text-gray-600">Searching...</span>
                   </div>
-                ) }
-                { msg.type !== "loading" &&
+                )}
+                {msg.type !== "loading" &&
                   (typeof msg.content === "string" ? (
-                    <p>{ msg.content }</p>
+                    <p>{msg.content}</p>
                   ) : (
                     msg.content
-                  )) }
+                  ))}
               </div>
             </div>
-          )) }
-          <div ref={ messagesEndRef } />
+          ))}
+          <div ref={messagesEndRef} />
         </div>
 
-        { !isLoading &&
+        {!isLoading &&
           messages.filter((m) => m.type !== "system").length < 1 && (
             <div className="px-2.5 pt-1.5 pb-1 border-t border-gray-200">
               <p className="text-2xs text-gray-500 mb-1">Quick question:</p>
               <div className="flex flex-wrap gap-1">
-                { suggestionPrompts.slice(0, 3).map((prompt, idx) => (
+                {suggestionPrompts.slice(0, 3).map((prompt, idx) => (
                   <button
-                    key={ idx }
-                    onClick={ () => handleSendMessage(prompt) }
+                    key={idx}
+                    onClick={() => handleSendMessage(prompt)}
                     className="text-2xs bg-gray-100 hover:bg-gray-200 text-gray-700 px-1.5 py-0.5 rounded-full transition-colors border border-gray-200"
                   >
-                    { prompt }
+                    {prompt}
                   </button>
-                )) }
+                ))}
               </div>
             </div>
-          ) }
+          )}
 
         <div className="p-2.5 border-t border-gray-200 bg-gray-50 rounded-b-xl flex items-center space-x-1.5">
           <button
-            onClick={ handleResetChat }
+            onClick={handleResetChat}
             className="p-1.5 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-full transition-colors"
             title="Bắt đầu chat mới"
           >
             <RotateCcwIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           </button>
           <input
-            ref={ inputRef }
+            ref={inputRef}
             type="text"
-            value={ input }
-            onChange={ (e) => setInput(e.target.value) }
-            onKeyDown={ (e) =>
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) =>
               e.key === "Enter" && !isLoading && handleSendMessage()
             }
             placeholder="Enter message..."
             className="flex-1 p-1.5 sm:p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-sky-500 text-xs sm:text-sm"
-            disabled={ isLoading }
+            disabled={isLoading}
           />
           <button
-            onClick={ () => handleSendMessage() }
+            onClick={() => handleSendMessage()}
             className="bg-blue-500 text-white p-1.5 sm:p-2 rounded-md hover:bg-blue-700 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
-            disabled={ isLoading || input.trim() === "" }
+            disabled={isLoading || input.trim() === ""}
           >
-            <Send size={ 18 } className="sm:w-5 sm:h-5" />
+            <Send size={18} className="sm:w-5 sm:h-5" />
           </button>
         </div>
       </div>
