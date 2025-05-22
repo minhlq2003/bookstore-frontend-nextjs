@@ -63,7 +63,7 @@ export default function Dashboard() {
         ))}
       </div>
 
-      <div className="flex flex-row gap-6 h-full">
+      <div className="flex flex-row gap-6 h-fit">
         <div className="bg-white rounded-xl border-none shadow-gray-200 shadow-lg p-4 h-full w-1/2">
           <BarChartCard />
         </div>
@@ -83,7 +83,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <div className="flex flex-row h-full gap-6">
+      <div className="flex flex-row h-fit gap-6">
         <div className="bg-white rounded-xl border-none shadow-gray-200 shadow-lg p-4 h-full w-full flex flex-row gap-2 justify-between">
           <div className="flex flex-col justify-between">
             <div>
