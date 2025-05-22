@@ -1,5 +1,6 @@
 "use client";
 import ModalCheckoutSuccess from "@/components/modal-checkout-success";
+import StripeCheckout from "@/components/stripe-checkout";
 import { Address, CartResponse, User } from "@/constant/types";
 import { checkout } from "@/modules/services/cartService";
 import {
@@ -26,6 +27,8 @@ const page = () => {
   const [receiverPhone, setReceiverPhone] = useState("");
   const [selectedAddress, setSelectedAddress] = useState<string | null>(null);
   const [isOpenModalSuccess, setIsOpenModalSuccess] = useState(false);
+  const [cartItemIds, setCartItemIds] = useState<number[]>([]);
+
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
@@ -44,6 +47,8 @@ const page = () => {
       try {
         const parsedOrder: CartResponse[] = JSON.parse(tempOrder);
         setOrderItems(parsedOrder);
+        const ids = parsedOrder.map((item: CartResponse) => item.id);
+        setCartItemIds(ids);
       } catch (error) {
         toast.error("Failed to parse tempOrder from localStorage");
       }
@@ -104,13 +109,14 @@ const page = () => {
   const handleConfirm = async (
     userId: number,
     address: String,
-    paymentMethod: string
+    paymentMethod: string,
+    cartItemIds: number[]
   ) => {
     if (!address || !paymentMethod) {
       toast.error(t("Please choose address and payment method"));
       return;
     }
-    const response = await fetch("/api/email", {
+    /*const response = await fetch("/api/email", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -128,8 +134,8 @@ const page = () => {
       <li><strong>Số điện thoại:</strong> ${receiverPhone}</li>
       <li><strong>Phương thức thanh toán:</strong> ${paymentMethod}</li>
       <li><strong>Ngày đặt hàng:</strong> ${new Date().toLocaleDateString(
-        "en-GB"
-      )}</li>
+          "en-GB"
+        )}</li>
     </ul>
     <p><strong>Sản phẩm đã đặt:</strong></p>
     <table style="width: 100%; border-collapse: collapse;">
@@ -142,29 +148,31 @@ const page = () => {
       </thead>
       <tbody>
         ${orderItems
-          .map(
-            (item) => `
+        .map(
+          (item) => `
               <tr>
                 <td style="border: 1px solid #ddd; padding: 8px;">${item.book.title}</td>
                 <td style="border: 1px solid #ddd; padding: 8px;">${item.quantity}</td>
                 <td style="border: 1px solid #ddd; padding: 8px;">${item.book.price}$</td>
               </tr>`
-          )
-          .join("")}
+        )
+        .join("")}
       </tbody>
     </table>
     <p style="margin-top: 20px;"><strong>Tổng tiền:</strong> ${subtotal.toFixed(
-      2
-    )}$</p>
+          2
+        )}$</p>
     <p>Cảm ơn bạn đã mua hàng tại GREAT BOOK!</p>
   </div>
 `,
       }),
-    });
+    });*/
     try {
-      const response = await checkout(userId, address, paymentMethod);
+      setIsOpenModalSuccess(true);
+      const response = await checkout(userId, address, paymentMethod, cartItemIds);
       if (response?.success) {
-        setIsOpenModalSuccess((prev) => !prev);
+        router.push("/cart/checkout/success?session_id=ipaidbycashbozo&type=CASH")
+        //setIsOpenModalSuccess((prev) => !prev);
       }
     } catch (error) {
       toast.error("Error when confirm checkout");
@@ -269,7 +277,7 @@ const page = () => {
                   checked={paymentMethod === "CASH"}
                   onChange={() => setPaymentMethod("CASH")}
                 />
-                <p>{t("Pay when received package")}</p>
+                <p>{t("Cash On Delivery (COD)")}</p>
               </div>
               <div className="flex gap-2">
                 <input
@@ -285,9 +293,16 @@ const page = () => {
           </div>
           {paymentMethod === "CARD" && (
             <div className="border rounded-lg p-4 shadow-md w-full bg-white mt-4">
-              <p className="uppercase text-red-600 underline font-bold text-6xl">
-                Day la cho de gan stripe, Ban se thay no neu Card duoc checked
-              </p>
+              {selectedAddress ? (
+                <StripeCheckout
+                  amount={subtotal.toFixed(2)}
+                  userId={user?.id || 0}
+                  addressId={selectedAddress}
+                  email={user?.email || ""}
+                />
+              ) : (
+                <p className="text-red-500">{t("Please select or add an address to continue with card payment")}</p>
+              )}
             </div>
           )}
         </div>
@@ -302,29 +317,23 @@ const page = () => {
               <span className="text-darkblue">${subtotal.toFixed(2)}</span>
             </div>
           </div>
-          <button
-            onClick={() =>
-              handleConfirm(
-                Number(user?.id),
-                selectedAddress || "",
-                paymentMethod
-              )
-            }
-            className="bg-blue text-white w-full h-7 md:h-9 lg:h-12 rounded-lg"
-          >
-            {t("Confirm")}
-          </button>
+          {paymentMethod === "CASH" && (
+            <button
+              onClick={() =>
+                handleConfirm(
+                  Number(user?.id),
+                  selectedAddress || "",
+                  paymentMethod,
+                  cartItemIds
+                )
+              }
+              className="bg-blue text-white w-full h-7 md:h-9 lg:h-12 rounded-lg"
+            >
+              {isOpenModalSuccess ? t("Processing...") : t("Confirm")}
+            </button>
+          )}
         </div>
       </div>
-      {isOpenModalSuccess && (
-        <ModalCheckoutSuccess
-          date={new Date().toLocaleDateString("en-GB")}
-          address={new String(selectedAddress ?? "")}
-          name={user?.name ? user.name.toString() : ""}
-          total={subtotal}
-          numberOfItem={orderItems.length}
-        />
-      )}
     </div>
   );
 };
