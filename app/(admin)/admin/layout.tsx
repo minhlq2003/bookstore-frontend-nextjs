@@ -28,7 +28,8 @@ export default function RootLayout({
       const user = JSON.parse(localStorage.getItem("user") || "{}");
       if (!user || !user.id) {
         router.push("/signin");
-      } else {
+      } else if(user.role !== "admin"){
+        router.push("/signin");
       }
     }
   }, [router]);
