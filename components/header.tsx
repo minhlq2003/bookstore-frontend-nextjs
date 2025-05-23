@@ -321,7 +321,7 @@ const Header = () => {
             </Link>
           </li>
           <li>
-            <Link href="/account" className="flex flex-col">
+            <Link href="/profile" className="flex flex-col">
               <FontAwesomeIcon icon={faUser} />
               {t("Account")}
             </Link>
