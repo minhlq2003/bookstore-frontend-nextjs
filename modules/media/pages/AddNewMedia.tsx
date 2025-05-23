@@ -8,6 +8,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { MediaData } from "@/constant/types";
 import { useTranslation } from "react-i18next";
 import { uploadMedia } from "@/modules/services/mediaService";
+import { toast } from "sonner";
 
 interface MediaUploadProps {
   isOpenModal?: boolean;
@@ -57,14 +58,14 @@ const MediaUpload: React.FC<MediaUploadProps> = ({
           }
           setUploadedFiles((prev) => [...prev, response.attachment]);
           setFileList([]);
-          message.success(t("Media uploaded successfully!"));
+          toast.success(t("Media uploaded successfully!"));
         } else {
-          message.error(t("Failed to upload media."));
+          toast.error(t("Failed to upload media."));
         }
 
-        message.success(t("Media uploaded successfully!"));
+        toast.success(t("Media uploaded successfully!"));
       } catch {
-        message.error(t("Failed to upload media."));
+        toast.error(t("Failed to upload media."));
       } finally {
         setLoading(false);
       }
@@ -90,14 +91,14 @@ const MediaUpload: React.FC<MediaUploadProps> = ({
           ...(Array.isArray(response) ? response : [response]),
         ]);
         setFileList([]);
-        message.success(t("Media uploaded successfully!"));
+        toast.success(t("Media uploaded successfully!"));
       } else {
-        message.error(t("Failed to upload media."));
+        toast.error(t("Failed to upload media."));
       }
 
-      message.success(t("Media uploaded successfully!"));
+      toast.success(t("Media uploaded successfully!"));
     } catch {
-      message.error(t("Failed to upload media."));
+      toast.error(t("Failed to upload media."));
     } finally {
       setLoading(false);
     }

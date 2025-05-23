@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar, faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
 import { BreadcrumbItem, Breadcrumbs } from "@heroui/breadcrumbs";
+import { useRouter } from "next/navigation";
 import {
   Table,
   TableBody,
@@ -27,6 +28,7 @@ interface Props {
 const BookDetailClient = ({ book, relatedBooks, user }: Props) => {
   const { t } = useTranslation("common");
   const [quantity, setQuantity] = useState(1);
+  const router = useRouter();
   const [userLocal, setUserLocal] = useState<User | null>(null);
   useEffect(() => {
     if (user) {
@@ -48,7 +50,10 @@ const BookDetailClient = ({ book, relatedBooks, user }: Props) => {
     setQuantity((prev) => (prev <= 1 ? 1 : prev - 1));
 
   const handleAddToCart = async () => {
-    if (!book || !userLocal) return;
+    if (!book || !userLocal) {
+
+      return router.push("/signin")
+    }
     try {
       const response = await addToCart(userLocal.id, book?.id, quantity);
       if (response?.success) {

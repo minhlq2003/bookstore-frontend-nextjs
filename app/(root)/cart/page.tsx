@@ -80,7 +80,9 @@ const CartPage = () => {
   };
 
   useEffect(() => {
-    if (!user) return;
+    if (!user) {
+      return router.push("/signin")
+    }
     getAllCartItems(user.id as number);
   }, [user]);
 

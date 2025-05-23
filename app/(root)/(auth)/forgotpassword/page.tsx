@@ -4,7 +4,7 @@ import { Suspense, useState } from "react";
 import { Form, Input, Button } from "antd";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-
+import {UserResponse} from "@/constant/types";
 const page = () => {
   const { t } = useTranslation("common");
   const [form] = Form.useForm();
@@ -15,6 +15,22 @@ const page = () => {
   const router = useRouter();
   const [email, setEmail] = useState("")
   const [isSend, setIsSend] = useState(false);
+
+
+  const fetchAccountInfo = async (email: string) => {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/user/account/${email}`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+
+    const data = await res.json() as { user?: UserResponse };
+    if (data.user) {
+      return data.user
+    } else {
+      return null;
+    }
+  };
+
   const sendOtpEmail = async (email: string) => {
     const res = await fetch("/api/send-otp", {
       method: "POST",
@@ -32,10 +48,15 @@ const page = () => {
   };
 
   const handleSubmit = async (values: any) => {
-    await sendOtpEmail(values.email);
-    console.log("email", values.email);
-    setEmail(values.email)
-    setIsSend(!isSend);
+    let result = await fetchAccountInfo(values.email);
+    if(result !== null) {
+      await sendOtpEmail(values.email);
+      console.log("email", values.email);
+      setEmail(values.email)
+      setIsSend(!isSend);
+    } else {
+      return toast.error(t("There is no account associated with this email!"));
+    }
   };
 
   const handleVerifyOtp = async () => {
@@ -50,8 +71,22 @@ const page = () => {
   const handleResetPassword = async (values: any) => {
     console.log("password", values.password);
     console.log("confirm password", values.confirmPassword);
-    console.log("confirm password", email);
-    //router.push("/login");
+    console.log("email", email);
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/user/reset-password`, {
+      method: "POST",
+      body: JSON.stringify({ email: email, password: values.password }),
+      headers: { "Content-Type": "application/json" },
+    });
+
+    const data = await res.json() as UserResponse ;
+    if (data.message === 'Password reset successfully') {
+      toast.success(t("Password reset successfully!"));
+      setTimeout(() => {
+        router.push("/signin");
+      }, 500)
+    } else {
+      toast.error(t("Failed to reset password"));
+    }
   }
 
   return (

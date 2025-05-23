@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Form, message, Spin } from "antd";
+import { Button, Form, Spin } from "antd";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState, useCallback } from "react";
 import { CheckCircleIcon } from "lucide-react";
@@ -11,6 +11,7 @@ import PostForm from "@/modules/post/PostForm";
 import FeaturedImage from "@/modules/post/FeaturedImage";
 import Categories from "@/modules/post/Categories";
 import Publish from "@/modules/post/Publish";
+import { toast } from "sonner";
 
 const EditPost = () => {
   const { t } = useTranslation("common");
@@ -39,7 +40,7 @@ const EditPost = () => {
           setCategories(categoriesArray);
         }
       } catch {
-        message.error(t("Failed to fetch post."));
+        toast.error(t("Failed to fetch post."));
       }
       setLoading(false);
     },
@@ -53,26 +54,26 @@ const EditPost = () => {
       ? categories.join(",")
       : "";
     const dataPayload: Post = {
+      ...values,
       title: values.title,
       slug,
       content: values.content,
       category: categoryString,
       status: values.status ? "draft" : "published",
       image: uploadedImage,
-      ...values,
     };
 
     try {
       if (id) {
         await updatePost(id, dataPayload);
-        message.success(t("Post updated successfully!"));
+        toast.success(t("Post updated successfully!"));
         form.resetFields();
         router.push("/admin/posts");
       } else {
-        message.error(t("Invalid post ID."));
+        toast.error(t("Invalid post ID."));
       }
     } catch {
-      message.error(t("Failed to update post. Please try again."));
+      toast.error(t("Failed to update post. Please try again."));
     }
   };
 

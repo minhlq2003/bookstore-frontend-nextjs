@@ -147,6 +147,15 @@ function SignUp() {
                     {t("Log in")}
                   </Link>
                 </p>
+                <p>
+                  {t("Didn't remember your password ?")}{" "}
+                  <Link
+                    href="/forgotpassword"
+                    className="text-blue-500 hover:underline"
+                  >
+                    {t("Click Here")}
+                  </Link>
+                </p>
               </div>
             </Form>
           ) : (
