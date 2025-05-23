@@ -241,7 +241,7 @@ const ChatbotWidget: React.FC = () => {
           ${
             isWidgetOpen
               ? "opacity-100 translate-y-0 scale-100"
-              : "opacity-0 translate-y-10 scale-95 pointer-events-none"
+              : "opacity-0 translate-y-10 scale-95 pointer-events-none hidden"
           }
         `}
       >

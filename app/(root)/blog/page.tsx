@@ -41,25 +41,25 @@ function Blog() {
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <div className="w-full bg-[#f8f8f8] py-10">
-        <div className="flex mx-auto max-w-[1440px] my-5">
+        <div className="flex flex-col md:flex-row mx-auto max-w-[1440px] my-5">
           <Link
-            className="w-2/3 px-7 flex gap-10 group"
+            className=" w-full md:w-2/3 px-7 flex gap-2 md:gap-10 group"
             href={`/blog/${latestPosts[0]?.slug}`}
           >
-            <img className="rounded-xl w-1/2" src={latestPosts[0].image} />
+            <img className="rounded-xl w-1/2" src={latestPosts[0]?.image} />
             <div>
               <h2 className="text-lg font-semibold text-gray-800 line-clamp-2 group-hover:text-[#0b3d91]">
-                {latestPosts[0].title}
+                {latestPosts[0]?.title}
               </h2>
               <div
                 dangerouslySetInnerHTML={{
-                  __html: latestPosts[0].content || "",
+                  __html: latestPosts[0]?.content || "",
                 }}
                 className="text-sm text-gray-500 line-clamp-5 mt-1"
               />
             </div>
           </Link>
-          <div className="flex w-1/3 flex-col gap-4">
+          <div className="flex w-full md:w-1/3 p-5 md:p-0 flex-col gap-4">
             {latestPosts.slice(1, 3).map((post) => (
               <Link
                 href={`/blog/${post.slug}`}
