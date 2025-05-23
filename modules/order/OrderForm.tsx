@@ -4,6 +4,7 @@ import { Form, Input, InputNumber, Select, FormInstance } from "antd";
 import React from "react";
 import { Order } from "@/constant/types";
 import { useTranslation } from "react-i18next";
+import { t } from "i18next";
 
 const { TextArea } = Input;
 
@@ -14,13 +15,29 @@ const paymentOptions: { label: string; value: string }[] = [
 ];
 
 const statusOptions: { label: string; value: string }[] = [
-  { label: "Đang xử lý", value: "PENDING" },
-  { label: "Đang giao", value: "SHIPPING" },
-  { label: "Đã hoàn thành", value: "COMPLETED" },
-  { label: "Đã hủy", value: "CANCELLED" },
-  { label: "Đã giao hàng", value: "DELIVERED" },
-  { label: "Đang xử lý", value: "PROCESSING" },
+  { label: t("PENDING"), value: "PENDING" },
+  { label: t("PROCESSING"), value: "PROCESSING" },
+  { label: t("SHIPPED"), value: "SHIPPED" },
+  { label: t("DELIVERED"), value: "DELIVERED" },
+  { label: t("CANCELLED"), value: "CANCELLED" },
 ];
+
+const getAvailableStatusOptions = (currentStatus: string) => {
+  const statusTransitions: Record<string, string[]> = {
+    PENDING: ["PROCESSING", "CANCELLED", "SHIPPED", "DELIVERED"],
+    PROCESSING: ["SHIPPED", "DELIVERED", "CANCELLED"],
+    SHIPPED: ["DELIVERED", "CANCELLED"],
+    DELIVERED: [],
+    CANCELLED: [],
+  };
+
+  return statusOptions.map((option) => ({
+    ...option,
+    disabled: !statusTransitions[currentStatus?.toUpperCase()]?.includes(
+      option.value
+    ),
+  }));
+};
 
 const OrderForm: React.FC<{
   form: FormInstance;
@@ -142,12 +159,21 @@ const OrderForm: React.FC<{
             rules={[{ required: true, message: "Vui lòng chọn trạng thái!" }]}
             style={{ width: "48%" }}
           >
-            <Select placeholder="Chọn trạng thái đơn hàng">
-              {statusOptions.map((option) => (
-                <Select.Option key={option.value} value={option.value}>
-                  {option.value}
-                </Select.Option>
-              ))}
+            <Select
+              className="uppercase"
+              placeholder="Chọn trạng thái đơn hàng"
+            >
+              {getAvailableStatusOptions(form.getFieldValue("status")).map(
+                (option) => (
+                  <Select.Option
+                    key={option.value}
+                    value={option.value}
+                    disabled={option.disabled}
+                  >
+                    {option.label}
+                  </Select.Option>
+                )
+              )}
             </Select>
           </Form.Item>
         </div>

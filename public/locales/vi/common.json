@@ -173,5 +173,10 @@
     "Sold Out": "Hết hàng",
     "Buy Again": "Mua lại",
     "Buy": "Mua",
-    "Add to cart": "Thêm vào giỏ hàng"
+    "Add to cart": "Thêm vào giỏ hàng",
+    "PROCESSING": "ĐANG XỬ LÝ",
+    "SHIPPED": "ĐANG GIAO HÀNG",
+    "DELIVERED": "ĐÃ GIAO HÀNG",
+    "CANCELLED": "ĐÃ HỦY",
+    "PENDING": "ĐANG CHỜ"
 }

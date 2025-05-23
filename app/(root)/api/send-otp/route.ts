@@ -8,7 +8,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ message: "Email is required" }, { status: 400 });
   }
 
-  const otp = Math.floor(100000 + Math.random() * 900000); // 6-digit OTP
+  const otp = Math.floor(100000 + Math.random() * 900000);
 
   const transporter = nodemailer.createTransport({
     service: "gmail",
@@ -27,8 +27,7 @@ export async function POST(req: NextRequest) {
 
   try {
     await transporter.sendMail(mailOptions);
-    // Optionally: Save OTP to Redis or DB with expiration
-    return NextResponse.json({ message: "OTP sent", otp }); // In thực tế không nên trả OTP về client
+    return NextResponse.json({ message: "OTP sent", otp });
   } catch (err) {
     return NextResponse.json(
       { message: "Failed to send email", error: err },

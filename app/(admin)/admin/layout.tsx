@@ -59,6 +59,8 @@ export default function RootLayout({
                       >
                         <Content
                           style={{
+                            overflowY: "scroll",
+                            height: "calc(100vh - 210px)",
                             padding: "0 12px",
                             backgroundColor: "#fff",
                             borderRadius: "8px",
@@ -74,7 +76,7 @@ export default function RootLayout({
                       </Layout>
                     </Content>
                     <Footer style={{ textAlign: "center" }}>
-                      "Copyright ©2025 - Ly Quoc Minh"
+                      "Copyright ©2025 - Group 9 - KTPM"
                     </Footer>
                   </Layout>
                 </Layout>

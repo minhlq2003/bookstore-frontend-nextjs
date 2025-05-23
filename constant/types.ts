@@ -94,6 +94,24 @@ export interface BookListResponse {
   totalPages: number;
 }
 
+export interface PublisherListResponse {
+  code: number;
+  message?: string;
+  data: Publisher[];
+  page: number;
+  total: number;
+  totalPages: number;
+}
+
+export interface DiscountListResponse {
+  code: number;
+  message?: string;
+  data: Discount[];
+  page: number;
+  total: number;
+  totalPages: number;
+}
+
 export interface Discount {
   id: string;
   createdAt: string;

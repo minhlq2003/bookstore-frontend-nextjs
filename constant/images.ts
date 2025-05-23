@@ -36,3 +36,5 @@ export const Images = {
   aboutusImg02: aboutusImg02,
   emptyImage: emptyImage,
 };
+export { BookImg };
+

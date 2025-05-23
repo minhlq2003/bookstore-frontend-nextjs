@@ -31,24 +31,11 @@ const EditBook = () => {
   }, []);
 
   const onFinish = async (values: Book) => {
-    //const slug = values.title.trim().replace(/\s+/g, "-").toLowerCase();
     const dataPayload = {
       ...values,
-      title: values.title,
-      author: values.author,
       price: Number(values.price),
-      pages: values.pages,
-      publishedDate: values.publishedDate,
-      categoryId: values.category,
-      publisherId: values.publisher,
-      discountCode: values.discount,
-      //bookImages: uploadedImages.map((url) => ({ url })),
-      description: values.description,
-      size: values.size,
       weight: Number(values.weight),
       images: uploadedImages,
-
-      //slug: slug,
     };
 
     try {
