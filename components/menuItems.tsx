@@ -197,9 +197,8 @@ export const menuItems: Array<CustomMenuItem> = [
   },
 
   {
-    label: "Users",
-    key: "users",
-    children: usersItems,
+    label: "Profile",
+    key: "profile",
     icon: <UserDeleteOutlined />,
   },
   {
