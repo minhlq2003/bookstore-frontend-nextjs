@@ -39,7 +39,7 @@ const ModalEntrance = () => {
           <FontAwesomeIcon icon={faXmark} className="" />
         </button>
         <a href="/category/history">
-          <img src="https://image.moengage.com/tr:orig-true/fahasamoengage/images/20250425100017650357NNUORMgif480x600fixgiffahasamoengage/images.gif" />
+          <img src="https://cnm-chatapp-bucket.s3.ap-southeast-1.amazonaws.com/kmg7-1747987566012-images.gif%20-%20Animated%20GIF%20optimizer%20and%20compressor.gif" />
         </a>
       </div>
     </div>

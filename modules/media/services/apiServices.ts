@@ -1,7 +1,7 @@
 import { HttpClient } from "@/lib/HttpClient";
 import { AxiosRequestConfig } from "axios";
 
-export const API_PREFIX_POST_PATH = "/media";
+export const API_PREFIX_POST_PATH = "/user";
 
 const BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:5001";
@@ -33,7 +33,7 @@ export const fetchMedia = async (
 };
 
 export const fetchMediaId = async (id: number) => {
-  const response = await http.get(`${API_PREFIX_POST_PATH}/files/${id}`);
+  const response = await http.get(`${API_PREFIX_POST_PATH}/upload/${id}`);
   return response;
 };
 

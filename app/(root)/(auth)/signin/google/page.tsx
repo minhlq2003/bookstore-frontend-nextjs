@@ -5,6 +5,7 @@ import { getSessionUser } from "@/lib/actions/auth";
 import { useRouter } from "next/navigation";
 import { signup, login } from "@/modules/services/userServices";
 import {UserResponse} from "@/constant/types";
+import {toast} from "sonner";
 const Page = () => {
   const verificationAttempted = useRef(false);
   const [isGoogleLogin, setIsGoogleLogin] = useState(false);
@@ -18,7 +19,7 @@ const Page = () => {
         setIsGoogleLogin(true);
         const userData = await getUserInfo(session.email);
         if(userData?.token) {
-          localStorage.setItem("user", JSON.stringify(userData));
+          localStorage.setItem("user", JSON.stringify(userData.user));
           localStorage.setItem("accessToken", userData?.token);
           return router.replace("/");
         } else {
@@ -29,6 +30,8 @@ const Page = () => {
             localStorage.setItem("user", JSON.stringify(response?.user));
             localStorage.setItem("accessToken", response?.token);
             return router.replace("/");
+          } else {
+            toast.error("There's already an account registered using Email, please try again.");
           }
 
         }

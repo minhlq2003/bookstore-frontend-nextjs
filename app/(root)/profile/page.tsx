@@ -2,6 +2,8 @@
 
 import React, { useEffect, useState, useCallback, useRef } from "react";
 import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
+
 import {
   Form,
   Input,
@@ -340,7 +342,7 @@ const UserProfilePage = () => {
           newPassword: "",
           confirmNewPassword: "",
         });
-        messages.push("Password changed successfully!");
+        toast.success("Password changed successfully!");
         hasChanges = true;
       } catch (error: any) {
         message.error(t(error.message) || t("Failed to change password."));
