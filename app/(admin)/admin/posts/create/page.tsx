@@ -11,6 +11,7 @@ import PostForm from "@/modules/post/PostForm";
 import Publish from "@/modules/post/Publish";
 import FeaturedImage from "@/modules/post/FeaturedImage";
 import Categories from "@/modules/post/Categories";
+import { toast } from "sonner";
 
 export default function AddPost() {
   const { t } = useTranslation("common");
@@ -36,11 +37,11 @@ export default function AddPost() {
 
     try {
       await createPost(dataPayload);
-      message.success(t("Post added successfully!"));
+      toast.success(t("Post added successfully!"));
       form.resetFields();
       setUploadedImage("");
     } catch {
-      message.error(t("Failed to add post. Please try again."));
+      toast.error(t("Failed to add post. Please try again."));
     }
   };
 

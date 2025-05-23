@@ -14,6 +14,7 @@ import {
 import OrderForm from "@/modules/order/OrderForm";
 import { useTranslation } from "react-i18next";
 import { formatDate } from "@/lib/utils";
+import { toast } from "sonner";
 
 const EditOrder = () => {
   const { t } = useTranslation("common");
@@ -31,7 +32,7 @@ const EditOrder = () => {
         const res = await getOrderById(id);
         setOrder(res?.data || null);
       } catch (error) {
-        message.error("Không thể tải thông tin đơn hàng.");
+        toast.error("Không thể tải thông tin đơn hàng.");
       } finally {
         setLoading(false);
       }
@@ -44,13 +45,13 @@ const EditOrder = () => {
       if (id) {
         await updateOrderStatus(Number(id), values.status);
       } else {
-        message.error("Order ID không hợp lệ.");
+        toast.error("Order ID không hợp lệ.");
       }
-      message.success("Cập nhật đơn hàng thành công!");
+      toast.success("Cập nhật trang thái đơn hàng thành công!");
       form.resetFields();
       router.push("/admin/orders");
     } catch {
-      message.error("Cập nhật đơn hàng thất bại. Vui lòng thử lại.");
+      toast.error("Cập nhật đơn hàng thất bại. Vui lòng thử lại.");
     }
   };
 

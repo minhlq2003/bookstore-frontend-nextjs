@@ -8,6 +8,7 @@ import { Book } from "@/constant/types";
 import { createBook } from "@/modules/services/bookService";
 import { useTranslation } from "react-i18next";
 import BookForm from "@/modules/book/BookForm";
+import { toast } from "sonner";
 
 export default function AddBook() {
   const { t } = useTranslation("common");
@@ -32,10 +33,10 @@ export default function AddBook() {
 
     try {
       await createBook(dataPayload);
-      message.success("Book added successfully!");
+      toast.success("Book added successfully!");
       form.resetFields();
     } catch {
-      message.error("Failed to add book. Please try again.");
+      toast.error("Failed to add book. Please try again.");
     }
   };
 
