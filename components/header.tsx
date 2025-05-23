@@ -303,7 +303,7 @@ const Header = () => {
       <div className="fixed sm:hidden bottom-0 left-0 right-0 bg-white translate-x-0 z-50 py-3">
         <ul className="flex justify-evenly">
           <li>
-            <Link href="/" className="flex flex-col">
+            <Link href="/blog" className="flex flex-col">
               <FontAwesomeIcon icon={faBlog} />
               {t("Blog")}
             </Link>
