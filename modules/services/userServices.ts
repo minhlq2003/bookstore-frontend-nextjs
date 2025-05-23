@@ -25,7 +25,8 @@ export const getAllAddressByUserId = (userId: number) =>
 export const getProfile = async (): Promise<UserResponse> => {
   const response = await http.get<UserResponse | null>(`${API_PREFIX_PATH}/profile`);
   if (!response) {
-    throw new Error("Failed to fetch user profile");
+    console.log("Failed to fetch user profile");
+    return {} as UserResponse;
   }
   return response;
 };
@@ -38,7 +39,8 @@ export const signup = async (username: string, password: string, name: string | 
     email,
   })
   if (!response) {
-    throw new Error("Failed to fetch user profile");
+    console.log("Failed to fetch user profile");
+    return {} as UserResponse;
   }
   return response;
 }
