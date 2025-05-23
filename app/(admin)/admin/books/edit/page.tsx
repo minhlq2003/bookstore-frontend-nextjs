@@ -11,6 +11,7 @@ import { getBookById, updateBook } from "@/modules/services/bookService";
 import { useTranslation } from "react-i18next";
 import { image } from "@heroui/theme";
 import BookForm from "@/modules/book/BookForm";
+import { toast } from "sonner";
 
 const EditBook = () => {
   const { t } = useTranslation("common");
@@ -42,13 +43,13 @@ const EditBook = () => {
       if (id) {
         await updateBook(id, dataPayload);
       } else {
-        message.error("Invalid book ID. Please try again.");
+        toast.error("Invalid book ID. Please try again.");
       }
-      message.success("Book updated successfully!");
+      toast.success("Book updated successfully!");
       form.resetFields();
       router.push("/admin/books");
     } catch {
-      message.error("Failed to update book. Please try again.");
+      toast.error("Failed to update book. Please try again.");
     }
   };
 
