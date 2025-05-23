@@ -343,7 +343,7 @@ function Home() {
               favorite books at unbeatable prices - up to 50% off. Limited time
               only!
             </p>
-            <button className="bg-customblue text-white px-5 py-2 rounded-full text-sm lg:text-base">Shop now</button>
+            <button onClick={() => {router.push("/category")}} className="bg-customblue text-white px-5 py-2 rounded-full text-sm lg:text-base">Shop now</button>
           </div>
           <div className="absolute -top-10 lg:-top-20 -right-10 lg:right-0 max-w-[50%] flex gap-10 -rotate-[25deg]">
             <div className="flex flex-col gap-10">

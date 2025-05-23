@@ -34,7 +34,7 @@ export class HttpClient {
       const res = await promise;
       return res?.data ?? null;
     } catch (err: any) {
-      console.error("HTTP Error:", err);
+      console.log("HTTP Error:", err);
       return null;
     }
   }
