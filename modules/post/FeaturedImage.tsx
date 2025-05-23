@@ -8,8 +8,9 @@ import {
   CaretUpOutlined,
   PlusOutlined,
 } from "@ant-design/icons";
-import { Button, Image, Modal } from "antd";
+import { Button, Modal } from "antd";
 import Title from "antd/es/typography/Title";
+import Image from "next/image";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -55,14 +56,15 @@ const FeaturedImage: React.FC<FeaturedImageProps> = ({
       </div>
       {!isImageVisible || (
         <div className="m-4">
-          {selectedMedia === null ? (
+          {selectedMedia === "" ? (
             <div className="flex flex-col gap-4 p-2">
               <Image
                 src={Images.emptyImage.src}
                 alt="featured"
                 className="w-full cursor-pointer "
-                preview={false}
                 onClick={handleOpenModal}
+                width={100}
+                height={100}
               />
               <Button
                 variant="outlined"
@@ -80,6 +82,8 @@ const FeaturedImage: React.FC<FeaturedImageProps> = ({
                 src={selectedMedia}
                 alt="featured"
                 className="w-full cursor-pointer"
+                width={100}
+                height={100}
               />
               <Button
                 color="danger"
