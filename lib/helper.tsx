@@ -54,3 +54,8 @@ export const tryParse = (jsonString: string) => {
     return null;
   }
 };
+
+export function calcPercentDiff(prev: number, curr: number) {
+  if (prev === 0) return 100;
+  return Math.round(((curr - prev) / prev) * 100);
+}
