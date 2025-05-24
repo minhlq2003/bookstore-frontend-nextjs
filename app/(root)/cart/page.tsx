@@ -30,6 +30,8 @@ const CartPage = () => {
       } catch (e) {
         console.error("Failed to parse user from localStorage", e);
       }
+    } else {
+      return router.push("/signin")
     }
   }, []);
 
@@ -80,9 +82,7 @@ const CartPage = () => {
   };
 
   useEffect(() => {
-    if (!user) {
-      return router.push("/signin")
-    }
+    if (!user) return;
     getAllCartItems(user.id as number);
   }, [user]);
 
